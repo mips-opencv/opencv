@@ -1,0 +1,3 @@
+#ifndef OPENCV_HAL_INTRIN_MSA_HPP
+#define OPENCV_HAL_INTRIN_MSA_HPP
+#endif

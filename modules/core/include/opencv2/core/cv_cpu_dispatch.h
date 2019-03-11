@@ -115,6 +115,12 @@
 #  define CV_VSX 1
 #endif
 
+#ifdef __mips_msa
+#  include <msa.h>
+#  include "opencv2/core/msa_macros.h"
+#  define CV_MSA 1
+#endif
+
 #ifdef CV_CPU_COMPILE_VSX3
 #  define CV_VSX3 1
 #endif

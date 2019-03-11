@@ -1,0 +1,3 @@
+#ifndef OPENCV_CORE_MSA_MACROS_H
+#define OPENCV_CORE_MSA_MACROS_H
+#endif

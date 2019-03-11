@@ -157,6 +157,10 @@ using namespace CV_CPU_OPTIMIZATION_HAL_NAMESPACE;
 
 #include "opencv2/core/hal/intrin_vsx.hpp"
 
+//#elif CV_MSA
+
+//#include "opencv2/core/hal/intrin_msa.hpp"
+
 #else
 
 #define CV_SIMD128_CPP 1
