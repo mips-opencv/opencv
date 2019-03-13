@@ -43,6 +43,29 @@ if(";${CPU_BASELINE_FINAL};" MATCHES "SSE2"
   add_definitions(-DPNG_INTEL_SSE)
 endif()
 
+# set definitions and sources for MIPS
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "mipsel*" OR
+   CMAKE_SYSTEM_PROCESSOR MATCHES "mips64r6el*" OR
+   CMAKE_SYSTEM_PROCESSOR MATCHES "mips64el*")
+  set(PNG_MIPS_MSA_POSSIBLE_VALUES on off)
+  set(PNG_MIPS_MSA "on" CACHE STRING "Enable MIPS_MSA optimizations:
+     off: disable the optimizations")
+  set_property(CACHE PNG_MIPS_MSA PROPERTY STRINGS
+     ${PNG_MIPS_MSA_POSSIBLE_VALUES})
+  list(FIND PNG_MIPS_MSA_POSSIBLE_VALUES ${PNG_MIPS_MSA} index)
+  if(index EQUAL -1)
+    message(FATAL_ERROR
+            "PNG_MIPS_MSA must be one of [${PNG_MIPS_MSA_POSSIBLE_VALUES}]")
+  elseif(NOT ${PNG_MIPS_MSA} STREQUAL "off")
+    list(APPEND lib_srcs mips/mips_init.c mips/filter_msa_intrinsics.c)
+    if(${PNG_MIPS_MSA} STREQUAL "on")
+      add_definitions(-DPNG_MIPS_MSA_OPT=2)
+    endif()
+  else()
+    add_definitions(-DPNG_MIPS_MSA_OPT=0)
+  endif()
+endif()
+
 if(PPC64LE OR PPC64)
   if(ENABLE_VSX AND NOT PPC64)
     list(APPEND lib_srcs powerpc/powerpc_init.c powerpc/filter_vsx_intrinsics.c)

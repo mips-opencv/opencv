@@ -360,6 +360,8 @@ struct HWFeatures
         g_hwFeatureNames[CPU_VSX] = "VSX";
         g_hwFeatureNames[CPU_VSX3] = "VSX3";
 
+        g_hwFeatureNames[CPU_MSA] = "CPU_MSA";
+
         g_hwFeatureNames[CPU_AVX512_SKX] = "AVX512-SKX";
     }
 
@@ -511,6 +513,10 @@ struct HWFeatures
     #if (defined __ARM_FP  && (((__ARM_FP & 0x2) != 0) && defined __ARM_NEON__))
         have[CV_CPU_FP16] = true;
     #endif
+    #endif
+
+    #ifdef __mips__
+        have[CV_CPU_MSA] = true;
     #endif
 
     // there's no need to check VSX availability in runtime since it's always available on ppc64le CPUs

@@ -234,6 +234,8 @@ namespace cv { namespace debug_build_guard { } using namespace debug_build_guard
 // CPU features groups
 #define CV_CPU_AVX512_SKX       256
 
+#define CV_CPU_MSA              300
+
 // when adding to this list remember to update the following enum
 #define CV_HARDWARE_MAX_FEATURE 512
 
@@ -270,6 +272,8 @@ enum CpuFeatures {
     CPU_VSX3            = 201,
 
     CPU_AVX512_SKX      = 256, //!< Skylake-X with AVX-512F/CD/BW/DQ/VL
+
+    CPU_MSA             = 300,
 
     CPU_MAX_FEATURE     = 512  // see CV_HARDWARE_MAX_FEATURE
 };
