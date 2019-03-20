@@ -137,9 +137,10 @@ using namespace CV_CPU_OPTIMIZATION_HAL_NAMESPACE;
 #   undef CV_NEON
 #   undef CV_VSX
 #   undef CV_FP16
+#   undef CV_MSA
 #endif
 
-#if CV_SSE2 || CV_NEON || CV_VSX
+#if CV_SSE2 || CV_NEON || CV_VSX || CV_MSA
 #define CV__SIMD_FORWARD 128
 #include "opencv2/core/hal/intrin_forward.hpp"
 #endif
@@ -157,9 +158,9 @@ using namespace CV_CPU_OPTIMIZATION_HAL_NAMESPACE;
 
 #include "opencv2/core/hal/intrin_vsx.hpp"
 
-//#elif CV_MSA
+#elif CV_MSA
 
-//#include "opencv2/core/hal/intrin_msa.hpp"
+#include "opencv2/core/hal/intrin_msa.hpp"
 
 #else
 
