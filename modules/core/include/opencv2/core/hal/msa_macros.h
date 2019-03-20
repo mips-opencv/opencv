@@ -1,5 +1,5 @@
-#ifndef OPENCV_CORE_MSA_MACROS_H
-#define OPENCV_CORE_MSA_MACROS_H
+#ifndef OPENCV_CORE_HAL_MSA_MACROS_H
+#define OPENCV_CORE_HAL_MSA_MACROS_H
 
 #include "msa.h"
 #include <stdint.h>
@@ -4036,4 +4036,4 @@ msa_cvtfhq_f64_f32 (v4f32 __a)
 } // extern "C"
 #endif
 
-#endif /* OPENCV_CORE_MSA_MACROS_H */
+#endif /* OPENCV_CORE_HAL_MSA_MACROS_H */

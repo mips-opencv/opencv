@@ -117,7 +117,7 @@
 
 #ifdef __mips_msa
 #  include <msa.h>
-#  include "opencv2/core/msa_macros.h"
+#  include "opencv2/core/hal/msa_macros.h"
 #  define CV_MSA 1
 #endif
 
