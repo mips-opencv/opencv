@@ -47,7 +47,6 @@
 
 #include <algorithm>
 #include "opencv2/core/utility.hpp"
-#include "opencv2/core/hal/msa_macros.h"
 
 namespace cv
 {
@@ -947,10 +946,11 @@ OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, v2f32, float, max, max, f32)
 OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, v2f32, float, min, min, f32)
 
 #define OPENCV_HAL_IMPL_MSA_REDUCE_SUM(_Tpvec, scalartype, suffix) \
-inline scalartype v_reduce_##func(const _Tpvec& a) \
+inline scalartype v_reduce_sum(const _Tpvec& a) \
 { \
     return (scalartype)msa_sum_##suffix(a.val); \
 }
+
 OPENCV_HAL_IMPL_MSA_REDUCE_SUM(v_uint16x8, unsigned short, u16)
 OPENCV_HAL_IMPL_MSA_REDUCE_SUM(v_int16x8, short, s16)
 OPENCV_HAL_IMPL_MSA_REDUCE_SUM(v_uint32x4, unsigned, u32)
@@ -1345,95 +1345,74 @@ OPENCV_HAL_IMPL_MSA_TRANSPOSE4x4(v_float32x4, v4f32, f32, s32)
 #define OPENCV_HAL_IMPL_MSA_INTERLEAVED(_Tpvec, _Tp, suffix) \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b) \
 { \
-    _Tpvec##x2_t v = msa_ld2q_##suffix(ptr); \
-    a.val = v.val[0]; \
-    b.val = v.val[1]; \
+    unsigned step = v_##_Tpvec::nlanes; \
+    a.val = msa_ld1q_##suffix(ptr); \
+    b.val = msa_ld1q_##suffix(ptr+step); \
 } \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, v_##_Tpvec& c) \
 { \
-    _Tpvec##x3_t v = msa_ld3q_##suffix(ptr); \
-    a.val = v.val[0]; \
-    b.val = v.val[1]; \
-    c.val = v.val[2]; \
+    unsigned step = v_##_Tpvec::nlanes; \
+    a.val = msa_ld1q_##suffix(ptr); \
+    b.val = msa_ld1q_##suffix(ptr+step*1); \
+    c.val = msa_ld1q_##suffix(ptr+step*2); \
 } \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, \
                                 v_##_Tpvec& c, v_##_Tpvec& d) \
 { \
-    _Tpvec##x4_t v = msa_ld4q_##suffix(ptr); \
-    a.val = v.val[0]; \
-    b.val = v.val[1]; \
-    c.val = v.val[2]; \
-    d.val = v.val[3]; \
+    unsigned step = v_##_Tpvec::nlanes; \
+    a.val = msa_ld1q_##suffix(ptr); \
+    b.val = msa_ld1q_##suffix(ptr+step*1); \
+    c.val = msa_ld1q_##suffix(ptr+step*2); \
+    d.val = msa_ld1q_##suffix(ptr+step*3); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
 { \
-    _Tpvec##x2_t v; \
-    v.val[0] = a.val; \
-    v.val[1] = b.val; \
-    msa_st2q_##suffix(ptr, v); \
+    unsigned step = v_##_Tpvec::nlanes; \
+    msa_st1q_##suffix(ptr, a.val); \
+    msa_st1q_##suffix(ptr+step, b.val); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 const v_##_Tpvec& c, hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
 { \
-    _Tpvec##x3_t v; \
-    v.val[0] = a.val; \
-    v.val[1] = b.val; \
-    v.val[2] = c.val; \
-    msa_st3q_##suffix(ptr, v); \
+    unsigned step = v_##_Tpvec::nlanes; \
+    msa_st1q_##suffix(ptr, a.val); \
+    msa_st1q_##suffix(ptr+step, b.val); \
+    msa_st1q_##suffix(ptr+step*2, c.val); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 const v_##_Tpvec& c, const v_##_Tpvec& d, \
                                 hal::StoreMode /*mode*/=hal::STORE_UNALIGNED ) \
 { \
-    _Tpvec##x4_t v; \
-    v.val[0] = a.val; \
-    v.val[1] = b.val; \
-    v.val[2] = c.val; \
-    v.val[3] = d.val; \
-    msa_st4q_##suffix(ptr, v); \
+    unsigned step = v_##_Tpvec::nlanes; \
+    msa_st1q_##suffix(ptr, a.val); \
+    msa_st1q_##suffix(ptr+step, b.val); \
+    msa_st1q_##suffix(ptr+step*2, c.val); \
+    msa_st1q_##suffix(ptr+step*3, d.val); \
 }
 
 #define OPENCV_HAL_IMPL_MSA_INTERLEAVED_INT64(tp, suffix) \
 inline void v_load_deinterleave( const tp* ptr, v_##tp##x2& a, v_##tp##x2& b ) \
 { \
-    tp##x1_t a0 = msa_ld1_##suffix(ptr); \
-    tp##x1_t b0 = msa_ld1_##suffix(ptr + 1); \
-    tp##x1_t a1 = msa_ld1_##suffix(ptr + 2); \
-    tp##x1_t b1 = msa_ld1_##suffix(ptr + 3); \
-    a = v_##tp##x2(msa_combine_##suffix(a0, a1)); \
-    b = v_##tp##x2(msa_combine_##suffix(b0, b1)); \
+    a = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr), msa_ld1_##suffix(ptr + 2))); \
+    b = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 1), msa_ld1_##suffix(ptr + 3))); \
 } \
  \
 inline void v_load_deinterleave( const tp* ptr, v_##tp##x2& a, \
                                  v_##tp##x2& b, v_##tp##x2& c ) \
 { \
-    tp##x1_t a0 = msa_ld1_##suffix(ptr); \
-    tp##x1_t b0 = msa_ld1_##suffix(ptr + 1); \
-    tp##x1_t c0 = msa_ld1_##suffix(ptr + 2); \
-    tp##x1_t a1 = msa_ld1_##suffix(ptr + 3); \
-    tp##x1_t b1 = msa_ld1_##suffix(ptr + 4); \
-    tp##x1_t c1 = msa_ld1_##suffix(ptr + 5); \
-    a = v_##tp##x2(msa_combine_##suffix(a0, a1)); \
-    b = v_##tp##x2(msa_combine_##suffix(b0, b1)); \
-    c = v_##tp##x2(msa_combine_##suffix(c0, c1)); \
+    a = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr), msa_ld1_##suffix(ptr + 3))); \
+    b = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 1), msa_ld1_##suffix(ptr + 4))); \
+    c = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 2), msa_ld1_##suffix(ptr + 5))); \
 } \
  \
 inline void v_load_deinterleave( const tp* ptr, v_##tp##x2& a, v_##tp##x2& b, \
                                  v_##tp##x2& c, v_##tp##x2& d ) \
 { \
-    tp##x1_t a0 = msa_ld1_##suffix(ptr); \
-    tp##x1_t b0 = msa_ld1_##suffix(ptr + 1); \
-    tp##x1_t c0 = msa_ld1_##suffix(ptr + 2); \
-    tp##x1_t d0 = msa_ld1_##suffix(ptr + 3); \
-    tp##x1_t a1 = msa_ld1_##suffix(ptr + 4); \
-    tp##x1_t b1 = msa_ld1_##suffix(ptr + 5); \
-    tp##x1_t c1 = msa_ld1_##suffix(ptr + 6); \
-    tp##x1_t d1 = msa_ld1_##suffix(ptr + 7); \
-    a = v_##tp##x2(msa_combine_##suffix(a0, a1)); \
-    b = v_##tp##x2(msa_combine_##suffix(b0, b1)); \
-    c = v_##tp##x2(msa_combine_##suffix(c0, c1)); \
-    d = v_##tp##x2(msa_combine_##suffix(d0, d1)); \
+    a = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr), msa_ld1_##suffix(ptr + 4))); \
+    b = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 1), msa_ld1_##suffix(ptr + 5))); \
+    c = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 2), msa_ld1_##suffix(ptr + 6))); \
+    d = v_##tp##x2(msa_combine_##suffix(msa_ld1_##suffix(ptr + 3), msa_ld1_##suffix(ptr + 7))); \
 } \
  \
 inline void v_store_interleave( tp* ptr, const v_##tp##x2& a, const v_##tp##x2& b, \
@@ -1471,15 +1450,15 @@ inline void v_store_interleave( tp* ptr, const v_##tp##x2& a, const v_##tp##x2& 
     msa_st1_##suffix(ptr + 7, msa_get_high_##suffix(d.val)); \
 }
 
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v16u8, uchar, u8)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v16i8, schar, s8)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v8u16, ushort, u16)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v8i16, short, s16)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v4u32, unsigned, u32)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v4i32, int, s32)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v4f32, float, f32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint8x16, uchar, u8)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int8x16, schar, s8)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint16x8, ushort, u16)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int16x8, short, s16)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint32x4, unsigned, u32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int32x4, int, s32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float32x4, float, f32)
 #if CV_SIMD128_64F
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(v2f64, double, f64)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float64x2, double, f64)
 #endif
 
 OPENCV_HAL_IMPL_MSA_INTERLEAVED_INT64(int64, s64)
@@ -1636,7 +1615,8 @@ inline void v_cleanup() {}
 //! @brief Check CPU capability of SIMD operation
 static inline bool hasSIMD128()
 {
-    return (CV_CPU_HAS_SUPPORT_MSA) ? true : false;
+    //return (CV_CPU_HAS_SUPPORT_MSA) ? true : false;
+    return true; /*for test*/
 }
 
 //! @}
