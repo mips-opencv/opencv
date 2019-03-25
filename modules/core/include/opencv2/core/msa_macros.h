@@ -782,35 +782,43 @@ __extension__ extern __inline v8u8
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qmovun_s16 (v8i16 __a)
 {
-  v8i16 __b = __msa_sat_s_h(__a,7);
-  return (v8u8){(uint8_t)__msa_copy_s_h(__b,0),
-				(uint8_t)__msa_copy_s_h(__b,1),
-				(uint8_t)__msa_copy_s_h(__b,2),
-				(uint8_t)__msa_copy_s_h(__b,3),
-				(uint8_t)__msa_copy_s_h(__b,4),
-				(uint8_t)__msa_copy_s_h(__b,5),
-				(uint8_t)__msa_copy_s_h(__b,6),
-				(uint8_t)__msa_copy_s_h(__b,7)};
+  v8u16 vec_t,vec_d;
+
+  vec_t = (v8u16) __msa_max_s_h(__msa_fill_h(0), __a);
+  vec_d = __msa_sat_u_h(vec_t, 7);
+  return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vec_d, 0),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
 }
 
 __extension__ extern __inline v4u16
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qmovun_s32 (v4i32 __a)
 {
-	v4i32 __b = __msa_sat_s_w(__a,15);
-	return (v4u16){(uint16_t)__msa_copy_s_w(__b,0),
-				   (uint16_t)__msa_copy_s_w(__b,1),
-				   (uint16_t)__msa_copy_s_w(__b,2),
-				   (uint16_t)__msa_copy_s_w(__b,3)};
+  v4u32 vec_t,vec_d;
+
+  vec_t = (v4u32) __msa_max_s_w(__msa_fill_w(0), __a);
+  vec_d = __msa_sat_u_w(vec_t, 15);
+  return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vec_d, 0),
+			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
+			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
+			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
 }
 
 __extension__ extern __inline v2u32
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qmovun_s64 (v2i64 __a)
 {
-  v2i64 __b = __msa_sat_s_d(__a,31);
-  return (v2u32){(uint32_t)__msa_copy_s_d(__b,0),
-				 (uint32_t)__msa_copy_s_d(__b,1)};
+  v2u64 vec_t,vec_d;
+  vec_t = (v2u64) __msa_max_s_d(__msa_fill_d(0), __a);
+  vec_d = __msa_sat_u_d(vec_t, 31);
+  return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vec_d, 0),
+			  (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
 }
 
 __extension__ extern __inline v8i16
@@ -978,7 +986,7 @@ __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrn_n_u16 (v8u16 __a, const int __b)
 {
   v8u16 vq;
-  vq = __msa_sat_u_h((v8u16)__msa_srari_h((v8i16)__a,__b),7);
+  vq = __msa_sat_u_h((v8u16)__msa_srlri_h((v8i16)__a,__b),7);
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vq,0),
 			    (uint8_t)__msa_copy_u_h((v8i16)vq,1),
 				(uint8_t)__msa_copy_u_h((v8i16)vq,2),
@@ -994,7 +1002,7 @@ __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrn_n_u32 (v4u32 __a, const int __b)
 {
   v4u32 vq;
-  vq = __msa_sat_u_w((v4u32)__msa_srari_w((v4i32)__a,__b),15);
+  vq = __msa_sat_u_w((v4u32)__msa_srlri_w((v4i32)__a,__b),15);
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vq,0),
 				 (uint16_t)__msa_copy_u_w((v4i32)vq,1),
 				 (uint16_t)__msa_copy_u_w((v4i32)vq,2),
@@ -1006,7 +1014,7 @@ __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrn_n_u64 (v2u64 __a, const int __b)
 {
   v2u64 vq;
-  vq = __msa_sat_u_d((v2u64)__msa_srari_d((v2i64)__a,__b),31);
+  vq = __msa_sat_u_d((v2u64)__msa_srlri_d((v2i64)__a,__b),31);
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vq,0),
 				 (uint32_t)__msa_copy_u_d((v2i64)vq,1)};
 }
@@ -1016,38 +1024,45 @@ __extension__ extern __inline v8u8
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrun_n_s16 (v8i16 __a, const int __b)
 {
-  v8u16 vq;
-  vq = __msa_sat_u_h((v8u16)__msa_srari_h(__a,__b),7);
-  return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vq,0),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,1),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,2),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,3),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,4),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,5),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,6),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,7)};
+  v8u16 vec_t,vec_d;
+
+  vec_t = (v8u16) __msa_max_s_h(__msa_fill_h(0), __a);
+  vec_d = __msa_sat_u_h((v8u16)__msa_srlri_h((v8i16)vec_t,__b), 7);
+  return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vec_d, 0),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
+			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
+
 }
 
 __extension__ extern __inline v4u16
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrun_n_s32 (v4i32 __a, const int __b)
 {
-  v4u32 vq;
-  vq = __msa_sat_u_w((v4u32)__msa_srari_w(__a,__b),15);
-  return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vq,0),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,1),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,2),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,3)};
+  v4u32 vec_t,vec_d;
+
+  vec_t = (v4u32) __msa_max_s_w(__msa_fill_w(0), __a);
+  vec_d = __msa_sat_u_w((v4u32)__msa_srlri_w((v4i32)vec_t,__b), 15);
+  return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vec_d, 0),
+			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
+			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
+			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
 }
 
 __extension__ extern __inline v2u32
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qrshrun_n_s64 (v2i64 __a, const int __b)
 {
-  v2u64 vq;
-  vq = __msa_sat_u_d((v2u64)__msa_srari_d(__a,__b),31);
-  return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vq,0),
-				 (uint32_t)__msa_copy_u_d((v2i64)vq,1)};
+  v2u64 vec_t,vec_d;
+
+  vec_t = (v2u64) __msa_max_s_d(__msa_fill_d(0), __a);
+  vec_d = __msa_sat_u_d((v2u64)__msa_srlri_d((v2i64)vec_t,__b), 31);
+  return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vec_d, 0),
+			   (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
 }
 
 /* shrn */
@@ -1172,7 +1187,7 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_rshrn_n_u16 (v8u16 __a, const int __b)
 {
   v8i16 vq;
-  vq = __msa_srari_h((v8i16)__a,__b);
+  vq = __msa_srlri_h((v8i16)__a,__b);
   return (v8u8){(uint8_t)__msa_copy_u_h(vq,0),
 				(uint8_t)__msa_copy_u_h(vq,1),
 				(uint8_t)__msa_copy_u_h(vq,2),
@@ -1188,7 +1203,7 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_rshrn_n_u32 (v4u32 __a, const int __b)
 {
   v4i32 vq;
-  vq = __msa_srari_w((v4i32)__a,__b);
+  vq = __msa_srlri_w((v4i32)__a,__b);
   return (v4u16){(uint16_t)__msa_copy_u_w(vq,0),
 				 (uint16_t)__msa_copy_u_w(vq,1),
 				 (uint16_t)__msa_copy_u_w(vq,2),
@@ -1200,7 +1215,7 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_rshrn_n_u64 (v2u64 __a, const int __b)
 {
   v2i64 vq;
-  vq = __msa_srari_d((v2i64)__a,__b);
+  vq = __msa_srlri_d((v2i64)__a,__b);
   return (v2u32){(uint32_t)__msa_copy_u_d(vq,0),
 				 (uint32_t)__msa_copy_u_d(vq,1)};
 }
@@ -1441,7 +1456,7 @@ msa_pmax_s32 (v2i32 a, v2i32 b)
 {
   return (v2i32){
     a[0]>a[1]? a[0]:a[1],
-    b[0]>a[1]? b[0]:b[1]
+    b[0]>b[1]? b[0]:b[1]
   };
 }
 
@@ -1479,7 +1494,7 @@ msa_pmax_u32 (v2u32 a, v2u32 b)
 {
   return (v2u32){
     a[0]>a[1]? a[0]:a[1],
-    b[0]>a[1]? b[0]:b[1]
+    b[0]>b[1]? b[0]:b[1]
   };
 }
 
@@ -1489,1060 +1504,13 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 {
   return (v2f32){
     a[0]>a[1]? a[0]:a[1],
-    b[0]>a[1]? b[0]:b[1]
+    b[0]>b[1]? b[0]:b[1]
   };
 }
 
-/* reinterpret */
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_f32_s64 (v1i64 __a)
-{
-  return (v2f32)__a;
-}
+/* vector type reinterpretion */
+#define MSA_TPV_REINTERPRET(_Tpv, Vec)  ((_Tpv)Vec)
 
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_f32_u64 (v1u64 __a)
-{
-  return (v2f32)__a;
-}
-
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_f32_s8 (v8i8 __a)
-{
-  return (v2f32)__a;
-}
-
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_f32_s16 (v4i16 __a)
-{
-  return (v2f32)__a;
-}
-
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_f32_s32 (v2i32 __a)
-{
-  return (v2f32)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_f32 (v2f32 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_u64 (v1u64 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_s8 (v8i8 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_s16 (v4i16 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_s32 (v2i32 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_u8 (v8i8 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_u16 (v4u16 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s64_u32 (v2u32 __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_f32 (v2f32 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_s64 (v1i64 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_s8 (v8i8 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_s16 (v4i16 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_s32 (v2i32 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_u8 (v8i8 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_u16 (v4u16 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u64_u32 (v2u32 __a)
-{
-  return (v1u64)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_f32 (v2f32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_s64 (v1i64 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_u64 (v1u64 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_s16 (v4i16 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_s32 (v2i32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_u8 (v8i8 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_u16 (v4u16 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s8_u32 (v2u32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_f32 (v2f32 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_s64 (v1i64 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_u64 (v1u64 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_s8 (v8i8 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_s32 (v2i32 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_u8 (v8i8 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_u16 (v4u16 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s16_u32 (v2u32 __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_f32 (v2f32 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_s64 (v1i64 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_u64 (v1u64 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_s8 (v8i8 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_s16 (v4i16 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_u8 (v8i8 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_u16 (v4u16 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_s32_u32 (v2u32 __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_f32 (v2f32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_s64 (v1i64 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_u64 (v1u64 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_s8 (v8i8 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_s16 (v4u16 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_s32 (v2i32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_u16 (v4u16 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u8_u32 (v2u32 __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_f32 (v2f32 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_s64 (v1i64 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_u64 (v1u64 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_s8 (v8i8 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_s16 (v4i16 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_s32 (v2i32 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_u8 (v8i8 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u16_u32 (v2u32 __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_f32 (v2f32 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_s64 (v1i64 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_u64 (v1u64 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_s8 (v8i8 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_s16 (v4i16 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_s32 (v2i32 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_u8 (v8i8 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpret_u32_u16 (v4u16 __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_f64 (v2f64 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_s64 (v2i64 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_u64 (v2u64 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_s8 (v16i8 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_s16 (v8i16 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_s32 (v4i32 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_u8 (v16u8 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_u16 (v8u16 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_f32_u32 (v4u32 __a)
-{
-  return (v4f32)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_f64 (v2f64 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_f32 (v4f32 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_u64 (v2u64 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_s8 (v16i8 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_s16 (v8i16 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_s32 (v4i32 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_u8 (v16u8 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_u16 (v8u16 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s64_u32 (v4u32 __a)
-{
-  return (v2i64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_f64 (v2f64 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_f32 (v4f32 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_s64 (v2i64 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_s8 (v16i8 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_s16 (v8i16 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_s32 (v4i32 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_u8 (v16u8 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_u16 (v8u16 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u64_u32 (v4u32 __a)
-{
-  return (v2u64)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_f64 (v2f64 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_f32 (v4f32 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_s64 (v2i64 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_u64 (v2u64 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_s16 (v8i16 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_s32 (v4i32 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_u8 (v16u8 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_u16 (v8u16 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s8_u32 (v4u32 __a)
-{
-  return (v16i8)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_f64 (v2f64 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_f32 (v4f32 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_s64 (v2i64 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_u64 (v2u64 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_s8 (v16i8 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_s32 (v4i32 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_u8 (v16u8 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_u16 (v8u16 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s16_u32 (v4u32 __a)
-{
-  return (v8i16)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_f64 (v2f64 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_f32 (v4f32 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_s64 (v2i64 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_u64 (v2u64 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_s8 (v16i8 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_s16 (v8i16 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_u8 (v16u8 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_u16 (v8u16 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_s32_u32 (v4u32 __a)
-{
-  return (v4i32)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_f64 (v2f64 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_f32 (v4f32 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_s64 (v2i64 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_u64 (v2u64 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_s8 (v16i8 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_s16 (v8i16 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_s32 (v4i32 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_u16 (v8u16 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u8_u32 (v4u32 __a)
-{
-  return (v16u8)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_f64 (v2f64 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_f32 (v4f32 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_s64 (v2i64 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_u64 (v2u64 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_s8 (v16i8 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_s16 (v8i16 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_s32 (v4i32 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_u8 (v16u8 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u16_u32 (v4u32 __a)
-{
-  return (v8u16)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_f64 (v2f64 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_f32 (v4f32 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_s64 (v2i64 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_u64 (v2u64 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_s8 (v16i8 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_s16 (v8i16 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_s32 (v4i32 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_u8 (v16u8 __a)
-{
-  return (v4u32)__a;
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_reinterpretq_u32_u16 (v8u16 __a)
-{
-  return (v4u32)__a;
-}
 
 #if 1 /* get_lane() is implemented by ygwu, currently use the implementation by fwu above. */
 #ifdef _MIPSEB
