@@ -663,9 +663,9 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_s32 (v4i32 __a)
 {
   return (v4i16){(int16_t)__msa_copy_s_w(__a,0),
-				 (int16_t)__msa_copy_s_w(__a,1),
-				 (int16_t)__msa_copy_s_w(__a,2),
-				 (int16_t)__msa_copy_s_w(__a,3)};
+                 (int16_t)__msa_copy_s_w(__a,1),
+                 (int16_t)__msa_copy_s_w(__a,2),
+                 (int16_t)__msa_copy_s_w(__a,3)};
 }
 
 __extension__ extern __inline v2i32
@@ -673,7 +673,7 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_s64 (v2i64 __a)
 {
   return (v2i32){(int32_t)__msa_copy_s_d(__a,0),
-				 (int32_t)__msa_copy_s_d(__a,1)};
+                 (int32_t)__msa_copy_s_d(__a,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -681,13 +681,13 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_u16 (v8u16 __a)
 {
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)__a,0),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,1),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,2),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,3),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,4),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,5),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,6),
-				 (uint8_t)__msa_copy_u_h((v8i16)__a,7)};
+                (uint8_t)__msa_copy_u_h((v8i16)__a,1),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,2),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,3),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,4),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,5),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,6),
+                (uint8_t)__msa_copy_u_h((v8i16)__a,7)};
 }
 
 __extension__ extern __inline v4u16
@@ -695,9 +695,9 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_u32 (v4u32 __a)
 {
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)__a,0),
-				 (uint16_t)__msa_copy_u_w((v4i32)__a,1),
-				 (uint16_t)__msa_copy_u_w((v4i32)__a,2),
-				 (uint16_t)__msa_copy_u_w((v4i32)__a,3)};
+                 (uint16_t)__msa_copy_u_w((v4i32)__a,1),
+                 (uint16_t)__msa_copy_u_w((v4i32)__a,2),
+                 (uint16_t)__msa_copy_u_w((v4i32)__a,3)};
 }
 
 __extension__ extern __inline v2u32
@@ -705,7 +705,7 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_u64 (v2u64 __a)
 {
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)__a,0),
-				(uint32_t)__msa_copy_u_d((v2i64)__a,1)};
+                 (uint32_t)__msa_copy_u_d((v2i64)__a,1)};
 }
 
 __extension__ extern __inline v8i8
@@ -714,13 +714,13 @@ msa_qmovn_s16 (v8i16 __a)
 {
   v8i16 __b = __msa_sat_s_h(__a,7);
   return (v8i8){(int8_t)__msa_copy_s_h(__b,0),
-			    (int8_t)__msa_copy_s_h(__b,1),
-				(int8_t)__msa_copy_s_h(__b,2),
-				(int8_t)__msa_copy_s_h(__b,3),
-				(int8_t)__msa_copy_s_h(__b,4),
-				(int8_t)__msa_copy_s_h(__b,5),
-				(int8_t)__msa_copy_s_h(__b,6),
-				(int8_t)__msa_copy_s_h(__b,7)};
+                (int8_t)__msa_copy_s_h(__b,1),
+                (int8_t)__msa_copy_s_h(__b,2),
+                (int8_t)__msa_copy_s_h(__b,3),
+                (int8_t)__msa_copy_s_h(__b,4),
+                (int8_t)__msa_copy_s_h(__b,5),
+                (int8_t)__msa_copy_s_h(__b,6),
+                (int8_t)__msa_copy_s_h(__b,7)};
 }
 
 __extension__ extern __inline v4i16
@@ -729,9 +729,9 @@ msa_qmovn_s32 (v4i32 __a)
 {
   v4i32 __b = __msa_sat_s_w(__a,15);
   return (v4i16){(int16_t)__msa_copy_s_w(__b,0),
-				 (int16_t)__msa_copy_s_w(__b,1),
-				 (int16_t)__msa_copy_s_w(__b,2),
-				 (int16_t)__msa_copy_s_w(__b,3)};
+                 (int16_t)__msa_copy_s_w(__b,1),
+                 (int16_t)__msa_copy_s_w(__b,2),
+                 (int16_t)__msa_copy_s_w(__b,3)};
 }
 
 __extension__ extern __inline v2i32
@@ -740,7 +740,7 @@ msa_qmovn_s64 (v2i64 __a)
 {
   v2i64 __b = __msa_sat_s_d(__a,31);
   return (v2i32){(int32_t)__msa_copy_s_d(__b,0),
-				 (int32_t)__msa_copy_s_d(__b,1)};
+                 (int32_t)__msa_copy_s_d(__b,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -749,13 +749,13 @@ msa_qmovn_u16 (v8u16 __a)
 {
   v8u16 __b = __msa_sat_u_h(__a,7);
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)__b,0),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,1),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,2),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,3),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,4),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,5),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,6),
-				(uint8_t)__msa_copy_u_h((v8i16)__b,7)};
+                (uint8_t)__msa_copy_u_h((v8i16)__b,1),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,2),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,3),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,4),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,5),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,6),
+                (uint8_t)__msa_copy_u_h((v8i16)__b,7)};
 }
 
 __extension__ extern __inline v4u16
@@ -764,9 +764,9 @@ msa_qmovn_u32 (v4u32 __a)
 {
   v4u32 __b = __msa_sat_u_w(__a,15);
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)__b,0),
-				 (uint16_t)__msa_copy_u_w((v4i32)__b,1),
-				 (uint16_t)__msa_copy_u_w((v4i32)__b,2),
-				 (uint16_t)__msa_copy_u_w((v4i32)__b,3)};
+                 (uint16_t)__msa_copy_u_w((v4i32)__b,1),
+                 (uint16_t)__msa_copy_u_w((v4i32)__b,2),
+                 (uint16_t)__msa_copy_u_w((v4i32)__b,3)};
 }
 
 __extension__ extern __inline v2u32
@@ -775,7 +775,7 @@ msa_qmovn_u64 (v2u64 __a)
 {
   v2u64 __b = __msa_sat_u_d(__a,31);
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)__b ,0),
-				 (uint32_t)__msa_copy_u_d((v2i64)__b ,1)};
+                 (uint32_t)__msa_copy_u_d((v2i64)__b ,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -787,13 +787,13 @@ msa_qmovun_s16 (v8i16 __a)
   vec_t = (v8u16) __msa_max_s_h(__msa_fill_h(0), __a);
   vec_d = __msa_sat_u_h(vec_t, 7);
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vec_d, 0),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
 }
 
 __extension__ extern __inline v4u16
@@ -805,9 +805,9 @@ msa_qmovun_s32 (v4i32 __a)
   vec_t = (v4u32) __msa_max_s_w(__msa_fill_w(0), __a);
   vec_d = __msa_sat_u_w(vec_t, 15);
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vec_d, 0),
-			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
-			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
-			  (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
 }
 
 __extension__ extern __inline v2u32
@@ -818,7 +818,7 @@ msa_qmovun_s64 (v2i64 __a)
   vec_t = (v2u64) __msa_max_s_d(__msa_fill_d(0), __a);
   vec_d = __msa_sat_u_d(vec_t, 31);
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vec_d, 0),
-			  (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
+                 (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
 }
 
 __extension__ extern __inline v8i16
@@ -950,13 +950,13 @@ msa_qrshrn_n_s16 (v8i16 __a, const int __b)
   v8i16 vq;
   vq = __msa_sat_s_h(__msa_srari_h(__a,__b),7);
   return (v8i8){(int8_t)__msa_copy_s_h(vq,0),
-			    (int8_t)__msa_copy_s_h(vq,1),
-				(int8_t)__msa_copy_s_h(vq,2),
-				(int8_t)__msa_copy_s_h(vq,3),
-				(int8_t)__msa_copy_s_h(vq,4),
-				(int8_t)__msa_copy_s_h(vq,5),
-				(int8_t)__msa_copy_s_h(vq,6),
-				(int8_t)__msa_copy_s_h(vq,7)};
+                (int8_t)__msa_copy_s_h(vq,1),
+                (int8_t)__msa_copy_s_h(vq,2),
+                (int8_t)__msa_copy_s_h(vq,3),
+                (int8_t)__msa_copy_s_h(vq,4),
+                (int8_t)__msa_copy_s_h(vq,5),
+                (int8_t)__msa_copy_s_h(vq,6),
+                (int8_t)__msa_copy_s_h(vq,7)};
 }
 
 __extension__ extern __inline v4i16
@@ -966,9 +966,9 @@ msa_qrshrn_n_s32 (v4i32 __a, const int __b)
   v4i32 vq;
   vq = __msa_sat_s_w(__msa_srari_w(__a,__b),15);
   return (v4i16){(int16_t)__msa_copy_s_w(vq,0),
-			     (int16_t)__msa_copy_s_w(vq,1),
-				 (int16_t)__msa_copy_s_w(vq,2),
-				 (int16_t)__msa_copy_s_w(vq,3)};  
+                 (int16_t)__msa_copy_s_w(vq,1),
+                 (int16_t)__msa_copy_s_w(vq,2),
+                 (int16_t)__msa_copy_s_w(vq,3)};  
 }
 
 __extension__ extern __inline v2i32
@@ -978,7 +978,7 @@ msa_qrshrn_n_s64 (v2i64 __a, const int __b)
   v2i64 vq;
   vq = __msa_sat_s_d(__msa_srari_d(__a,__b),31);
   return (v2i32){(int32_t)__msa_copy_s_d(vq,0),
-			     (int32_t)__msa_copy_s_d(vq,1)};
+                 (int32_t)__msa_copy_s_d(vq,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -988,13 +988,13 @@ msa_qrshrn_n_u16 (v8u16 __a, const int __b)
   v8u16 vq;
   vq = __msa_sat_u_h((v8u16)__msa_srlri_h((v8i16)__a,__b),7);
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vq,0),
-			    (uint8_t)__msa_copy_u_h((v8i16)vq,1),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,2),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,3),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,4),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,5),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,6),
-				(uint8_t)__msa_copy_u_h((v8i16)vq,7)};
+                (uint8_t)__msa_copy_u_h((v8i16)vq,1),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,2),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,3),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,4),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,5),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,6),
+                (uint8_t)__msa_copy_u_h((v8i16)vq,7)};
 }
 
 __extension__ extern __inline v4u16
@@ -1004,9 +1004,9 @@ msa_qrshrn_n_u32 (v4u32 __a, const int __b)
   v4u32 vq;
   vq = __msa_sat_u_w((v4u32)__msa_srlri_w((v4i32)__a,__b),15);
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vq,0),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,1),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,2),
-				 (uint16_t)__msa_copy_u_w((v4i32)vq,3)};
+                 (uint16_t)__msa_copy_u_w((v4i32)vq,1),
+                 (uint16_t)__msa_copy_u_w((v4i32)vq,2),
+                 (uint16_t)__msa_copy_u_w((v4i32)vq,3)};
 }
 
 __extension__ extern __inline v2u32
@@ -1016,7 +1016,7 @@ msa_qrshrn_n_u64 (v2u64 __a, const int __b)
   v2u64 vq;
   vq = __msa_sat_u_d((v2u64)__msa_srlri_d((v2i64)__a,__b),31);
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vq,0),
-				 (uint32_t)__msa_copy_u_d((v2i64)vq,1)};
+                 (uint32_t)__msa_copy_u_d((v2i64)vq,1)};
 }
 
 /* qrshrun */
@@ -1029,14 +1029,13 @@ msa_qrshrun_n_s16 (v8i16 __a, const int __b)
   vec_t = (v8u16) __msa_max_s_h(__msa_fill_h(0), __a);
   vec_d = __msa_sat_u_h((v8u16)__msa_srlri_h((v8i16)vec_t,__b), 7);
   return (v8u8){(uint8_t)__msa_copy_u_h((v8i16)vec_d, 0),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
-			  (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
-
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 1),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 2),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 3),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 4),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 5),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 6),
+                (uint8_t)__msa_copy_u_h((v8i16)vec_d, 7)};
 }
 
 __extension__ extern __inline v4u16
@@ -1048,9 +1047,9 @@ msa_qrshrun_n_s32 (v4i32 __a, const int __b)
   vec_t = (v4u32) __msa_max_s_w(__msa_fill_w(0), __a);
   vec_d = __msa_sat_u_w((v4u32)__msa_srlri_w((v4i32)vec_t,__b), 15);
   return (v4u16){(uint16_t)__msa_copy_u_w((v4i32)vec_d, 0),
-			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
-			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
-			   (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 1),
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 2),
+                 (uint16_t)__msa_copy_u_w((v4i32)vec_d, 3)};
 }
 
 __extension__ extern __inline v2u32
@@ -1062,7 +1061,7 @@ msa_qrshrun_n_s64 (v2i64 __a, const int __b)
   vec_t = (v2u64) __msa_max_s_d(__msa_fill_d(0), __a);
   vec_d = __msa_sat_u_d((v2u64)__msa_srlri_d((v2i64)vec_t,__b), 31);
   return (v2u32){(uint32_t)__msa_copy_u_d((v2i64)vec_d, 0),
-			   (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
+                 (uint32_t)__msa_copy_u_d((v2i64)vec_d, 1)};
 }
 
 /* shrn */
@@ -1073,13 +1072,13 @@ msa_shrn_n_s16 (v8i16 __a, const int __b)
   v8i16 vq;
   vq = __msa_srai_h(__a,__b);
   return (v8i8){(int8_t)__msa_copy_s_h(vq,0),
-				(int8_t)__msa_copy_s_h(vq,1),
-				(int8_t)__msa_copy_s_h(vq,2),
-				(int8_t)__msa_copy_s_h(vq,3),
-				(int8_t)__msa_copy_s_h(vq,4),
-				(int8_t)__msa_copy_s_h(vq,5),
-				(int8_t)__msa_copy_s_h(vq,6),
-				(int8_t)__msa_copy_s_h(vq,7)};
+                (int8_t)__msa_copy_s_h(vq,1),
+                (int8_t)__msa_copy_s_h(vq,2),
+                (int8_t)__msa_copy_s_h(vq,3),
+                (int8_t)__msa_copy_s_h(vq,4),
+                (int8_t)__msa_copy_s_h(vq,5),
+                (int8_t)__msa_copy_s_h(vq,6),
+                (int8_t)__msa_copy_s_h(vq,7)};
 }
 
 __extension__ extern __inline v4i16
@@ -1089,10 +1088,9 @@ msa_shrn_n_s32(v4i32 __a, const int __b)
   v4i32 vq;
   vq = __msa_srai_w(__a,__b);
   return (v4i16){(int16_t)__msa_copy_s_w(vq,0),
-				 (int16_t)__msa_copy_s_w(vq,1),
-				 (int16_t)__msa_copy_s_w(vq,2),
-				 (int16_t)__msa_copy_s_w(vq,3)};
-
+                 (int16_t)__msa_copy_s_w(vq,1),
+                 (int16_t)__msa_copy_s_w(vq,2),
+                 (int16_t)__msa_copy_s_w(vq,3)};
 }
 
 __extension__ extern __inline v2i32
@@ -1102,7 +1100,7 @@ msa_shrn_n_s64 (v2i64 __a, const int __b)
   v2i64 vq;
   vq = __msa_srai_d(__a,__b);
   return (v2i32){(int32_t)__msa_copy_s_d(vq,0),
-				 (int32_t)__msa_copy_s_d(vq,1)};
+                 (int32_t)__msa_copy_s_d(vq,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -1110,15 +1108,15 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_shrn_n_u16 (v8u16 __a, const int __b)
 {
   v8i16 vq;
-  vq = __msa_srai_h((v8i16)__a,__b);
+  vq = __msa_srli_h((v8i16)__a,__b);
   return (v8u8){(uint8_t)__msa_copy_u_h(vq,0),
-				(uint8_t)__msa_copy_u_h(vq,1),
-				(uint8_t)__msa_copy_u_h(vq,2),
-				(uint8_t)__msa_copy_u_h(vq,3),
-				(uint8_t)__msa_copy_u_h(vq,4),
-				(uint8_t)__msa_copy_u_h(vq,5),
-				(uint8_t)__msa_copy_u_h(vq,6),
-				(uint8_t)__msa_copy_u_h(vq,7)};
+                (uint8_t)__msa_copy_u_h(vq,1),
+                (uint8_t)__msa_copy_u_h(vq,2),
+                (uint8_t)__msa_copy_u_h(vq,3),
+                (uint8_t)__msa_copy_u_h(vq,4),
+                (uint8_t)__msa_copy_u_h(vq,5),
+                (uint8_t)__msa_copy_u_h(vq,6),
+                (uint8_t)__msa_copy_u_h(vq,7)};
 }
 
 __extension__ extern __inline v4u16
@@ -1126,11 +1124,11 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_shrn_n_u32 (v4u32 __a, const int __b)
 {
   v4i32 vq;
-  vq = __msa_srai_w((v4i32)__a,__b);
+  vq = __msa_srli_w((v4i32)__a,__b);
   return (v4u16){(uint16_t)__msa_copy_u_w(vq,0),
-				 (uint16_t)__msa_copy_u_w(vq,1),
-				 (uint16_t)__msa_copy_u_w(vq,2),
-				 (uint16_t)__msa_copy_u_w(vq,3)};
+                 (uint16_t)__msa_copy_u_w(vq,1),
+                 (uint16_t)__msa_copy_u_w(vq,2),
+                 (uint16_t)__msa_copy_u_w(vq,3)};
 }
 
 __extension__ extern __inline v2u32
@@ -1138,9 +1136,9 @@ __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_shrn_n_u64 (v2u64 __a, const int __b)
 {
   v2i64 vq;
-  vq = __msa_srai_d((v2i64)__a,__b);
+  vq = __msa_srli_d((v2i64)__a,__b);
   return (v2u32){(uint32_t)__msa_copy_u_d(vq,0),
-				 (uint32_t)__msa_copy_u_d(vq,1)};
+                 (uint32_t)__msa_copy_u_d(vq,1)};
 }
 
 /* rshrn */
@@ -1151,13 +1149,13 @@ msa_rshrn_n_s16 (v8i16 __a, const int __b)
   v8i16 vq;
   vq = __msa_srari_h(__a,__b);
   return (v8i8){(int8_t)__msa_copy_s_h(vq,0),
-				(int8_t)__msa_copy_s_h(vq,1),
-				(int8_t)__msa_copy_s_h(vq,2),
-				(int8_t)__msa_copy_s_h(vq,3),
-				(int8_t)__msa_copy_s_h(vq,4),
-				(int8_t)__msa_copy_s_h(vq,5),
-				(int8_t)__msa_copy_s_h(vq,6),
-				(int8_t)__msa_copy_s_h(vq,7)};
+                (int8_t)__msa_copy_s_h(vq,1),
+                (int8_t)__msa_copy_s_h(vq,2),
+                (int8_t)__msa_copy_s_h(vq,3),
+                (int8_t)__msa_copy_s_h(vq,4),
+                (int8_t)__msa_copy_s_h(vq,5),
+                (int8_t)__msa_copy_s_h(vq,6),
+                (int8_t)__msa_copy_s_h(vq,7)};
 }
 
 __extension__ extern __inline v4i16
@@ -1167,9 +1165,9 @@ msa_rshrn_n_s32 (v4i32 __a, const int __b)
 	v4i32 vq;
 	vq = __msa_srari_w(__a,__b);
 	return (v4i16){(int16_t)__msa_copy_s_w(vq,0),
-				   (int16_t)__msa_copy_s_w(vq,1),
-				   (int16_t)__msa_copy_s_w(vq,2),
-				   (int16_t)__msa_copy_s_w(vq,3)};
+                       (int16_t)__msa_copy_s_w(vq,1),
+                       (int16_t)__msa_copy_s_w(vq,2),
+                       (int16_t)__msa_copy_s_w(vq,3)};
 }
 
 __extension__ extern __inline v2i32
@@ -1179,7 +1177,7 @@ msa_rshrn_n_s64 (v2i64 __a, const int __b)
 	v2i64 vq;
 	vq = __msa_srari_d(__a,__b);
 	return (v2i32){(int32_t)__msa_copy_s_d(vq,0),
-				   (int32_t)__msa_copy_s_d(vq,1)};
+                       (int32_t)__msa_copy_s_d(vq,1)};
 }
 
 __extension__ extern __inline v8u8
@@ -1189,13 +1187,13 @@ msa_rshrn_n_u16 (v8u16 __a, const int __b)
   v8i16 vq;
   vq = __msa_srlri_h((v8i16)__a,__b);
   return (v8u8){(uint8_t)__msa_copy_u_h(vq,0),
-				(uint8_t)__msa_copy_u_h(vq,1),
-				(uint8_t)__msa_copy_u_h(vq,2),
-				(uint8_t)__msa_copy_u_h(vq,3),
-				(uint8_t)__msa_copy_u_h(vq,4),
-				(uint8_t)__msa_copy_u_h(vq,5),
-				(uint8_t)__msa_copy_u_h(vq,6),
-				(uint8_t)__msa_copy_u_h(vq,7)};
+                (uint8_t)__msa_copy_u_h(vq,1),
+                (uint8_t)__msa_copy_u_h(vq,2),
+                (uint8_t)__msa_copy_u_h(vq,3),
+                (uint8_t)__msa_copy_u_h(vq,4),
+                (uint8_t)__msa_copy_u_h(vq,5),
+                (uint8_t)__msa_copy_u_h(vq,6),
+                (uint8_t)__msa_copy_u_h(vq,7)};
 }
 
 __extension__ extern __inline v4u16
@@ -1205,9 +1203,9 @@ msa_rshrn_n_u32 (v4u32 __a, const int __b)
   v4i32 vq;
   vq = __msa_srlri_w((v4i32)__a,__b);
   return (v4u16){(uint16_t)__msa_copy_u_w(vq,0),
-				 (uint16_t)__msa_copy_u_w(vq,1),
-				 (uint16_t)__msa_copy_u_w(vq,2),
-				 (uint16_t)__msa_copy_u_w(vq,3)};
+                 (uint16_t)__msa_copy_u_w(vq,1),
+                 (uint16_t)__msa_copy_u_w(vq,2),
+                 (uint16_t)__msa_copy_u_w(vq,3)};
 }
 
 __extension__ extern __inline v2u32
@@ -1217,7 +1215,7 @@ msa_rshrn_n_u64 (v2u64 __a, const int __b)
   v2i64 vq;
   vq = __msa_srlri_d((v2i64)__a,__b);
   return (v2u32){(uint32_t)__msa_copy_u_d(vq,0),
-				 (uint32_t)__msa_copy_u_d(vq,1)};
+                 (uint32_t)__msa_copy_u_d(vq,1)};
 }
 
 /* min */
@@ -2192,13 +2190,13 @@ MSA_SHRQ_N_IMPL(s64, srli_d, v2i64, v2i64, v2i64)
 #else
 #if 1
 #define msa_shrq_n_u8(__a, __imm) ((v16u8)__builtin_msa_srli_b((v16i8)__a, __imm))
-#define msa_shrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srli_b((v16i8)__a, __imm))
+#define msa_shrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srai_b((v16i8)__a, __imm))
 #define msa_shrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srli_h((v8i16)__a, __imm))
-#define msa_shrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srli_h((v8i16)__a, __imm))
+#define msa_shrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srai_h((v8i16)__a, __imm))
 #define msa_shrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srli_w((v4i32)__a, __imm))
-#define msa_shrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srli_w((v4i32)__a, __imm))
+#define msa_shrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srai_w((v4i32)__a, __imm))
 #define msa_shrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srli_d((v2i64)__a, __imm))
-#define msa_shrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srli_d((v2i64)__a, __imm))
+#define msa_shrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srai_d((v2i64)__a, __imm))
 #else
 #define msa_shrq_n_u8    __builtin_msa_srli_b
 #define msa_shrq_n_s8    __builtin_msa_srli_b
@@ -2230,13 +2228,13 @@ MSA_RSHRQ_N_IMPL(u64, srlri_d, v2u64, v2i64, v2u64)
 MSA_RSHRQ_N_IMPL(s64, srlri_d, v2i64, v2i64, v2i64)
 #else
 #define msa_rshrq_n_u8(__a, __imm) ((v16u8)__builtin_msa_srlri_b((v16i8)__a, __imm))
-#define msa_rshrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srlri_b((v16i8)__a, __imm))
+#define msa_rshrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srari_b((v16i8)__a, __imm))
 #define msa_rshrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srlri_h((v8i16)__a, __imm))
-#define msa_rshrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srlri_h((v8i16)__a, __imm))
+#define msa_rshrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srari_h((v8i16)__a, __imm))
 #define msa_rshrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srlri_w((v4i32)__a, __imm))
-#define msa_rshrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srlri_w((v4i32)__a, __imm))
+#define msa_rshrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srari_w((v4i32)__a, __imm))
 #define msa_rshrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srlri_d((v2i64)__a, __imm))
-#define msa_rshrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srlri_d((v2i64)__a, __imm))
+#define msa_rshrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srari_d((v2i64)__a, __imm))
 #endif
 
 /* rename the msa builtin func to unify the name style for intrin_msa.hpp */
