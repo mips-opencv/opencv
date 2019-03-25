@@ -1,0 +1,5347 @@
+
+a.out:     file format elf64-tradlittlemips
+
+
+Disassembly of section .init:
+
+0000000000000c30 <_init>:
+ c30:	67bdfff0 	daddiu	sp,sp,-16
+ c34:	ffbc0000 	sd	gp,0(sp)
+ c38:	3c1c0002 	lui	gp,0x2
+ c3c:	0399e02d 	daddu	gp,gp,t9
+ c40:	ffbf0008 	sd	ra,8(sp)
+ c44:	679cdfb0 	daddiu	gp,gp,-8272
+ c48:	df828110 	ld	v0,-32496(gp)
+ c4c:	10400004 	beqz	v0,c60 <.Lno_weak_fn>
+ c50:	00000000 	nop
+ c54:	df998110 	ld	t9,-32496(gp)
+ c58:	0320f809 	jalr	t9
+ c5c:	00000000 	nop
+
+0000000000000c60 <.Lno_weak_fn>:
+ c60:	dfbf0008 	ld	ra,8(sp)
+ c64:	dfbc0000 	ld	gp,0(sp)
+ c68:	03e00009 	jr	ra
+ c6c:	67bd0010 	daddiu	sp,sp,16
+
+Disassembly of section .text:
+
+0000000000000c70 <__start>:
+     c70:	03e00025 	move	zero,ra
+     c74:	04110001 	bal	c7c <.L101>
+     c78:	00000000 	nop
+
+0000000000000c7c <.L101>:
+     c7c:	0380c825 	move	t9,gp
+     c80:	3c1c0002 	lui	gp,0x2
+     c84:	279cdf64 	addiu	gp,gp,-8348
+     c88:	039fe02d 	daddu	gp,gp,ra
+     c8c:	0000f825 	move	ra,zero
+     c90:	df848020 	ld	a0,-32736(gp)
+     c94:	dfa50000 	ld	a1,0(sp)
+     c98:	67a60008 	daddiu	a2,sp,8
+     c9c:	2401fff0 	li	at,-16
+     ca0:	03a1e824 	and	sp,sp,at
+     ca4:	df878028 	ld	a3,-32728(gp)
+     ca8:	df888030 	ld	a4,-32720(gp)
+     cac:	00404825 	move	a5,v0
+     cb0:	03a05025 	move	a6,sp
+     cb4:	df998108 	ld	t9,-32504(gp)
+     cb8:	0320f809 	jalr	t9
+     cbc:	00000000 	nop
+
+0000000000000cc0 <hlt>:
+     cc0:	1000ffff 	b	cc0 <hlt>
+     cc4:	00000000 	nop
+	...
+
+0000000000000cd0 <deregister_tm_clones>:
+     cd0:	3c030002 	lui	v1,0x2
+     cd4:	0079182d 	daddu	v1,v1,t9
+     cd8:	6463df10 	daddiu	v1,v1,-8432
+     cdc:	dc648038 	ld	a0,-32712(v1)
+     ce0:	dc628040 	ld	v0,-32704(v1)
+     ce4:	64846be8 	daddiu	a0,a0,27624
+     ce8:	20440004 	beqc	v0,a0,cfc <.L8>
+     cec:	dc798130 	ld	t9,-32464(v1)
+     cf0:	db200002 	beqzc	t9,cfc <.L8>
+     cf4:	00000000 	nop
+     cf8:	d8190000 	jrc	t9
+
+0000000000000cfc <.L8>:
+     cfc:	d81f0000 	jrc	ra
+
+0000000000000d00 <register_tm_clones>:
+     d00:	3c030002 	lui	v1,0x2
+     d04:	0079182d 	daddu	v1,v1,t9
+     d08:	6463dee0 	daddiu	v1,v1,-8480
+     d0c:	dc648038 	ld	a0,-32712(v1)
+     d10:	dc658040 	ld	a1,-32704(v1)
+     d14:	64846be8 	daddiu	a0,a0,27624
+     d18:	00a4282f 	dsubu	a1,a1,a0
+     d1c:	000528fb 	dsra	a1,a1,0x3
+     d20:	000517fe 	dsrl32	v0,a1,0x1f
+     d24:	0045282d 	daddu	a1,v0,a1
+     d28:	0005287b 	dsra	a1,a1,0x1
+     d2c:	d8a00004 	beqzc	a1,d40 <.L18>
+     d30:	dc798100 	ld	t9,-32512(v1)
+     d34:	db200002 	beqzc	t9,d40 <.L18>
+     d38:	00000000 	nop
+     d3c:	d8190000 	jrc	t9
+
+0000000000000d40 <.L18>:
+     d40:	d81f0000 	jrc	ra
+     d44:	00000000 	nop
+
+0000000000000d48 <__do_global_dtors_aux>:
+     d48:	67bdffe0 	daddiu	sp,sp,-32
+     d4c:	ffbc0010 	sd	gp,16(sp)
+     d50:	3c1c0002 	lui	gp,0x2
+     d54:	0399e02d 	daddu	gp,gp,t9
+     d58:	ffb00008 	sd	s0,8(sp)
+     d5c:	679cde98 	daddiu	gp,gp,-8552
+     d60:	ffbf0018 	sd	ra,24(sp)
+     d64:	df908038 	ld	s0,-32712(gp)
+     d68:	92026d30 	lbu	v0,27952(s0)
+     d6c:	f840000b 	bnezc	v0,d9c <.L19>
+     d70:	df828138 	ld	v0,-32456(gp)
+     d74:	d8400004 	beqzc	v0,d88 <.L21>
+     d78:	df828048 	ld	v0,-32696(gp)
+     d7c:	df998138 	ld	t9,-32456(gp)
+     d80:	0320f809 	jalr	t9
+     d84:	dc440000 	ld	a0,0(v0)
+
+0000000000000d88 <.L21>:
+     d88:	df998050 	ld	t9,-32688(gp)
+     d8c:	67390cd0 	daddiu	t9,t9,3280
+     d90:	f8190000 	jalrc	t9
+     d94:	24020001 	li	v0,1
+     d98:	a2026d30 	sb	v0,27952(s0)
+
+0000000000000d9c <.L19>:
+     d9c:	dfbf0018 	ld	ra,24(sp)
+     da0:	dfbc0010 	ld	gp,16(sp)
+     da4:	dfb00008 	ld	s0,8(sp)
+     da8:	03e00009 	jr	ra
+     dac:	67bd0020 	daddiu	sp,sp,32
+
+0000000000000db0 <frame_dummy>:
+     db0:	3c020002 	lui	v0,0x2
+     db4:	0059102d 	daddu	v0,v0,t9
+     db8:	6442de30 	daddiu	v0,v0,-8656
+     dbc:	dc598050 	ld	t9,-32688(v0)
+     dc0:	67390d00 	daddiu	t9,t9,3328
+     dc4:	d8190000 	jrc	t9
+	...
+
+0000000000000dd0 <getLaneTstFunc>:
+/*
+i32 __builtin_msa_copy_s_w (v4i32, imm0_3) 
+ */
+
+void getLaneTstFunc()
+{
+     dd0:	67bdffc0 	daddiu	sp,sp,-64
+     dd4:	ffbf0038 	sd	ra,56(sp)
+     dd8:	ffbe0030 	sd	s8,48(sp)
+     ddc:	ffbc0028 	sd	gp,40(sp)
+     de0:	03a0f025 	move	s8,sp
+     de4:	3c1c0002 	lui	gp,0x2
+     de8:	0399e02d 	daddu	gp,gp,t9
+     dec:	679cde10 	daddiu	gp,gp,-8688
+	short i=0;
+     df0:	a7c00000 	sh	zero,0(s8)
+
+	////test integer
+	printf("\n =================getLaneTstFunc=====================================================================\n");
+     df4:	df828050 	ld	v0,-32688(gp)
+     df8:	64444b70 	daddiu	a0,v0,19312
+     dfc:	df828120 	ld	v0,-32480(gp)
+     e00:	0040c825 	move	t9,v0
+     e04:	f8190000 	jalrc	t9
+	printf("input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}\n");
+     e08:	df828050 	ld	v0,-32688(gp)
+     e0c:	64444bd8 	daddiu	a0,v0,19416
+     e10:	df828120 	ld	v0,-32480(gp)
+     e14:	0040c825 	move	t9,v0
+     e18:	f8190000 	jalrc	t9
+	printf("output: __builtin_msa_copy_s_b(g_v16i8Data, i)={");
+     e1c:	df828050 	ld	v0,-32688(gp)
+     e20:	64444c30 	daddiu	a0,v0,19504
+     e24:	df828128 	ld	v0,-32472(gp)
+     e28:	0040c825 	move	t9,v0
+     e2c:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 0));
+     e30:	df828038 	ld	v0,-32712(gp)
+     e34:	64426ab0 	daddiu	v0,v0,27312
+     e38:	78001020 	ld.b	$w0,0(v0)
+     e3c:	78800099 	copy_s.b	v0,$w0[0]
+     e40:	00402825 	move	a1,v0
+     e44:	df828050 	ld	v0,-32688(gp)
+     e48:	64444c68 	daddiu	a0,v0,19560
+     e4c:	df828128 	ld	v0,-32472(gp)
+     e50:	0040c825 	move	t9,v0
+     e54:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 1));
+     e58:	df828038 	ld	v0,-32712(gp)
+     e5c:	64426ab0 	daddiu	v0,v0,27312
+     e60:	78001020 	ld.b	$w0,0(v0)
+     e64:	78810099 	copy_s.b	v0,$w0[1]
+     e68:	00402825 	move	a1,v0
+     e6c:	df828050 	ld	v0,-32688(gp)
+     e70:	64444c68 	daddiu	a0,v0,19560
+     e74:	df828128 	ld	v0,-32472(gp)
+     e78:	0040c825 	move	t9,v0
+     e7c:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 2));
+     e80:	df828038 	ld	v0,-32712(gp)
+     e84:	64426ab0 	daddiu	v0,v0,27312
+     e88:	78001020 	ld.b	$w0,0(v0)
+     e8c:	78820099 	copy_s.b	v0,$w0[2]
+     e90:	00402825 	move	a1,v0
+     e94:	df828050 	ld	v0,-32688(gp)
+     e98:	64444c68 	daddiu	a0,v0,19560
+     e9c:	df828128 	ld	v0,-32472(gp)
+     ea0:	0040c825 	move	t9,v0
+     ea4:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 3));
+     ea8:	df828038 	ld	v0,-32712(gp)
+     eac:	64426ab0 	daddiu	v0,v0,27312
+     eb0:	78001020 	ld.b	$w0,0(v0)
+     eb4:	78830099 	copy_s.b	v0,$w0[3]
+     eb8:	00402825 	move	a1,v0
+     ebc:	df828050 	ld	v0,-32688(gp)
+     ec0:	64444c68 	daddiu	a0,v0,19560
+     ec4:	df828128 	ld	v0,-32472(gp)
+     ec8:	0040c825 	move	t9,v0
+     ecc:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 4));
+     ed0:	df828038 	ld	v0,-32712(gp)
+     ed4:	64426ab0 	daddiu	v0,v0,27312
+     ed8:	78001020 	ld.b	$w0,0(v0)
+     edc:	78840099 	copy_s.b	v0,$w0[4]
+     ee0:	00402825 	move	a1,v0
+     ee4:	df828050 	ld	v0,-32688(gp)
+     ee8:	64444c68 	daddiu	a0,v0,19560
+     eec:	df828128 	ld	v0,-32472(gp)
+     ef0:	0040c825 	move	t9,v0
+     ef4:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 5));
+     ef8:	df828038 	ld	v0,-32712(gp)
+     efc:	64426ab0 	daddiu	v0,v0,27312
+     f00:	78001020 	ld.b	$w0,0(v0)
+     f04:	78850099 	copy_s.b	v0,$w0[5]
+     f08:	00402825 	move	a1,v0
+     f0c:	df828050 	ld	v0,-32688(gp)
+     f10:	64444c68 	daddiu	a0,v0,19560
+     f14:	df828128 	ld	v0,-32472(gp)
+     f18:	0040c825 	move	t9,v0
+     f1c:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 6));
+     f20:	df828038 	ld	v0,-32712(gp)
+     f24:	64426ab0 	daddiu	v0,v0,27312
+     f28:	78001020 	ld.b	$w0,0(v0)
+     f2c:	78860099 	copy_s.b	v0,$w0[6]
+     f30:	00402825 	move	a1,v0
+     f34:	df828050 	ld	v0,-32688(gp)
+     f38:	64444c68 	daddiu	a0,v0,19560
+     f3c:	df828128 	ld	v0,-32472(gp)
+     f40:	0040c825 	move	t9,v0
+     f44:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 7));
+     f48:	df828038 	ld	v0,-32712(gp)
+     f4c:	64426ab0 	daddiu	v0,v0,27312
+     f50:	78001020 	ld.b	$w0,0(v0)
+     f54:	78870099 	copy_s.b	v0,$w0[7]
+     f58:	00402825 	move	a1,v0
+     f5c:	df828050 	ld	v0,-32688(gp)
+     f60:	64444c68 	daddiu	a0,v0,19560
+     f64:	df828128 	ld	v0,-32472(gp)
+     f68:	0040c825 	move	t9,v0
+     f6c:	f8190000 	jalrc	t9
+	printf("%d,  ", __builtin_msa_copy_s_b(g_v16i8Data, 8));
+     f70:	df828038 	ld	v0,-32712(gp)
+     f74:	64426ab0 	daddiu	v0,v0,27312
+     f78:	78001020 	ld.b	$w0,0(v0)
+     f7c:	78880099 	copy_s.b	v0,$w0[8]
+     f80:	00402825 	move	a1,v0
+     f84:	df828050 	ld	v0,-32688(gp)
+     f88:	64444c68 	daddiu	a0,v0,19560
+     f8c:	df828128 	ld	v0,-32472(gp)
+     f90:	0040c825 	move	t9,v0
+     f94:	f8190000 	jalrc	t9
+	printf("\b\b\b}\n\n");
+     f98:	df828050 	ld	v0,-32688(gp)
+     f9c:	64444c70 	daddiu	a0,v0,19568
+     fa0:	df828120 	ld	v0,-32480(gp)
+     fa4:	0040c825 	move	t9,v0
+     fa8:	f8190000 	jalrc	t9
+	
+	////test float
+	float f32Data[4];
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}\n");
+     fac:	df828050 	ld	v0,-32688(gp)
+     fb0:	64444c78 	daddiu	a0,v0,19576
+     fb4:	df828120 	ld	v0,-32480(gp)
+     fb8:	0040c825 	move	t9,v0
+     fbc:	f8190000 	jalrc	t9
+	printf("output: _msa_copy_s_w(g_v4f32Data, i)={");
+     fc0:	df828050 	ld	v0,-32688(gp)
+     fc4:	64444cb0 	daddiu	a0,v0,19632
+     fc8:	df828128 	ld	v0,-32472(gp)
+     fcc:	0040c825 	move	t9,v0
+     fd0:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+     fd4:	a7c00000 	sh	zero,0(s8)
+     fd8:	c800001c 	bc	104c <.L2>
+
+0000000000000fdc <.L3>:
+#if defined DB_vf32_0
+		f32Data[i] = __builtin_msa_copy_s_w(g_v4f32Data, i);
+#elif defined DB_vf32_1
+#else
+		f32Data[i] = msa_getq_lane_f32(g_v4f32Data, i);
+     fdc:	97c20000 	lhu	v0,0(s8)
+     fe0:	30420003 	andi	v0,v0,0x3
+     fe4:	00401825 	move	v1,v0
+     fe8:	87c20000 	lh	v0,0(s8)
+     fec:	df848038 	ld	a0,-32712(gp)
+     ff0:	64846b20 	daddiu	a0,a0,27424
+     ff4:	000318b8 	dsll	v1,v1,0x2
+     ff8:	0083182d 	daddu	v1,a0,v1
+     ffc:	c4600000 	lwc1	$f0,0(v1)
+    1000:	000210b8 	dsll	v0,v0,0x2
+    1004:	03c2102d 	daddu	v0,s8,v0
+    1008:	e4400008 	swc1	$f0,8(v0)
+#endif
+		printf("%f,  ", f32Data[i]);
+    100c:	87c20000 	lh	v0,0(s8)
+    1010:	000210b8 	dsll	v0,v0,0x2
+    1014:	03c2102d 	daddu	v0,s8,v0
+    1018:	c4400008 	lwc1	$f0,8(v0)
+    101c:	46000021 	cvt.d.s	$f0,$f0
+    1020:	44250000 	dmfc1	a1,$f0
+    1024:	df828050 	ld	v0,-32688(gp)
+    1028:	64444cd8 	daddiu	a0,v0,19672
+    102c:	df828128 	ld	v0,-32472(gp)
+    1030:	0040c825 	move	t9,v0
+    1034:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    1038:	87c20000 	lh	v0,0(s8)
+    103c:	3042ffff 	andi	v0,v0,0xffff
+    1040:	24420001 	addiu	v0,v0,1
+    1044:	3042ffff 	andi	v0,v0,0xffff
+    1048:	a7c20000 	sh	v0,0(s8)
+
+000000000000104c <.L2>:
+    104c:	87c20000 	lh	v0,0(s8)
+    1050:	24030003 	li	v1,3
+    1054:	5862ffe1 	bgec	v1,v0,fdc <.L3>
+	}
+	printf("\b\b\b}\n\n");
+    1058:	df828050 	ld	v0,-32688(gp)
+    105c:	64444c70 	daddiu	a0,v0,19568
+    1060:	df828120 	ld	v0,-32480(gp)
+    1064:	0040c825 	move	t9,v0
+    1068:	f8190000 	jalrc	t9
+}
+    106c:	00000000 	nop
+    1070:	03c0e825 	move	sp,s8
+    1074:	dfbf0038 	ld	ra,56(sp)
+    1078:	dfbe0030 	ld	s8,48(sp)
+    107c:	dfbc0028 	ld	gp,40(sp)
+    1080:	67bd0040 	daddiu	sp,sp,64
+    1084:	d81f0000 	jrc	ra
+
+0000000000001088 <combineTstFunc>:
+
+void combineTstFunc()
+{
+    1088:	67bdff60 	daddiu	sp,sp,-160
+    108c:	ffbf0098 	sd	ra,152(sp)
+    1090:	ffbe0090 	sd	s8,144(sp)
+    1094:	ffbc0088 	sd	gp,136(sp)
+    1098:	03a0f025 	move	s8,sp
+    109c:	3c1c0002 	lui	gp,0x2
+    10a0:	0399e02d 	daddu	gp,gp,t9
+    10a4:	679cdb58 	daddiu	gp,gp,-9384
+	short i=0;
+    10a8:	a7c00010 	sh	zero,16(s8)
+
+	////test integer
+	printf("\n =================combineTstFunc=====================================================================\n");
+    10ac:	df828050 	ld	v0,-32688(gp)
+    10b0:	64444ce0 	daddiu	a0,v0,19680
+    10b4:	df828120 	ld	v0,-32480(gp)
+    10b8:	0040c825 	move	t9,v0
+    10bc:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i8Data1 = {0, -1, 2, -3, 4, -5, 6, -7}, g_v8i8Data2 = {8, -9, 10, -11, 12, -13, 14, -15}\n");
+    10c0:	df828050 	ld	v0,-32688(gp)
+    10c4:	64444d48 	daddiu	a0,v0,19784
+    10c8:	df828120 	ld	v0,-32480(gp)
+    10cc:	0040c825 	move	t9,v0
+    10d0:	f8190000 	jalrc	t9
+	printf("output: msa_vcombine_s8(g_v8i8Data1, g_v8i8Data2)={");
+    10d4:	df828050 	ld	v0,-32688(gp)
+    10d8:	64444db0 	daddiu	a0,v0,19888
+    10dc:	df828128 	ld	v0,-32472(gp)
+    10e0:	0040c825 	move	t9,v0
+    10e4:	f8190000 	jalrc	t9
+	v16i8 c = msa_combine_s8(g_v8i8Data1, g_v8i8Data2);
+    10e8:	df828038 	ld	v0,-32712(gp)
+    10ec:	dc436b80 	ld	v1,27520(v0)
+    10f0:	df828038 	ld	v0,-32712(gp)
+    10f4:	dc426b88 	ld	v0,27528(v0)
+    10f8:	ffc30078 	sd	v1,120(s8)
+    10fc:	ffc20070 	sd	v0,112(s8)
+  
+__extension__ extern __inline v16i8
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_combine_s8 (v8i8 __a, v8i8 __b)
+{
+  __COMBINE_64_64(v16i8, __a, __b);
+    1100:	dfc30078 	ld	v1,120(s8)
+    1104:	dfc20070 	ld	v0,112(s8)
+    1108:	7b600007 	ldi.d	$w0,0
+    110c:	79381819 	insert.d	$w0[0],v1
+    1110:	79391019 	insert.d	$w0[1],v0
+    1114:	7804f027 	st.d	$w0,32(s8)
+    1118:	7820f020 	ld.b	$w0,32(s8)
+    111c:	7840f024 	st.b	$w0,64(s8)
+	for(i=0; i<16; i++) {
+    1120:	a7c00010 	sh	zero,16(s8)
+    1124:	c800000e 	bc	1160 <.L6>
+
+0000000000001128 <.L7>:
+		printf("%d,  ", c[i]);
+    1128:	87c20010 	lh	v0,16(s8)
+    112c:	03c2102d 	daddu	v0,s8,v0
+    1130:	80420040 	lb	v0,64(v0)
+    1134:	00402825 	move	a1,v0
+    1138:	df828050 	ld	v0,-32688(gp)
+    113c:	64444c68 	daddiu	a0,v0,19560
+    1140:	df828128 	ld	v0,-32472(gp)
+    1144:	0040c825 	move	t9,v0
+    1148:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    114c:	87c20010 	lh	v0,16(s8)
+    1150:	3042ffff 	andi	v0,v0,0xffff
+    1154:	24420001 	addiu	v0,v0,1
+    1158:	3042ffff 	andi	v0,v0,0xffff
+    115c:	a7c20010 	sh	v0,16(s8)
+
+0000000000001160 <.L6>:
+    1160:	87c20010 	lh	v0,16(s8)
+    1164:	2403000f 	li	v1,15
+    1168:	5862ffef 	bgec	v1,v0,1128 <.L7>
+	}
+	printf("\b\b\b}\n\n");
+    116c:	df828050 	ld	v0,-32688(gp)
+    1170:	64444c70 	daddiu	a0,v0,19568
+    1174:	df828120 	ld	v0,-32480(gp)
+    1178:	0040c825 	move	t9,v0
+    117c:	f8190000 	jalrc	t9
+	
+	////test float
+	printf("input: 	g_v2f32Data1 = {-0.001, 1.001}, g_v2f32Data2 = {-2.002, 3.003}\n");
+    1180:	df828050 	ld	v0,-32688(gp)
+    1184:	64444de8 	daddiu	a0,v0,19944
+    1188:	df828120 	ld	v0,-32480(gp)
+    118c:	0040c825 	move	t9,v0
+    1190:	f8190000 	jalrc	t9
+	printf("output: msa_vcombine_f32(g_v2f32Data1, g_v2f32Data2)={");
+    1194:	df828050 	ld	v0,-32688(gp)
+    1198:	64444e30 	daddiu	a0,v0,20016
+    119c:	df828128 	ld	v0,-32472(gp)
+    11a0:	0040c825 	move	t9,v0
+    11a4:	f8190000 	jalrc	t9
+	v4f32 cc = msa_combine_f32(g_v2f32Data1, g_v2f32Data2);
+    11a8:	df828038 	ld	v0,-32712(gp)
+    11ac:	dc426b40 	ld	v0,27456(v0)
+    11b0:	ffc20000 	sd	v0,0(s8)
+    11b4:	df828038 	ld	v0,-32712(gp)
+    11b8:	dc426b48 	ld	v0,27464(v0)
+    11bc:	ffc20008 	sd	v0,8(s8)
+    11c0:	dfc20000 	ld	v0,0(s8)
+    11c4:	ffc20068 	sd	v0,104(s8)
+    11c8:	dfc20008 	ld	v0,8(s8)
+    11cc:	ffc20060 	sd	v0,96(s8)
+
+__extension__ extern __inline v4f32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_combine_f32 (v2f32 __a, v2f32 __b)
+{
+  __COMBINE_64_64(v4f32, __a, __b);
+    11d0:	dfc30068 	ld	v1,104(s8)
+    11d4:	dfc20060 	ld	v0,96(s8)
+    11d8:	7b600007 	ldi.d	$w0,0
+    11dc:	79381819 	insert.d	$w0[0],v1
+    11e0:	79391019 	insert.d	$w0[1],v0
+    11e4:	7806f027 	st.d	$w0,48(s8)
+    11e8:	780cf022 	ld.w	$w0,48(s8)
+    11ec:	7814f026 	st.w	$w0,80(s8)
+	for(i=0; i<4; i++) {
+    11f0:	a7c00010 	sh	zero,16(s8)
+    11f4:	c8000010 	bc	1238 <.L9>
+
+00000000000011f8 <.L10>:
+		printf("%f,  ", cc[i]);
+    11f8:	87c20010 	lh	v0,16(s8)
+    11fc:	000210b8 	dsll	v0,v0,0x2
+    1200:	03c2102d 	daddu	v0,s8,v0
+    1204:	c4400050 	lwc1	$f0,80(v0)
+    1208:	46000021 	cvt.d.s	$f0,$f0
+    120c:	44250000 	dmfc1	a1,$f0
+    1210:	df828050 	ld	v0,-32688(gp)
+    1214:	64444cd8 	daddiu	a0,v0,19672
+    1218:	df828128 	ld	v0,-32472(gp)
+    121c:	0040c825 	move	t9,v0
+    1220:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    1224:	87c20010 	lh	v0,16(s8)
+    1228:	3042ffff 	andi	v0,v0,0xffff
+    122c:	24420001 	addiu	v0,v0,1
+    1230:	3042ffff 	andi	v0,v0,0xffff
+    1234:	a7c20010 	sh	v0,16(s8)
+
+0000000000001238 <.L9>:
+    1238:	87c20010 	lh	v0,16(s8)
+    123c:	24030003 	li	v1,3
+    1240:	5862ffed 	bgec	v1,v0,11f8 <.L10>
+	}
+	printf("\b\b\b}\n\n");
+    1244:	df828050 	ld	v0,-32688(gp)
+    1248:	64444c70 	daddiu	a0,v0,19568
+    124c:	df828120 	ld	v0,-32480(gp)
+    1250:	0040c825 	move	t9,v0
+    1254:	f8190000 	jalrc	t9
+}
+    1258:	00000000 	nop
+    125c:	03c0e825 	move	sp,s8
+    1260:	dfbf0098 	ld	ra,152(sp)
+    1264:	dfbe0090 	ld	s8,144(sp)
+    1268:	dfbc0088 	ld	gp,136(sp)
+    126c:	67bd00a0 	daddiu	sp,sp,160
+    1270:	d81f0000 	jrc	ra
+
+0000000000001274 <getLowTstFunc>:
+
+void getLowTstFunc()
+{
+    1274:	67bdff50 	daddiu	sp,sp,-176
+    1278:	ffbf00a8 	sd	ra,168(sp)
+    127c:	ffbe00a0 	sd	s8,160(sp)
+    1280:	ffbc0098 	sd	gp,152(sp)
+    1284:	03a0f025 	move	s8,sp
+    1288:	3c1c0002 	lui	gp,0x2
+    128c:	0399e02d 	daddu	gp,gp,t9
+    1290:	679cd96c 	daddiu	gp,gp,-9876
+	short i=0;
+    1294:	a7c00000 	sh	zero,0(s8)
+
+	////test integer
+	printf("\n =================getLowTstFunc=====================================================================\n");
+    1298:	df828050 	ld	v0,-32688(gp)
+    129c:	64444e68 	daddiu	a0,v0,20072
+    12a0:	df828120 	ld	v0,-32480(gp)
+    12a4:	0040c825 	move	t9,v0
+    12a8:	f8190000 	jalrc	t9
+	printf("input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}\n");
+    12ac:	df828050 	ld	v0,-32688(gp)
+    12b0:	64444bd8 	daddiu	a0,v0,19416
+    12b4:	df828120 	ld	v0,-32480(gp)
+    12b8:	0040c825 	move	t9,v0
+    12bc:	f8190000 	jalrc	t9
+	printf("output: v8i8 c = msa_get_low_s8(g_v16i8Data)={");
+    12c0:	df828050 	ld	v0,-32688(gp)
+    12c4:	64444ed0 	daddiu	a0,v0,20176
+    12c8:	df828128 	ld	v0,-32472(gp)
+    12cc:	0040c825 	move	t9,v0
+    12d0:	f8190000 	jalrc	t9
+	v8i8 c = msa_get_low_s8(g_v16i8Data);
+    12d4:	df828038 	ld	v0,-32712(gp)
+    12d8:	64426ab0 	daddiu	v0,v0,27312
+    12dc:	78001020 	ld.b	$w0,0(v0)
+    12e0:	7810f024 	st.b	$w0,16(s8)
+
+__extension__ extern __inline v8i8
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_low_s8 (v16i8 __a)
+{
+  __GET_LOW (v8i8, __a);
+    12e4:	7802f023 	ld.d	$w0,16(s8)
+    12e8:	78b80099 	copy_s.d	v0,$w0[0]
+    12ec:	ffc20020 	sd	v0,32(s8)
+    12f0:	dfc20020 	ld	v0,32(s8)
+    12f4:	ffc20070 	sd	v0,112(s8)
+	for(i=0; i<8; i++) {
+    12f8:	a7c00000 	sh	zero,0(s8)
+    12fc:	c800000e 	bc	1338 <.L13>
+
+0000000000001300 <.L14>:
+		printf("%d,  ", c[i]);
+    1300:	87c20000 	lh	v0,0(s8)
+    1304:	03c2102d 	daddu	v0,s8,v0
+    1308:	80420070 	lb	v0,112(v0)
+    130c:	00402825 	move	a1,v0
+    1310:	df828050 	ld	v0,-32688(gp)
+    1314:	64444c68 	daddiu	a0,v0,19560
+    1318:	df828128 	ld	v0,-32472(gp)
+    131c:	0040c825 	move	t9,v0
+    1320:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    1324:	87c20000 	lh	v0,0(s8)
+    1328:	3042ffff 	andi	v0,v0,0xffff
+    132c:	24420001 	addiu	v0,v0,1
+    1330:	3042ffff 	andi	v0,v0,0xffff
+    1334:	a7c20000 	sh	v0,0(s8)
+
+0000000000001338 <.L13>:
+    1338:	87c20000 	lh	v0,0(s8)
+    133c:	24030007 	li	v1,7
+    1340:	5862ffef 	bgec	v1,v0,1300 <.L14>
+	}
+	printf("\b\b\b}\n\n");
+    1344:	df828050 	ld	v0,-32688(gp)
+    1348:	64444c70 	daddiu	a0,v0,19568
+    134c:	df828120 	ld	v0,-32480(gp)
+    1350:	0040c825 	move	t9,v0
+    1354:	f8190000 	jalrc	t9
+	
+	////test float
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}\n");
+    1358:	df828050 	ld	v0,-32688(gp)
+    135c:	64444c78 	daddiu	a0,v0,19576
+    1360:	df828120 	ld	v0,-32480(gp)
+    1364:	0040c825 	move	t9,v0
+    1368:	f8190000 	jalrc	t9
+	printf("output: v2f32 cc = msa_get_low_f32(g_v4f32Data)={");
+    136c:	df828050 	ld	v0,-32688(gp)
+    1370:	64444f00 	daddiu	a0,v0,20224
+    1374:	df828128 	ld	v0,-32472(gp)
+    1378:	0040c825 	move	t9,v0
+    137c:	f8190000 	jalrc	t9
+	v2f32 cc = msa_get_low_f32(g_v4f32Data);
+    1380:	df828038 	ld	v0,-32712(gp)
+    1384:	64426b20 	daddiu	v0,v0,27424
+    1388:	78001022 	ld.w	$w0,0(v0)
+    138c:	780cf026 	st.w	$w0,48(s8)
+
+__extension__ extern __inline v2f32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_low_f32 (v4f32 __a)
+{
+  __GET_LOW (v2f32, __a);
+    1390:	7806f023 	ld.d	$w0,48(s8)
+    1394:	78b80099 	copy_s.d	v0,$w0[0]
+    1398:	ffc20040 	sd	v0,64(s8)
+    139c:	dfc20040 	ld	v0,64(s8)
+    13a0:	ffc20048 	sd	v0,72(s8)
+    13a4:	dfc20048 	ld	v0,72(s8)
+    13a8:	ffc20078 	sd	v0,120(s8)
+	for(i=0; i<2; i++) {
+    13ac:	a7c00000 	sh	zero,0(s8)
+    13b0:	c8000010 	bc	13f4 <.L16>
+
+00000000000013b4 <.L17>:
+		printf("%f,  ", cc[i]);
+    13b4:	87c20000 	lh	v0,0(s8)
+    13b8:	000210b8 	dsll	v0,v0,0x2
+    13bc:	03c2102d 	daddu	v0,s8,v0
+    13c0:	c4400078 	lwc1	$f0,120(v0)
+    13c4:	46000021 	cvt.d.s	$f0,$f0
+    13c8:	44250000 	dmfc1	a1,$f0
+    13cc:	df828050 	ld	v0,-32688(gp)
+    13d0:	64444cd8 	daddiu	a0,v0,19672
+    13d4:	df828128 	ld	v0,-32472(gp)
+    13d8:	0040c825 	move	t9,v0
+    13dc:	f8190000 	jalrc	t9
+	for(i=0; i<2; i++) {
+    13e0:	87c20000 	lh	v0,0(s8)
+    13e4:	3042ffff 	andi	v0,v0,0xffff
+    13e8:	24420001 	addiu	v0,v0,1
+    13ec:	3042ffff 	andi	v0,v0,0xffff
+    13f0:	a7c20000 	sh	v0,0(s8)
+
+00000000000013f4 <.L16>:
+    13f4:	87c20000 	lh	v0,0(s8)
+    13f8:	24030001 	li	v1,1
+    13fc:	5862ffed 	bgec	v1,v0,13b4 <.L17>
+	}
+	printf("\b\b\b}\n\n");
+    1400:	df828050 	ld	v0,-32688(gp)
+    1404:	64444c70 	daddiu	a0,v0,19568
+    1408:	df828120 	ld	v0,-32480(gp)
+    140c:	0040c825 	move	t9,v0
+    1410:	f8190000 	jalrc	t9
+	
+	////test double
+	printf("input: g_v2f64Data = {-0.0011111111, 1.0011111111}\n");
+    1414:	df828050 	ld	v0,-32688(gp)
+    1418:	64444f38 	daddiu	a0,v0,20280
+    141c:	df828120 	ld	v0,-32480(gp)
+    1420:	0040c825 	move	t9,v0
+    1424:	f8190000 	jalrc	t9
+	printf("output: v1f64 ccc = msa_get_low_f64(g_v4f64Data)={");
+    1428:	df828050 	ld	v0,-32688(gp)
+    142c:	64444f70 	daddiu	a0,v0,20336
+    1430:	df828128 	ld	v0,-32472(gp)
+    1434:	0040c825 	move	t9,v0
+    1438:	f8190000 	jalrc	t9
+	v1f64 ccc = msa_get_low_f64(g_v2f64Data);
+    143c:	df828038 	ld	v0,-32712(gp)
+    1440:	64426b50 	daddiu	v0,v0,27472
+    1444:	78001023 	ld.d	$w0,0(v0)
+    1448:	780af027 	st.d	$w0,80(s8)
+
+__extension__ extern __inline v1f64
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_low_f64 (v2f64 __a)
+{
+  __GET_LOW (v1f64, __a);
+    144c:	780af023 	ld.d	$w0,80(s8)
+    1450:	78b80099 	copy_s.d	v0,$w0[0]
+    1454:	ffc20060 	sd	v0,96(s8)
+    1458:	dfc20060 	ld	v0,96(s8)
+    145c:	ffc20068 	sd	v0,104(s8)
+    1460:	dfc20068 	ld	v0,104(s8)
+    1464:	ffc20080 	sd	v0,128(s8)
+	for(i=0; i<1; i++) {
+    1468:	a7c00000 	sh	zero,0(s8)
+    146c:	c800000f 	bc	14ac <.L19>
+
+0000000000001470 <.L20>:
+		printf("%.10f,  ", ccc[i]);
+    1470:	87c20000 	lh	v0,0(s8)
+    1474:	000210f8 	dsll	v0,v0,0x3
+    1478:	03c2102d 	daddu	v0,s8,v0
+    147c:	d4400080 	ldc1	$f0,128(v0)
+    1480:	44250000 	dmfc1	a1,$f0
+    1484:	df828050 	ld	v0,-32688(gp)
+    1488:	64444fa8 	daddiu	a0,v0,20392
+    148c:	df828128 	ld	v0,-32472(gp)
+    1490:	0040c825 	move	t9,v0
+    1494:	f8190000 	jalrc	t9
+	for(i=0; i<1; i++) {
+    1498:	87c20000 	lh	v0,0(s8)
+    149c:	3042ffff 	andi	v0,v0,0xffff
+    14a0:	24420001 	addiu	v0,v0,1
+    14a4:	3042ffff 	andi	v0,v0,0xffff
+    14a8:	a7c20000 	sh	v0,0(s8)
+
+00000000000014ac <.L19>:
+    14ac:	87c20000 	lh	v0,0(s8)
+    14b0:	5802ffef 	blezc	v0,1470 <.L20>
+	}
+	printf("\b\b\b}\n\n");
+    14b4:	df828050 	ld	v0,-32688(gp)
+    14b8:	64444c70 	daddiu	a0,v0,19568
+    14bc:	df828120 	ld	v0,-32480(gp)
+    14c0:	0040c825 	move	t9,v0
+    14c4:	f8190000 	jalrc	t9
+}
+    14c8:	00000000 	nop
+    14cc:	03c0e825 	move	sp,s8
+    14d0:	dfbf00a8 	ld	ra,168(sp)
+    14d4:	dfbe00a0 	ld	s8,160(sp)
+    14d8:	dfbc0098 	ld	gp,152(sp)
+    14dc:	67bd00b0 	daddiu	sp,sp,176
+    14e0:	d81f0000 	jrc	ra
+
+00000000000014e4 <getHighTstFunc>:
+
+void getHighTstFunc()
+{
+    14e4:	67bdff50 	daddiu	sp,sp,-176
+    14e8:	ffbf00a8 	sd	ra,168(sp)
+    14ec:	ffbe00a0 	sd	s8,160(sp)
+    14f0:	ffbc0098 	sd	gp,152(sp)
+    14f4:	03a0f025 	move	s8,sp
+    14f8:	3c1c0002 	lui	gp,0x2
+    14fc:	0399e02d 	daddu	gp,gp,t9
+    1500:	679cd6fc 	daddiu	gp,gp,-10500
+	short i=0;
+    1504:	a7c00000 	sh	zero,0(s8)
+
+	////test integer
+	printf("\n =================getHighTstFunc=====================================================================\n");
+    1508:	df828050 	ld	v0,-32688(gp)
+    150c:	64444fb8 	daddiu	a0,v0,20408
+    1510:	df828120 	ld	v0,-32480(gp)
+    1514:	0040c825 	move	t9,v0
+    1518:	f8190000 	jalrc	t9
+	printf("input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}\n");
+    151c:	df828050 	ld	v0,-32688(gp)
+    1520:	64444bd8 	daddiu	a0,v0,19416
+    1524:	df828120 	ld	v0,-32480(gp)
+    1528:	0040c825 	move	t9,v0
+    152c:	f8190000 	jalrc	t9
+	printf("output: v8i8 c = msa_get_high_s8(g_v16i8Data)={");
+    1530:	df828050 	ld	v0,-32688(gp)
+    1534:	64445020 	daddiu	a0,v0,20512
+    1538:	df828128 	ld	v0,-32472(gp)
+    153c:	0040c825 	move	t9,v0
+    1540:	f8190000 	jalrc	t9
+	v8i8 c = msa_get_high_s8(g_v16i8Data);
+    1544:	df828038 	ld	v0,-32712(gp)
+    1548:	64426ab0 	daddiu	v0,v0,27312
+    154c:	78001020 	ld.b	$w0,0(v0)
+    1550:	7810f024 	st.b	$w0,16(s8)
+
+__extension__ extern __inline v8i8
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_high_s8 (v16i8 __a)
+{
+  __GET_HIGH (v8i8, __a);
+    1554:	7802f023 	ld.d	$w0,16(s8)
+    1558:	78b90099 	copy_s.d	v0,$w0[1]
+    155c:	ffc20020 	sd	v0,32(s8)
+    1560:	dfc20020 	ld	v0,32(s8)
+    1564:	ffc20070 	sd	v0,112(s8)
+	for(i=0; i<8; i++) {
+    1568:	a7c00000 	sh	zero,0(s8)
+    156c:	c800000e 	bc	15a8 <.L23>
+
+0000000000001570 <.L24>:
+		printf("%d,  ", c[i]);
+    1570:	87c20000 	lh	v0,0(s8)
+    1574:	03c2102d 	daddu	v0,s8,v0
+    1578:	80420070 	lb	v0,112(v0)
+    157c:	00402825 	move	a1,v0
+    1580:	df828050 	ld	v0,-32688(gp)
+    1584:	64444c68 	daddiu	a0,v0,19560
+    1588:	df828128 	ld	v0,-32472(gp)
+    158c:	0040c825 	move	t9,v0
+    1590:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    1594:	87c20000 	lh	v0,0(s8)
+    1598:	3042ffff 	andi	v0,v0,0xffff
+    159c:	24420001 	addiu	v0,v0,1
+    15a0:	3042ffff 	andi	v0,v0,0xffff
+    15a4:	a7c20000 	sh	v0,0(s8)
+
+00000000000015a8 <.L23>:
+    15a8:	87c20000 	lh	v0,0(s8)
+    15ac:	24030007 	li	v1,7
+    15b0:	5862ffef 	bgec	v1,v0,1570 <.L24>
+	}
+	printf("\b\b\b}\n\n");
+    15b4:	df828050 	ld	v0,-32688(gp)
+    15b8:	64444c70 	daddiu	a0,v0,19568
+    15bc:	df828120 	ld	v0,-32480(gp)
+    15c0:	0040c825 	move	t9,v0
+    15c4:	f8190000 	jalrc	t9
+	
+	////test float
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}\n");
+    15c8:	df828050 	ld	v0,-32688(gp)
+    15cc:	64444c78 	daddiu	a0,v0,19576
+    15d0:	df828120 	ld	v0,-32480(gp)
+    15d4:	0040c825 	move	t9,v0
+    15d8:	f8190000 	jalrc	t9
+	printf("output: msa_get_high_f32(g_v4f32Data)={");
+    15dc:	df828050 	ld	v0,-32688(gp)
+    15e0:	64445050 	daddiu	a0,v0,20560
+    15e4:	df828128 	ld	v0,-32472(gp)
+    15e8:	0040c825 	move	t9,v0
+    15ec:	f8190000 	jalrc	t9
+	v2f32 cc = msa_get_high_f32(g_v4f32Data);
+    15f0:	df828038 	ld	v0,-32712(gp)
+    15f4:	64426b20 	daddiu	v0,v0,27424
+    15f8:	78001022 	ld.w	$w0,0(v0)
+    15fc:	780cf026 	st.w	$w0,48(s8)
+
+__extension__ extern __inline v2f32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_high_f32 (v4f32 __a)
+{
+  __GET_HIGH (v2f32, __a);
+    1600:	7806f023 	ld.d	$w0,48(s8)
+    1604:	78b90099 	copy_s.d	v0,$w0[1]
+    1608:	ffc20040 	sd	v0,64(s8)
+    160c:	dfc20040 	ld	v0,64(s8)
+    1610:	ffc20048 	sd	v0,72(s8)
+    1614:	dfc20048 	ld	v0,72(s8)
+    1618:	ffc20078 	sd	v0,120(s8)
+	for(i=0; i<2; i++) {
+    161c:	a7c00000 	sh	zero,0(s8)
+    1620:	c8000010 	bc	1664 <.L26>
+
+0000000000001624 <.L27>:
+		printf("%f,  ", cc[i]);
+    1624:	87c20000 	lh	v0,0(s8)
+    1628:	000210b8 	dsll	v0,v0,0x2
+    162c:	03c2102d 	daddu	v0,s8,v0
+    1630:	c4400078 	lwc1	$f0,120(v0)
+    1634:	46000021 	cvt.d.s	$f0,$f0
+    1638:	44250000 	dmfc1	a1,$f0
+    163c:	df828050 	ld	v0,-32688(gp)
+    1640:	64444cd8 	daddiu	a0,v0,19672
+    1644:	df828128 	ld	v0,-32472(gp)
+    1648:	0040c825 	move	t9,v0
+    164c:	f8190000 	jalrc	t9
+	for(i=0; i<2; i++) {
+    1650:	87c20000 	lh	v0,0(s8)
+    1654:	3042ffff 	andi	v0,v0,0xffff
+    1658:	24420001 	addiu	v0,v0,1
+    165c:	3042ffff 	andi	v0,v0,0xffff
+    1660:	a7c20000 	sh	v0,0(s8)
+
+0000000000001664 <.L26>:
+    1664:	87c20000 	lh	v0,0(s8)
+    1668:	24030001 	li	v1,1
+    166c:	5862ffed 	bgec	v1,v0,1624 <.L27>
+	}
+	printf("\b\b\b}\n\n");
+    1670:	df828050 	ld	v0,-32688(gp)
+    1674:	64444c70 	daddiu	a0,v0,19568
+    1678:	df828120 	ld	v0,-32480(gp)
+    167c:	0040c825 	move	t9,v0
+    1680:	f8190000 	jalrc	t9
+	
+	////test double
+	printf("input: g_v2f64Data = {-0.0011111111, 1.0011111111}\n");
+    1684:	df828050 	ld	v0,-32688(gp)
+    1688:	64444f38 	daddiu	a0,v0,20280
+    168c:	df828120 	ld	v0,-32480(gp)
+    1690:	0040c825 	move	t9,v0
+    1694:	f8190000 	jalrc	t9
+	printf("output: v1f64 ccc = msa_get_high_f64(g_v2f64Data)={");
+    1698:	df828050 	ld	v0,-32688(gp)
+    169c:	64445078 	daddiu	a0,v0,20600
+    16a0:	df828128 	ld	v0,-32472(gp)
+    16a4:	0040c825 	move	t9,v0
+    16a8:	f8190000 	jalrc	t9
+	v1f64 ccc = msa_get_high_f64(g_v2f64Data);
+    16ac:	df828038 	ld	v0,-32712(gp)
+    16b0:	64426b50 	daddiu	v0,v0,27472
+    16b4:	78001023 	ld.d	$w0,0(v0)
+    16b8:	780af027 	st.d	$w0,80(s8)
+
+__extension__ extern __inline v1f64
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_get_high_f64 (v2f64 __a)
+{
+  __GET_HIGH (v1f64, __a);
+    16bc:	780af023 	ld.d	$w0,80(s8)
+    16c0:	78b90099 	copy_s.d	v0,$w0[1]
+    16c4:	ffc20060 	sd	v0,96(s8)
+    16c8:	dfc20060 	ld	v0,96(s8)
+    16cc:	ffc20068 	sd	v0,104(s8)
+    16d0:	dfc20068 	ld	v0,104(s8)
+    16d4:	ffc20080 	sd	v0,128(s8)
+	for(i=0; i<1; i++) {
+    16d8:	a7c00000 	sh	zero,0(s8)
+    16dc:	c800000f 	bc	171c <.L29>
+
+00000000000016e0 <.L30>:
+		printf("%.10f,  ", ccc[i]);
+    16e0:	87c20000 	lh	v0,0(s8)
+    16e4:	000210f8 	dsll	v0,v0,0x3
+    16e8:	03c2102d 	daddu	v0,s8,v0
+    16ec:	d4400080 	ldc1	$f0,128(v0)
+    16f0:	44250000 	dmfc1	a1,$f0
+    16f4:	df828050 	ld	v0,-32688(gp)
+    16f8:	64444fa8 	daddiu	a0,v0,20392
+    16fc:	df828128 	ld	v0,-32472(gp)
+    1700:	0040c825 	move	t9,v0
+    1704:	f8190000 	jalrc	t9
+	for(i=0; i<1; i++) {
+    1708:	87c20000 	lh	v0,0(s8)
+    170c:	3042ffff 	andi	v0,v0,0xffff
+    1710:	24420001 	addiu	v0,v0,1
+    1714:	3042ffff 	andi	v0,v0,0xffff
+    1718:	a7c20000 	sh	v0,0(s8)
+
+000000000000171c <.L29>:
+    171c:	87c20000 	lh	v0,0(s8)
+    1720:	5802ffef 	blezc	v0,16e0 <.L30>
+	}
+	printf("\b\b\b}\n\n");
+    1724:	df828050 	ld	v0,-32688(gp)
+    1728:	64444c70 	daddiu	a0,v0,19568
+    172c:	df828120 	ld	v0,-32480(gp)
+    1730:	0040c825 	move	t9,v0
+    1734:	f8190000 	jalrc	t9
+}
+    1738:	00000000 	nop
+    173c:	03c0e825 	move	sp,s8
+    1740:	dfbf00a8 	ld	ra,168(sp)
+    1744:	dfbe00a0 	ld	s8,160(sp)
+    1748:	dfbc0098 	ld	gp,152(sp)
+    174c:	67bd00b0 	daddiu	sp,sp,176
+    1750:	d81f0000 	jrc	ra
+
+0000000000001754 <multiplicationTstFunc>:
+
+void multiplicationTstFunc()
+{
+    1754:	67bdff60 	daddiu	sp,sp,-160
+    1758:	ffbf0098 	sd	ra,152(sp)
+    175c:	ffbe0090 	sd	s8,144(sp)
+    1760:	ffbc0088 	sd	gp,136(sp)
+    1764:	03a0f025 	move	s8,sp
+    1768:	3c1c0002 	lui	gp,0x2
+    176c:	0399e02d 	daddu	gp,gp,t9
+    1770:	679cd48c 	daddiu	gp,gp,-11124
+	short i=0;
+    1774:	a7c00010 	sh	zero,16(s8)
+
+	////test msa_mulq_lane_f32
+	printf("\n =================multiplicationTstFunc=====================================================================\n");
+    1778:	df828050 	ld	v0,-32688(gp)
+    177c:	644450b0 	daddiu	a0,v0,20656
+    1780:	df828120 	ld	v0,-32480(gp)
+    1784:	0040c825 	move	t9,v0
+    1788:	f8190000 	jalrc	t9
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v2f32Data1 = {-0.001, 1.001}\n");
+    178c:	df828050 	ld	v0,-32688(gp)
+    1790:	64445120 	daddiu	a0,v0,20768
+    1794:	df828120 	ld	v0,-32480(gp)
+    1798:	0040c825 	move	t9,v0
+    179c:	f8190000 	jalrc	t9
+	printf("output: c = msa_mulq_lane_f32(g_v4f32Data, g_v2f32Data1, 0)={");
+    17a0:	df828050 	ld	v0,-32688(gp)
+    17a4:	64445178 	daddiu	a0,v0,20856
+    17a8:	df828128 	ld	v0,-32472(gp)
+    17ac:	0040c825 	move	t9,v0
+    17b0:	f8190000 	jalrc	t9
+	v4f32 c = msa_mulq_lane_f32(g_v4f32Data, g_v2f32Data1, 0);
+    17b4:	df828038 	ld	v0,-32712(gp)
+    17b8:	64426b20 	daddiu	v0,v0,27424
+    17bc:	78001022 	ld.w	$w0,0(v0)
+    17c0:	df828038 	ld	v0,-32712(gp)
+    17c4:	dc426b40 	ld	v0,27456(v0)
+    17c8:	ffc20000 	sd	v0,0(s8)
+    17cc:	7808f026 	st.w	$w0,32(s8)
+    17d0:	dfc20000 	ld	v0,0(s8)
+    17d4:	ffc20078 	sd	v0,120(s8)
+/* ri = ai * b[lane] */
+__extension__ extern __inline v4f32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_mulq_lane_f32 (v4f32 __a, v2f32 __b, const int __lane)
+{
+  return __a * msa_get_lane_f32 (__b, __lane);
+    17d8:	00001025 	move	v0,zero
+    17dc:	000210b8 	dsll	v0,v0,0x2
+    17e0:	03c2102d 	daddu	v0,s8,v0
+    17e4:	c4400078 	lwc1	$f0,120(v0)
+    17e8:	78700019 	splati.w	$w0,$w0[0]
+    17ec:	78be0059 	move.v	$w1,$w0
+    17f0:	7808f022 	ld.w	$w0,32(s8)
+    17f4:	7880081b 	fmul.w	$w0,$w1,$w0
+    17f8:	7814f026 	st.w	$w0,80(s8)
+	for(i=0; i<4; i++) {
+    17fc:	a7c00010 	sh	zero,16(s8)
+    1800:	c8000010 	bc	1844 <.L33>
+
+0000000000001804 <.L34>:
+		printf("%f,  ", c[i]);
+    1804:	87c20010 	lh	v0,16(s8)
+    1808:	000210b8 	dsll	v0,v0,0x2
+    180c:	03c2102d 	daddu	v0,s8,v0
+    1810:	c4400050 	lwc1	$f0,80(v0)
+    1814:	46000021 	cvt.d.s	$f0,$f0
+    1818:	44250000 	dmfc1	a1,$f0
+    181c:	df828050 	ld	v0,-32688(gp)
+    1820:	64444cd8 	daddiu	a0,v0,19672
+    1824:	df828128 	ld	v0,-32472(gp)
+    1828:	0040c825 	move	t9,v0
+    182c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    1830:	87c20010 	lh	v0,16(s8)
+    1834:	3042ffff 	andi	v0,v0,0xffff
+    1838:	24420001 	addiu	v0,v0,1
+    183c:	3042ffff 	andi	v0,v0,0xffff
+    1840:	a7c20010 	sh	v0,16(s8)
+
+0000000000001844 <.L33>:
+    1844:	87c20010 	lh	v0,16(s8)
+    1848:	24030003 	li	v1,3
+    184c:	5862ffed 	bgec	v1,v0,1804 <.L34>
+	}
+	printf("\b\b\b}\n\n");
+    1850:	df828050 	ld	v0,-32688(gp)
+    1854:	64444c70 	daddiu	a0,v0,19568
+    1858:	df828120 	ld	v0,-32480(gp)
+    185c:	0040c825 	move	t9,v0
+    1860:	f8190000 	jalrc	t9
+	
+	////test msa_mulaq_lane_f32
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v2f32Data1 = {-0.001, 1.001}\n");
+    1864:	df828050 	ld	v0,-32688(gp)
+    1868:	64445120 	daddiu	a0,v0,20768
+    186c:	df828120 	ld	v0,-32480(gp)
+    1870:	0040c825 	move	t9,v0
+    1874:	f8190000 	jalrc	t9
+	printf("output: c = msa_mulaq_lane_f32(g_v4f32Data, g_v4f32Data, g_v2f32Data1, 1)={");
+    1878:	df828050 	ld	v0,-32688(gp)
+    187c:	644451b8 	daddiu	a0,v0,20920
+    1880:	df828128 	ld	v0,-32472(gp)
+    1884:	0040c825 	move	t9,v0
+    1888:	f8190000 	jalrc	t9
+	v4f32 cc = msa_mlaq_lane_f32(g_v4f32Data, g_v4f32Data, g_v2f32Data1, 1);
+    188c:	df828038 	ld	v0,-32712(gp)
+    1890:	64426b20 	daddiu	v0,v0,27424
+    1894:	78001062 	ld.w	$w1,0(v0)
+    1898:	df828038 	ld	v0,-32712(gp)
+    189c:	64426b20 	daddiu	v0,v0,27424
+    18a0:	78001022 	ld.w	$w0,0(v0)
+    18a4:	df828038 	ld	v0,-32712(gp)
+    18a8:	dc426b40 	ld	v0,27456(v0)
+    18ac:	ffc20008 	sd	v0,8(s8)
+    18b0:	780cf066 	st.w	$w1,48(s8)
+    18b4:	7810f026 	st.w	$w0,64(s8)
+    18b8:	dfc20008 	ld	v0,8(s8)
+    18bc:	ffc20070 	sd	v0,112(s8)
+/* ri = ai + bi * c[lane] */
+__extension__ extern __inline v4f32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_mlaq_lane_f32 (v4f32 __a, v4f32 __b, v2f32 __c, const int __lane)
+{
+  return (__a + (__b * msa_get_lane_f32 (__c, __lane)));
+    18c0:	24020001 	li	v0,1
+    18c4:	000210b8 	dsll	v0,v0,0x2
+    18c8:	03c2102d 	daddu	v0,s8,v0
+    18cc:	c4400070 	lwc1	$f0,112(v0)
+    18d0:	78700019 	splati.w	$w0,$w0[0]
+    18d4:	78be0059 	move.v	$w1,$w0
+    18d8:	7810f022 	ld.w	$w0,64(s8)
+    18dc:	7880085b 	fmul.w	$w1,$w1,$w0
+    18e0:	780cf022 	ld.w	$w0,48(s8)
+    18e4:	7800081b 	fadd.w	$w0,$w1,$w0
+    18e8:	7818f026 	st.w	$w0,96(s8)
+	for(i=0; i<4; i++) {
+    18ec:	a7c00010 	sh	zero,16(s8)
+    18f0:	c8000010 	bc	1934 <.L36>
+
+00000000000018f4 <.L37>:
+		printf("%f,  ", cc[i]);
+    18f4:	87c20010 	lh	v0,16(s8)
+    18f8:	000210b8 	dsll	v0,v0,0x2
+    18fc:	03c2102d 	daddu	v0,s8,v0
+    1900:	c4400060 	lwc1	$f0,96(v0)
+    1904:	46000021 	cvt.d.s	$f0,$f0
+    1908:	44250000 	dmfc1	a1,$f0
+    190c:	df828050 	ld	v0,-32688(gp)
+    1910:	64444cd8 	daddiu	a0,v0,19672
+    1914:	df828128 	ld	v0,-32472(gp)
+    1918:	0040c825 	move	t9,v0
+    191c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    1920:	87c20010 	lh	v0,16(s8)
+    1924:	3042ffff 	andi	v0,v0,0xffff
+    1928:	24420001 	addiu	v0,v0,1
+    192c:	3042ffff 	andi	v0,v0,0xffff
+    1930:	a7c20010 	sh	v0,16(s8)
+
+0000000000001934 <.L36>:
+    1934:	87c20010 	lh	v0,16(s8)
+    1938:	24030003 	li	v1,3
+    193c:	5862ffed 	bgec	v1,v0,18f4 <.L37>
+	}
+	printf("\b\b\b}\n\n");
+    1940:	df828050 	ld	v0,-32688(gp)
+    1944:	64444c70 	daddiu	a0,v0,19568
+    1948:	df828120 	ld	v0,-32480(gp)
+    194c:	0040c825 	move	t9,v0
+    1950:	f8190000 	jalrc	t9
+}
+    1954:	00000000 	nop
+    1958:	03c0e825 	move	sp,s8
+    195c:	dfbf0098 	ld	ra,152(sp)
+    1960:	dfbe0090 	ld	s8,144(sp)
+    1964:	dfbc0088 	ld	gp,136(sp)
+    1968:	67bd00a0 	daddiu	sp,sp,160
+    196c:	d81f0000 	jrc	ra
+
+0000000000001970 <vsumTstFunc>:
+
+void vsumTstFunc()
+{
+    1970:	67bdffb0 	daddiu	sp,sp,-80
+    1974:	ffbf0048 	sd	ra,72(sp)
+    1978:	ffbe0040 	sd	s8,64(sp)
+    197c:	ffbc0038 	sd	gp,56(sp)
+    1980:	03a0f025 	move	s8,sp
+    1984:	3c1c0002 	lui	gp,0x2
+    1988:	0399e02d 	daddu	gp,gp,t9
+    198c:	679cd270 	daddiu	gp,gp,-11664
+	////test integer
+	printf("\n =================vsumTstFunc=====================================================================\n");
+    1990:	df828050 	ld	v0,-32688(gp)
+    1994:	64445208 	daddiu	a0,v0,21000
+    1998:	df828120 	ld	v0,-32480(gp)
+    199c:	0040c825 	move	t9,v0
+    19a0:	f8190000 	jalrc	t9
+	printf("input: 	g_v4u32Data = {0, 1, 2, 3}\n");
+    19a4:	df828050 	ld	v0,-32688(gp)
+    19a8:	64445270 	daddiu	a0,v0,21104
+    19ac:	df828120 	ld	v0,-32480(gp)
+    19b0:	0040c825 	move	t9,v0
+    19b4:	f8190000 	jalrc	t9
+	printf("output: uint32_t c = msa_sum_u32(g_v4u32Data)={");
+    19b8:	df828050 	ld	v0,-32688(gp)
+    19bc:	64445298 	daddiu	a0,v0,21144
+    19c0:	df828128 	ld	v0,-32472(gp)
+    19c4:	0040c825 	move	t9,v0
+    19c8:	f8190000 	jalrc	t9
+	uint32_t c = msa_sum_u32(g_v4u32Data);
+    19cc:	df828038 	ld	v0,-32712(gp)
+    19d0:	64426b10 	daddiu	v0,v0,27408
+    19d4:	78001022 	ld.w	$w0,0(v0)
+    19d8:	7804f026 	st.w	$w0,16(s8)
+
+__extension__ extern __inline uint32_t
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_sum_u32(v4u32 __a)
+{
+    return (__a[0] + __a[1] + __a[2] + __a[3]);
+    19dc:	8fc30010 	lw	v1,16(s8)
+    19e0:	8fc20014 	lw	v0,20(s8)
+    19e4:	00621021 	addu	v0,v1,v0
+    19e8:	00401825 	move	v1,v0
+    19ec:	8fc20018 	lw	v0,24(s8)
+    19f0:	00621021 	addu	v0,v1,v0
+    19f4:	00401825 	move	v1,v0
+    19f8:	8fc2001c 	lw	v0,28(s8)
+    19fc:	00621021 	addu	v0,v1,v0
+    1a00:	afc20000 	sw	v0,0(s8)
+	printf("%d,  ", c);
+    1a04:	8fc20000 	lw	v0,0(s8)
+    1a08:	00402825 	move	a1,v0
+    1a0c:	df828050 	ld	v0,-32688(gp)
+    1a10:	64444c68 	daddiu	a0,v0,19560
+    1a14:	df828128 	ld	v0,-32472(gp)
+    1a18:	0040c825 	move	t9,v0
+    1a1c:	f8190000 	jalrc	t9
+	printf("\b\b\b}\n\n");
+    1a20:	df828050 	ld	v0,-32688(gp)
+    1a24:	64444c70 	daddiu	a0,v0,19568
+    1a28:	df828120 	ld	v0,-32480(gp)
+    1a2c:	0040c825 	move	t9,v0
+    1a30:	f8190000 	jalrc	t9
+	
+	////test float
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}\n");
+    1a34:	df828050 	ld	v0,-32688(gp)
+    1a38:	64444c78 	daddiu	a0,v0,19576
+    1a3c:	df828120 	ld	v0,-32480(gp)
+    1a40:	0040c825 	move	t9,v0
+    1a44:	f8190000 	jalrc	t9
+	printf("output: float cc = msa_sum_f32(g_v4f32Data)={");
+    1a48:	df828050 	ld	v0,-32688(gp)
+    1a4c:	644452c8 	daddiu	a0,v0,21192
+    1a50:	df828128 	ld	v0,-32472(gp)
+    1a54:	0040c825 	move	t9,v0
+    1a58:	f8190000 	jalrc	t9
+	float cc = msa_sum_f32(g_v4f32Data);
+    1a5c:	df828038 	ld	v0,-32712(gp)
+    1a60:	64426b20 	daddiu	v0,v0,27424
+    1a64:	78001022 	ld.w	$w0,0(v0)
+    1a68:	7808f026 	st.w	$w0,32(s8)
+
+__extension__ extern __inline float
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_sum_f32(v4f32 __a)
+{
+    return (__a[0] + __a[1] + __a[2] + __a[3]);
+    1a6c:	c7c10020 	lwc1	$f1,32(s8)
+    1a70:	c7c00024 	lwc1	$f0,36(s8)
+    1a74:	46000840 	add.s	$f1,$f1,$f0
+    1a78:	c7c00028 	lwc1	$f0,40(s8)
+    1a7c:	46000840 	add.s	$f1,$f1,$f0
+    1a80:	c7c0002c 	lwc1	$f0,44(s8)
+    1a84:	46000800 	add.s	$f0,$f1,$f0
+    1a88:	e7c00004 	swc1	$f0,4(s8)
+	printf("%f,  ", cc);
+    1a8c:	c7c00004 	lwc1	$f0,4(s8)
+    1a90:	46000021 	cvt.d.s	$f0,$f0
+    1a94:	44250000 	dmfc1	a1,$f0
+    1a98:	df828050 	ld	v0,-32688(gp)
+    1a9c:	64444cd8 	daddiu	a0,v0,19672
+    1aa0:	df828128 	ld	v0,-32472(gp)
+    1aa4:	0040c825 	move	t9,v0
+    1aa8:	f8190000 	jalrc	t9
+	printf("\b\b\b}\n\n");
+    1aac:	df828050 	ld	v0,-32688(gp)
+    1ab0:	64444c70 	daddiu	a0,v0,19568
+    1ab4:	df828120 	ld	v0,-32480(gp)
+    1ab8:	0040c825 	move	t9,v0
+    1abc:	f8190000 	jalrc	t9
+}
+    1ac0:	00000000 	nop
+    1ac4:	03c0e825 	move	sp,s8
+    1ac8:	dfbf0048 	ld	ra,72(sp)
+    1acc:	dfbe0040 	ld	s8,64(sp)
+    1ad0:	dfbc0038 	ld	gp,56(sp)
+    1ad4:	67bd0050 	daddiu	sp,sp,80
+    1ad8:	d81f0000 	jrc	ra
+
+0000000000001adc <paddlpTstFunc>:
+
+void paddlpTstFunc()
+{
+    1adc:	67bdff40 	daddiu	sp,sp,-192
+    1ae0:	ffbf00b8 	sd	ra,184(sp)
+    1ae4:	ffbe00b0 	sd	s8,176(sp)
+    1ae8:	ffbc00a8 	sd	gp,168(sp)
+    1aec:	03a0f025 	move	s8,sp
+    1af0:	3c1c0002 	lui	gp,0x2
+    1af4:	0399e02d 	daddu	gp,gp,t9
+    1af8:	679cd104 	daddiu	gp,gp,-12028
+	short i=0;
+    1afc:	a7c00000 	sh	zero,0(s8)
+
+	////test v16u8
+	printf("\n =================paddlpTstFunc=====================================================================\n");
+    1b00:	df828050 	ld	v0,-32688(gp)
+    1b04:	644452f8 	daddiu	a0,v0,21240
+    1b08:	df828120 	ld	v0,-32480(gp)
+    1b0c:	0040c825 	move	t9,v0
+    1b10:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    1b14:	df828050 	ld	v0,-32688(gp)
+    1b18:	64445360 	daddiu	a0,v0,21344
+    1b1c:	df828120 	ld	v0,-32480(gp)
+    1b20:	0040c825 	move	t9,v0
+    1b24:	f8190000 	jalrc	t9
+	printf("output: v8u16 c = msa_paddlq_u8(g_v16u8Data)={");
+    1b28:	df828050 	ld	v0,-32688(gp)
+    1b2c:	644453b0 	daddiu	a0,v0,21424
+    1b30:	df828128 	ld	v0,-32472(gp)
+    1b34:	0040c825 	move	t9,v0
+    1b38:	f8190000 	jalrc	t9
+	v8u16 c = msa_paddlq_u8(g_v16u8Data);
+    1b3c:	df828038 	ld	v0,-32712(gp)
+    1b40:	64426ac0 	daddiu	v0,v0,27328
+    1b44:	78001020 	ld.b	$w0,0(v0)
+    1b48:	7810f024 	st.b	$w0,16(s8)
+#if 0
+  v8u16 result = {(uint16_t)(__a[0] + __a[1]), (uint16_t)(__a[2] + __a[3]), (uint16_t)(__a[4] + __a[5]), (uint16_t)(__a[6] + __a[7]),
+                  (uint16_t)(__a[8] + __a[9]), (uint16_t)(__a[10] + __a[11]), (uint16_t)(__a[12] + __a[13]), (uint16_t)(__a[14] + __a[15])};
+  return result;
+#else
+  v16u8 b = (v16u8)__builtin_msa_fill_b(1);
+    1b4c:	24020001 	li	v0,1
+    1b50:	7b00101e 	fill.b	$w0,v0
+    1b54:	7820f024 	st.b	$w0,32(s8)
+  return __builtin_msa_dotp_u_h(__a, b);
+    1b58:	7810f060 	ld.b	$w1,16(s8)
+    1b5c:	7820f020 	ld.b	$w0,32(s8)
+    1b60:	78a00813 	dotp_u.h	$w0,$w1,$w0
+    1b64:	7830f025 	st.h	$w0,96(s8)
+	for(i=0; i<8; i++) {
+    1b68:	a7c00000 	sh	zero,0(s8)
+    1b6c:	c800000f 	bc	1bac <.L43>
+
+0000000000001b70 <.L44>:
+		printf("%d,  ", c[i]);
+    1b70:	87c20000 	lh	v0,0(s8)
+    1b74:	00021078 	dsll	v0,v0,0x1
+    1b78:	03c2102d 	daddu	v0,s8,v0
+    1b7c:	94420060 	lhu	v0,96(v0)
+    1b80:	00402825 	move	a1,v0
+    1b84:	df828050 	ld	v0,-32688(gp)
+    1b88:	64444c68 	daddiu	a0,v0,19560
+    1b8c:	df828128 	ld	v0,-32472(gp)
+    1b90:	0040c825 	move	t9,v0
+    1b94:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    1b98:	87c20000 	lh	v0,0(s8)
+    1b9c:	3042ffff 	andi	v0,v0,0xffff
+    1ba0:	24420001 	addiu	v0,v0,1
+    1ba4:	3042ffff 	andi	v0,v0,0xffff
+    1ba8:	a7c20000 	sh	v0,0(s8)
+
+0000000000001bac <.L43>:
+    1bac:	87c20000 	lh	v0,0(s8)
+    1bb0:	24030007 	li	v1,7
+    1bb4:	5862ffee 	bgec	v1,v0,1b70 <.L44>
+	}
+	printf("\b\b\b}\n\n");
+    1bb8:	df828050 	ld	v0,-32688(gp)
+    1bbc:	64444c70 	daddiu	a0,v0,19568
+    1bc0:	df828120 	ld	v0,-32480(gp)
+    1bc4:	0040c825 	move	t9,v0
+    1bc8:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v8u16Data = {0, 1, 2, 3, 4, 5, 6, 7}\n");
+    1bcc:	df828050 	ld	v0,-32688(gp)
+    1bd0:	644453e0 	daddiu	a0,v0,21472
+    1bd4:	df828120 	ld	v0,-32480(gp)
+    1bd8:	0040c825 	move	t9,v0
+    1bdc:	f8190000 	jalrc	t9
+	printf("output: v4u32 c = msa_paddlq_u16(g_v8u16Data)={");
+    1be0:	df828050 	ld	v0,-32688(gp)
+    1be4:	64445410 	daddiu	a0,v0,21520
+    1be8:	df828128 	ld	v0,-32472(gp)
+    1bec:	0040c825 	move	t9,v0
+    1bf0:	f8190000 	jalrc	t9
+	v4u32 cc = msa_paddlq_u16(g_v8u16Data);
+    1bf4:	df828038 	ld	v0,-32712(gp)
+    1bf8:	64426ae0 	daddiu	v0,v0,27360
+    1bfc:	78001021 	ld.h	$w0,0(v0)
+    1c00:	7818f025 	st.h	$w0,48(s8)
+
+__extension__ extern __inline v4u32
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_paddlq_u16 (v8u16 __a)
+{
+  v8u16 b = (v8u16)__builtin_msa_fill_h(1);
+    1c04:	24020001 	li	v0,1
+    1c08:	7b01101e 	fill.h	$w0,v0
+    1c0c:	7820f025 	st.h	$w0,64(s8)
+  return __builtin_msa_dotp_u_w(__a, b);
+    1c10:	7818f061 	ld.h	$w1,48(s8)
+    1c14:	7820f021 	ld.h	$w0,64(s8)
+    1c18:	78c00813 	dotp_u.w	$w0,$w1,$w0
+    1c1c:	781cf026 	st.w	$w0,112(s8)
+	for(i=0; i<4; i++) {
+    1c20:	a7c00000 	sh	zero,0(s8)
+    1c24:	c800000f 	bc	1c64 <.L46>
+
+0000000000001c28 <.L47>:
+		printf("%d,  ", cc[i]);
+    1c28:	87c20000 	lh	v0,0(s8)
+    1c2c:	000210b8 	dsll	v0,v0,0x2
+    1c30:	03c2102d 	daddu	v0,s8,v0
+    1c34:	8c420070 	lw	v0,112(v0)
+    1c38:	00402825 	move	a1,v0
+    1c3c:	df828050 	ld	v0,-32688(gp)
+    1c40:	64444c68 	daddiu	a0,v0,19560
+    1c44:	df828128 	ld	v0,-32472(gp)
+    1c48:	0040c825 	move	t9,v0
+    1c4c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    1c50:	87c20000 	lh	v0,0(s8)
+    1c54:	3042ffff 	andi	v0,v0,0xffff
+    1c58:	24420001 	addiu	v0,v0,1
+    1c5c:	3042ffff 	andi	v0,v0,0xffff
+    1c60:	a7c20000 	sh	v0,0(s8)
+
+0000000000001c64 <.L46>:
+    1c64:	87c20000 	lh	v0,0(s8)
+    1c68:	24030003 	li	v1,3
+    1c6c:	5862ffee 	bgec	v1,v0,1c28 <.L47>
+	}
+	printf("\b\b\b}\n\n");
+    1c70:	df828050 	ld	v0,-32688(gp)
+    1c74:	64444c70 	daddiu	a0,v0,19568
+    1c78:	df828120 	ld	v0,-32480(gp)
+    1c7c:	0040c825 	move	t9,v0
+    1c80:	f8190000 	jalrc	t9
+	
+	printf("input: 	g_v4u32Data = {0, 1, 2, 3}\n");
+    1c84:	df828050 	ld	v0,-32688(gp)
+    1c88:	64445270 	daddiu	a0,v0,21104
+    1c8c:	df828120 	ld	v0,-32480(gp)
+    1c90:	0040c825 	move	t9,v0
+    1c94:	f8190000 	jalrc	t9
+	printf("output: v2u64 c = msa_paddlq_u32(g_v4u32Data)={");
+    1c98:	df828050 	ld	v0,-32688(gp)
+    1c9c:	64445440 	daddiu	a0,v0,21568
+    1ca0:	df828128 	ld	v0,-32472(gp)
+    1ca4:	0040c825 	move	t9,v0
+    1ca8:	f8190000 	jalrc	t9
+	v2u64 ccc = msa_paddlq_u32(g_v4u32Data);
+    1cac:	df828038 	ld	v0,-32712(gp)
+    1cb0:	64426b10 	daddiu	v0,v0,27408
+    1cb4:	78001022 	ld.w	$w0,0(v0)
+    1cb8:	7824f026 	st.w	$w0,144(s8)
+
+__extension__ extern __inline v2u64
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_paddlq_u32 (v4u32 __a)
+{
+  v2u64 result = {(uint64_t)(__a[0] + __a[1]), (uint16_t)(__a[2] + __a[3])};
+    1cbc:	8fc30090 	lw	v1,144(s8)
+    1cc0:	8fc20094 	lw	v0,148(s8)
+    1cc4:	00621021 	addu	v0,v1,v0
+    1cc8:	7c44f803 	dext	a0,v0,0x0,0x20
+    1ccc:	8fc20098 	lw	v0,152(s8)
+    1cd0:	3043ffff 	andi	v1,v0,0xffff
+    1cd4:	8fc2009c 	lw	v0,156(s8)
+    1cd8:	3042ffff 	andi	v0,v0,0xffff
+    1cdc:	00621021 	addu	v0,v1,v0
+    1ce0:	3042ffff 	andi	v0,v0,0xffff
+    1ce4:	00401825 	move	v1,v0
+    1ce8:	7b600007 	ldi.d	$w0,0
+    1cec:	00801025 	move	v0,a0
+    1cf0:	79381019 	insert.d	$w0[0],v0
+    1cf4:	00601025 	move	v0,v1
+    1cf8:	79391019 	insert.d	$w0[1],v0
+    1cfc:	780af027 	st.d	$w0,80(s8)
+  return result;
+    1d00:	780af023 	ld.d	$w0,80(s8)
+    1d04:	7810f027 	st.d	$w0,128(s8)
+	for(i=0; i<2; i++) {
+    1d08:	a7c00000 	sh	zero,0(s8)
+    1d0c:	c800000f 	bc	1d4c <.L49>
+
+0000000000001d10 <.L50>:
+		printf("%d,  ", ccc[i]);
+    1d10:	87c20000 	lh	v0,0(s8)
+    1d14:	000210f8 	dsll	v0,v0,0x3
+    1d18:	03c2102d 	daddu	v0,s8,v0
+    1d1c:	dc420080 	ld	v0,128(v0)
+    1d20:	00402825 	move	a1,v0
+    1d24:	df828050 	ld	v0,-32688(gp)
+    1d28:	64444c68 	daddiu	a0,v0,19560
+    1d2c:	df828128 	ld	v0,-32472(gp)
+    1d30:	0040c825 	move	t9,v0
+    1d34:	f8190000 	jalrc	t9
+	for(i=0; i<2; i++) {
+    1d38:	87c20000 	lh	v0,0(s8)
+    1d3c:	3042ffff 	andi	v0,v0,0xffff
+    1d40:	24420001 	addiu	v0,v0,1
+    1d44:	3042ffff 	andi	v0,v0,0xffff
+    1d48:	a7c20000 	sh	v0,0(s8)
+
+0000000000001d4c <.L49>:
+    1d4c:	87c20000 	lh	v0,0(s8)
+    1d50:	24030001 	li	v1,1
+    1d54:	5862ffee 	bgec	v1,v0,1d10 <.L50>
+	}
+	printf("\b\b\b}\n\n");
+    1d58:	df828050 	ld	v0,-32688(gp)
+    1d5c:	64444c70 	daddiu	a0,v0,19568
+    1d60:	df828120 	ld	v0,-32480(gp)
+    1d64:	0040c825 	move	t9,v0
+    1d68:	f8190000 	jalrc	t9
+}
+    1d6c:	00000000 	nop
+    1d70:	03c0e825 	move	sp,s8
+    1d74:	dfbf00b8 	ld	ra,184(sp)
+    1d78:	dfbe00b0 	ld	s8,176(sp)
+    1d7c:	dfbc00a8 	ld	gp,168(sp)
+    1d80:	67bd00c0 	daddiu	sp,sp,192
+    1d84:	d81f0000 	jrc	ra
+
+0000000000001d88 <perfValidTstFunc>:
+__extension__ extern __inline v16i8
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_replicate(signed char scalar)
+{ return __builtin_msa_fill_b(scalar); }
+void perfValidTstFunc()
+{
+    1d88:	67bdff40 	daddiu	sp,sp,-192
+    1d8c:	ffbf00b8 	sd	ra,184(sp)
+    1d90:	ffbe00b0 	sd	s8,176(sp)
+    1d94:	ffbc00a8 	sd	gp,168(sp)
+    1d98:	03a0f025 	move	s8,sp
+    1d9c:	3c1c0002 	lui	gp,0x2
+    1da0:	0399e02d 	daddu	gp,gp,t9
+    1da4:	679cce58 	daddiu	gp,gp,-12712
+	clock_t start, end;
+	float f32Data[4];
+	int i = 0;
+    1da8:	afc00000 	sw	zero,0(s8)
+	
+	printf("\n =================perfCompareTstFunc=====================================================================\n");
+    1dac:	df828050 	ld	v0,-32688(gp)
+    1db0:	64445470 	daddiu	a0,v0,21616
+    1db4:	df828120 	ld	v0,-32480(gp)
+    1db8:	0040c825 	move	t9,v0
+    1dbc:	f8190000 	jalrc	t9
+	printf("\n ==assign VS __builtin_msa_fill_b+__builtin_msa_dotp_u_h==========================\n");
+    1dc0:	df828050 	ld	v0,-32688(gp)
+    1dc4:	644454e0 	daddiu	a0,v0,21728
+    1dc8:	df828120 	ld	v0,-32480(gp)
+    1dcc:	0040c825 	move	t9,v0
+    1dd0:	f8190000 	jalrc	t9
+	start = clock();
+    1dd4:	df828118 	ld	v0,-32488(gp)
+    1dd8:	0040c825 	move	t9,v0
+    1ddc:	f8190000 	jalrc	t9
+    1de0:	ffc20008 	sd	v0,8(s8)
+	msa_paddlq_u8_tt(g_v16u8Data);
+    1de4:	df828038 	ld	v0,-32712(gp)
+    1de8:	64426ac0 	daddiu	v0,v0,27328
+    1dec:	78001020 	ld.b	$w0,0(v0)
+    1df0:	7890f024 	st.b	$w0,144(s8)
+  v8u16 result = {(uint16_t)(__a[0] + __a[1]), (uint16_t)(__a[2] + __a[3]), (uint16_t)(__a[4] + __a[5]), (uint16_t)(__a[6] + __a[7]),
+    1df4:	93c20090 	lbu	v0,144(s8)
+    1df8:	3043ffff 	andi	v1,v0,0xffff
+    1dfc:	93c20091 	lbu	v0,145(s8)
+    1e00:	3042ffff 	andi	v0,v0,0xffff
+    1e04:	00621021 	addu	v0,v1,v0
+    1e08:	304affff 	andi	a6,v0,0xffff
+    1e0c:	93c20092 	lbu	v0,146(s8)
+    1e10:	3043ffff 	andi	v1,v0,0xffff
+    1e14:	93c20093 	lbu	v0,147(s8)
+    1e18:	3042ffff 	andi	v0,v0,0xffff
+    1e1c:	00621021 	addu	v0,v1,v0
+    1e20:	3049ffff 	andi	a5,v0,0xffff
+    1e24:	93c20094 	lbu	v0,148(s8)
+    1e28:	3043ffff 	andi	v1,v0,0xffff
+    1e2c:	93c20095 	lbu	v0,149(s8)
+    1e30:	3042ffff 	andi	v0,v0,0xffff
+    1e34:	00621021 	addu	v0,v1,v0
+    1e38:	3048ffff 	andi	a4,v0,0xffff
+    1e3c:	93c20096 	lbu	v0,150(s8)
+    1e40:	3043ffff 	andi	v1,v0,0xffff
+    1e44:	93c20097 	lbu	v0,151(s8)
+    1e48:	3042ffff 	andi	v0,v0,0xffff
+    1e4c:	00621021 	addu	v0,v1,v0
+    1e50:	3047ffff 	andi	a3,v0,0xffff
+                  (uint16_t)(__a[8] + __a[9]), (uint16_t)(__a[10] + __a[11]), (uint16_t)(__a[12] + __a[13]), (uint16_t)(__a[14] + __a[15])};
+    1e54:	93c20098 	lbu	v0,152(s8)
+    1e58:	3043ffff 	andi	v1,v0,0xffff
+    1e5c:	93c20099 	lbu	v0,153(s8)
+    1e60:	3042ffff 	andi	v0,v0,0xffff
+    1e64:	00621021 	addu	v0,v1,v0
+    1e68:	3046ffff 	andi	a2,v0,0xffff
+    1e6c:	93c2009a 	lbu	v0,154(s8)
+    1e70:	3043ffff 	andi	v1,v0,0xffff
+    1e74:	93c2009b 	lbu	v0,155(s8)
+    1e78:	3042ffff 	andi	v0,v0,0xffff
+    1e7c:	00621021 	addu	v0,v1,v0
+    1e80:	3045ffff 	andi	a1,v0,0xffff
+    1e84:	93c2009c 	lbu	v0,156(s8)
+    1e88:	3043ffff 	andi	v1,v0,0xffff
+    1e8c:	93c2009d 	lbu	v0,157(s8)
+    1e90:	3042ffff 	andi	v0,v0,0xffff
+    1e94:	00621021 	addu	v0,v1,v0
+    1e98:	3044ffff 	andi	a0,v0,0xffff
+    1e9c:	93c2009e 	lbu	v0,158(s8)
+    1ea0:	3043ffff 	andi	v1,v0,0xffff
+    1ea4:	93c2009f 	lbu	v0,159(s8)
+    1ea8:	3042ffff 	andi	v0,v0,0xffff
+    1eac:	00621021 	addu	v0,v1,v0
+    1eb0:	3042ffff 	andi	v0,v0,0xffff
+  v8u16 result = {(uint16_t)(__a[0] + __a[1]), (uint16_t)(__a[2] + __a[3]), (uint16_t)(__a[4] + __a[5]), (uint16_t)(__a[6] + __a[7]),
+    1eb4:	7b200007 	ldi.h	$w0,0
+    1eb8:	01401825 	move	v1,a6
+    1ebc:	79201819 	insert.h	$w0[0],v1
+    1ec0:	01201825 	move	v1,a5
+    1ec4:	79211819 	insert.h	$w0[1],v1
+    1ec8:	01001825 	move	v1,a4
+    1ecc:	79221819 	insert.h	$w0[2],v1
+    1ed0:	00e01825 	move	v1,a3
+    1ed4:	79231819 	insert.h	$w0[3],v1
+    1ed8:	00c01825 	move	v1,a2
+    1edc:	79241819 	insert.h	$w0[4],v1
+    1ee0:	00a01825 	move	v1,a1
+    1ee4:	79251819 	insert.h	$w0[5],v1
+    1ee8:	00801825 	move	v1,a0
+    1eec:	79261819 	insert.h	$w0[6],v1
+    1ef0:	79271019 	insert.h	$w0[7],v0
+    1ef4:	7838f025 	st.h	$w0,112(s8)
+	end = clock();
+    1ef8:	df828118 	ld	v0,-32488(gp)
+    1efc:	0040c825 	move	t9,v0
+    1f00:	f8190000 	jalrc	t9
+    1f04:	ffc20010 	sd	v0,16(s8)
+	printf("Running msa_paddlq_u8_tt(g_v16u8Data), escapedTimeUs=%d\n", (end-start));
+    1f08:	dfc30010 	ld	v1,16(s8)
+    1f0c:	dfc20008 	ld	v0,8(s8)
+    1f10:	0062102f 	dsubu	v0,v1,v0
+    1f14:	00402825 	move	a1,v0
+    1f18:	df828050 	ld	v0,-32688(gp)
+    1f1c:	64445538 	daddiu	a0,v0,21816
+    1f20:	df828128 	ld	v0,-32472(gp)
+    1f24:	0040c825 	move	t9,v0
+    1f28:	f8190000 	jalrc	t9
+	
+	start = clock();
+    1f2c:	df828118 	ld	v0,-32488(gp)
+    1f30:	0040c825 	move	t9,v0
+    1f34:	f8190000 	jalrc	t9
+    1f38:	ffc20008 	sd	v0,8(s8)
+	msa_paddlq_u8(g_v16u8Data);
+    1f3c:	df828038 	ld	v0,-32712(gp)
+    1f40:	64426ac0 	daddiu	v0,v0,27328
+    1f44:	78001020 	ld.b	$w0,0(v0)
+    1f48:	7850f024 	st.b	$w0,80(s8)
+  v16u8 b = (v16u8)__builtin_msa_fill_b(1);
+    1f4c:	24020001 	li	v0,1
+    1f50:	7b00101e 	fill.b	$w0,v0
+    1f54:	7860f024 	st.b	$w0,96(s8)
+	end = clock();
+    1f58:	df828118 	ld	v0,-32488(gp)
+    1f5c:	0040c825 	move	t9,v0
+    1f60:	f8190000 	jalrc	t9
+    1f64:	ffc20010 	sd	v0,16(s8)
+	printf("Running msa_paddlq_u8(g_v16u8Data), escapedTimeUs=%d\n", (end-start));
+    1f68:	dfc30010 	ld	v1,16(s8)
+    1f6c:	dfc20008 	ld	v0,8(s8)
+    1f70:	0062102f 	dsubu	v0,v1,v0
+    1f74:	00402825 	move	a1,v0
+    1f78:	df828050 	ld	v0,-32688(gp)
+    1f7c:	64445578 	daddiu	a0,v0,21880
+    1f80:	df828128 	ld	v0,-32472(gp)
+    1f84:	0040c825 	move	t9,v0
+    1f88:	f8190000 	jalrc	t9
+	
+	printf("\n ==assign VS __builtin_msa_fill_b=======================================\n");
+    1f8c:	df828050 	ld	v0,-32688(gp)
+    1f90:	644455b0 	daddiu	a0,v0,21936
+    1f94:	df828120 	ld	v0,-32480(gp)
+    1f98:	0040c825 	move	t9,v0
+    1f9c:	f8190000 	jalrc	t9
+	v16i8 u16i8data;
+	start = clock();
+    1fa0:	df828118 	ld	v0,-32488(gp)
+    1fa4:	0040c825 	move	t9,v0
+    1fa8:	f8190000 	jalrc	t9
+    1fac:	ffc20008 	sd	v0,8(s8)
+    1fb0:	2402fffe 	li	v0,-2
+    1fb4:	a3c20031 	sb	v0,49(s8)
+  v16i8 v ={ scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar, scalar };
+    1fb8:	93c20031 	lbu	v0,49(s8)
+    1fbc:	7b00101e 	fill.b	$w0,v0
+    1fc0:	7840f024 	st.b	$w0,64(s8)
+  return v;
+    1fc4:	7840f020 	ld.b	$w0,64(s8)
+	u16i8data = msa_replicate_tt(-2);
+    1fc8:	7820f024 	st.b	$w0,32(s8)
+	end = clock();
+    1fcc:	df828118 	ld	v0,-32488(gp)
+    1fd0:	0040c825 	move	t9,v0
+    1fd4:	f8190000 	jalrc	t9
+    1fd8:	ffc20010 	sd	v0,16(s8)
+	printf("Running u16i8data = msa_replicate_tt(-2), escapedTimeUs=%d\n", (end-start));
+    1fdc:	dfc30010 	ld	v1,16(s8)
+    1fe0:	dfc20008 	ld	v0,8(s8)
+    1fe4:	0062102f 	dsubu	v0,v1,v0
+    1fe8:	00402825 	move	a1,v0
+    1fec:	df828050 	ld	v0,-32688(gp)
+    1ff0:	64445600 	daddiu	a0,v0,22016
+    1ff4:	df828128 	ld	v0,-32472(gp)
+    1ff8:	0040c825 	move	t9,v0
+    1ffc:	f8190000 	jalrc	t9
+	
+	start = clock();
+    2000:	df828118 	ld	v0,-32488(gp)
+    2004:	0040c825 	move	t9,v0
+    2008:	f8190000 	jalrc	t9
+    200c:	ffc20008 	sd	v0,8(s8)
+    2010:	2402fffe 	li	v0,-2
+    2014:	a3c20030 	sb	v0,48(s8)
+{ return __builtin_msa_fill_b(scalar); }
+    2018:	83c20030 	lb	v0,48(s8)
+    201c:	7b00101e 	fill.b	$w0,v0
+	u16i8data = msa_replicate(-2);
+    2020:	7820f024 	st.b	$w0,32(s8)
+	end = clock();
+    2024:	df828118 	ld	v0,-32488(gp)
+    2028:	0040c825 	move	t9,v0
+    202c:	f8190000 	jalrc	t9
+    2030:	ffc20010 	sd	v0,16(s8)
+	printf("Running u16i8data = msa_replicate(-2), escapedTimeUs=%d\n", (end-start));
+    2034:	dfc30010 	ld	v1,16(s8)
+    2038:	dfc20008 	ld	v0,8(s8)
+    203c:	0062102f 	dsubu	v0,v1,v0
+    2040:	00402825 	move	a1,v0
+    2044:	df828050 	ld	v0,-32688(gp)
+    2048:	64445640 	daddiu	a0,v0,22080
+    204c:	df828128 	ld	v0,-32472(gp)
+    2050:	0040c825 	move	t9,v0
+    2054:	f8190000 	jalrc	t9
+
+
+  printf("\n ==msa_getq_lane_f32 inline VS define=======================================\n");
+    2058:	df828050 	ld	v0,-32688(gp)
+    205c:	64445680 	daddiu	a0,v0,22144
+    2060:	df828120 	ld	v0,-32480(gp)
+    2064:	0040c825 	move	t9,v0
+    2068:	f8190000 	jalrc	t9
+  printf("input:  g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}\n");
+    206c:	df828050 	ld	v0,-32688(gp)
+    2070:	644456d0 	daddiu	a0,v0,22224
+    2074:	df828120 	ld	v0,-32480(gp)
+    2078:	0040c825 	move	t9,v0
+    207c:	f8190000 	jalrc	t9
+  start = clock();
+    2080:	df828118 	ld	v0,-32488(gp)
+    2084:	0040c825 	move	t9,v0
+    2088:	f8190000 	jalrc	t9
+    208c:	ffc20008 	sd	v0,8(s8)
+  f32Data[0] = msa_getq_lane_f32(g_v4f32Data, 0);
+    2090:	df828038 	ld	v0,-32712(gp)
+    2094:	64426b20 	daddiu	v0,v0,27424
+    2098:	c4400000 	lwc1	$f0,0(v0)
+    209c:	e7c00080 	swc1	$f0,128(s8)
+  f32Data[1] = msa_getq_lane_f32(g_v4f32Data, 1);
+    20a0:	df828038 	ld	v0,-32712(gp)
+    20a4:	64426b20 	daddiu	v0,v0,27424
+    20a8:	c4400004 	lwc1	$f0,4(v0)
+    20ac:	e7c00084 	swc1	$f0,132(s8)
+	end = clock();
+    20b0:	df828118 	ld	v0,-32488(gp)
+    20b4:	0040c825 	move	t9,v0
+    20b8:	f8190000 	jalrc	t9
+    20bc:	ffc20010 	sd	v0,16(s8)
+	printf("Running msa_getq_lane_f32(g_v4f32Data, 0)), escapedTimeUs=%d\n", (end-start));
+    20c0:	dfc30010 	ld	v1,16(s8)
+    20c4:	dfc20008 	ld	v0,8(s8)
+    20c8:	0062102f 	dsubu	v0,v1,v0
+    20cc:	00402825 	move	a1,v0
+    20d0:	df828050 	ld	v0,-32688(gp)
+    20d4:	64445708 	daddiu	a0,v0,22280
+    20d8:	df828128 	ld	v0,-32472(gp)
+    20dc:	0040c825 	move	t9,v0
+    20e0:	f8190000 	jalrc	t9
+  start = clock();
+    20e4:	df828118 	ld	v0,-32488(gp)
+    20e8:	0040c825 	move	t9,v0
+    20ec:	f8190000 	jalrc	t9
+    20f0:	ffc20008 	sd	v0,8(s8)
+  f32Data[2] = ((float)g_v4f32Data[LANE_IMM0_3(2)]);
+    20f4:	df828038 	ld	v0,-32712(gp)
+    20f8:	64426b20 	daddiu	v0,v0,27424
+    20fc:	c4400008 	lwc1	$f0,8(v0)
+    2100:	e7c00088 	swc1	$f0,136(s8)
+  f32Data[3] = ((float)g_v4f32Data[LANE_IMM0_3(3)]);
+    2104:	df828038 	ld	v0,-32712(gp)
+    2108:	64426b20 	daddiu	v0,v0,27424
+    210c:	c440000c 	lwc1	$f0,12(v0)
+    2110:	e7c0008c 	swc1	$f0,140(s8)
+  end = clock();
+    2114:	df828118 	ld	v0,-32488(gp)
+    2118:	0040c825 	move	t9,v0
+    211c:	f8190000 	jalrc	t9
+    2120:	ffc20010 	sd	v0,16(s8)
+  printf("Running ((float)g_v4f32Data[LANE_IMM0_3(2)]), escapedTimeUs=%d\n", (end-start));
+    2124:	dfc30010 	ld	v1,16(s8)
+    2128:	dfc20008 	ld	v0,8(s8)
+    212c:	0062102f 	dsubu	v0,v1,v0
+    2130:	00402825 	move	a1,v0
+    2134:	df828050 	ld	v0,-32688(gp)
+    2138:	64445748 	daddiu	a0,v0,22344
+    213c:	df828128 	ld	v0,-32472(gp)
+    2140:	0040c825 	move	t9,v0
+    2144:	f8190000 	jalrc	t9
+  printf("output: msa_getq_lane_f32(g_v4f32Data, i)={");
+    2148:	df828050 	ld	v0,-32688(gp)
+    214c:	64445788 	daddiu	a0,v0,22408
+    2150:	df828128 	ld	v0,-32472(gp)
+    2154:	0040c825 	move	t9,v0
+    2158:	f8190000 	jalrc	t9
+  for(i=0; i<4; i++) {
+    215c:	afc00000 	sw	zero,0(s8)
+    2160:	c800000e 	bc	219c <.L56>
+
+0000000000002164 <.L57>:
+    printf("%f,  ", f32Data[i]);
+    2164:	8fc20000 	lw	v0,0(s8)
+    2168:	000210b8 	dsll	v0,v0,0x2
+    216c:	03c2102d 	daddu	v0,s8,v0
+    2170:	c4400080 	lwc1	$f0,128(v0)
+    2174:	46000021 	cvt.d.s	$f0,$f0
+    2178:	44250000 	dmfc1	a1,$f0
+    217c:	df828050 	ld	v0,-32688(gp)
+    2180:	64444cd8 	daddiu	a0,v0,19672
+    2184:	df828128 	ld	v0,-32472(gp)
+    2188:	0040c825 	move	t9,v0
+    218c:	f8190000 	jalrc	t9
+  for(i=0; i<4; i++) {
+    2190:	8fc20000 	lw	v0,0(s8)
+    2194:	24420001 	addiu	v0,v0,1
+    2198:	afc20000 	sw	v0,0(s8)
+
+000000000000219c <.L56>:
+    219c:	8fc20000 	lw	v0,0(s8)
+    21a0:	24030003 	li	v1,3
+    21a4:	5862ffef 	bgec	v1,v0,2164 <.L57>
+  }
+  printf("\b\b\b}\n\n");
+    21a8:	df828050 	ld	v0,-32688(gp)
+    21ac:	64444c70 	daddiu	a0,v0,19568
+    21b0:	df828120 	ld	v0,-32480(gp)
+    21b4:	0040c825 	move	t9,v0
+    21b8:	f8190000 	jalrc	t9
+}
+    21bc:	00000000 	nop
+    21c0:	03c0e825 	move	sp,s8
+    21c4:	dfbf00b8 	ld	ra,184(sp)
+    21c8:	dfbe00b0 	ld	s8,176(sp)
+    21cc:	dfbc00a8 	ld	gp,168(sp)
+    21d0:	67bd00c0 	daddiu	sp,sp,192
+    21d4:	d81f0000 	jrc	ra
+
+00000000000021d8 <addvSubvTstFunc>:
+
+void addvSubvTstFunc()
+{
+    21d8:	67bdff90 	daddiu	sp,sp,-112
+    21dc:	ffbf0068 	sd	ra,104(sp)
+    21e0:	ffbe0060 	sd	s8,96(sp)
+    21e4:	ffbc0058 	sd	gp,88(sp)
+    21e8:	03a0f025 	move	s8,sp
+    21ec:	3c1c0002 	lui	gp,0x2
+    21f0:	0399e02d 	daddu	gp,gp,t9
+    21f4:	679cca08 	daddiu	gp,gp,-13816
+	short i=0;
+    21f8:	a7c00000 	sh	zero,0(s8)
+	v16u8 b = (v16u8)__builtin_msa_fill_b(128);
+    21fc:	2402ff80 	li	v0,-128
+    2200:	7b00101e 	fill.b	$w0,v0
+    2204:	7810f024 	st.b	$w0,16(s8)
+
+	////v16i8 __builtin_msa_addv_b (v16i8, v16i8)
+	////test v16u8
+	printf("\n =================addvSubvTstFunc=====================================================================\n");
+    2208:	df828050 	ld	v0,-32688(gp)
+    220c:	644457b8 	daddiu	a0,v0,22456
+    2210:	df828120 	ld	v0,-32480(gp)
+    2214:	0040c825 	move	t9,v0
+    2218:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, b = (v16u8)__builtin_msa_fill_b(128)\n");
+    221c:	df828050 	ld	v0,-32688(gp)
+    2220:	64445820 	daddiu	a0,v0,22560
+    2224:	df828120 	ld	v0,-32480(gp)
+    2228:	0040c825 	move	t9,v0
+    222c:	f8190000 	jalrc	t9
+	printf("output: (v16u8)__builtin_msa_addv_b(g_v16u8Data, b)={");
+    2230:	df828050 	ld	v0,-32688(gp)
+    2234:	64445898 	daddiu	a0,v0,22680
+    2238:	df828128 	ld	v0,-32472(gp)
+    223c:	0040c825 	move	t9,v0
+    2240:	f8190000 	jalrc	t9
+	v16u8 c = (v16u8)__builtin_msa_addv_b((v16i8)g_v16u8Data, (v16i8)b);
+    2244:	df828038 	ld	v0,-32712(gp)
+    2248:	64426ac0 	daddiu	v0,v0,27328
+    224c:	78001020 	ld.b	$w0,0(v0)
+    2250:	78be0059 	move.v	$w1,$w0
+    2254:	7810f020 	ld.b	$w0,16(s8)
+    2258:	7800080e 	addv.b	$w0,$w1,$w0
+    225c:	7820f024 	st.b	$w0,32(s8)
+	for(i=0; i<16; i++) {
+    2260:	a7c00000 	sh	zero,0(s8)
+    2264:	c800000e 	bc	22a0 <.L59>
+
+0000000000002268 <.L60>:
+		printf("%d,  ", c[i]);
+    2268:	87c20000 	lh	v0,0(s8)
+    226c:	03c2102d 	daddu	v0,s8,v0
+    2270:	90420020 	lbu	v0,32(v0)
+    2274:	00402825 	move	a1,v0
+    2278:	df828050 	ld	v0,-32688(gp)
+    227c:	64444c68 	daddiu	a0,v0,19560
+    2280:	df828128 	ld	v0,-32472(gp)
+    2284:	0040c825 	move	t9,v0
+    2288:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    228c:	87c20000 	lh	v0,0(s8)
+    2290:	3042ffff 	andi	v0,v0,0xffff
+    2294:	24420001 	addiu	v0,v0,1
+    2298:	3042ffff 	andi	v0,v0,0xffff
+    229c:	a7c20000 	sh	v0,0(s8)
+
+00000000000022a0 <.L59>:
+    22a0:	87c20000 	lh	v0,0(s8)
+    22a4:	2403000f 	li	v1,15
+    22a8:	5862ffef 	bgec	v1,v0,2268 <.L60>
+	}
+	printf("\b\b\b}\n\n");
+    22ac:	df828050 	ld	v0,-32688(gp)
+    22b0:	64444c70 	daddiu	a0,v0,19568
+    22b4:	df828120 	ld	v0,-32480(gp)
+    22b8:	0040c825 	move	t9,v0
+    22bc:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, b = (v16u8)__builtin_msa_fill_b(128)\n");
+    22c0:	df828050 	ld	v0,-32688(gp)
+    22c4:	64445820 	daddiu	a0,v0,22560
+    22c8:	df828120 	ld	v0,-32480(gp)
+    22cc:	0040c825 	move	t9,v0
+    22d0:	f8190000 	jalrc	t9
+	printf("output: (v16u8)__builtin_msa_subv_b(g_v16u8Data, b)={");
+    22d4:	df828050 	ld	v0,-32688(gp)
+    22d8:	644458d0 	daddiu	a0,v0,22736
+    22dc:	df828128 	ld	v0,-32472(gp)
+    22e0:	0040c825 	move	t9,v0
+    22e4:	f8190000 	jalrc	t9
+	v16u8 cc = (v16u8)__builtin_msa_subv_b((v16i8)g_v16u8Data, (v16i8)b);
+    22e8:	df828038 	ld	v0,-32712(gp)
+    22ec:	64426ac0 	daddiu	v0,v0,27328
+    22f0:	78001020 	ld.b	$w0,0(v0)
+    22f4:	78be0059 	move.v	$w1,$w0
+    22f8:	7810f020 	ld.b	$w0,16(s8)
+    22fc:	7880080e 	subv.b	$w0,$w1,$w0
+    2300:	7830f024 	st.b	$w0,48(s8)
+	for(i=0; i<16; i++) {
+    2304:	a7c00000 	sh	zero,0(s8)
+    2308:	c800000e 	bc	2344 <.L61>
+
+000000000000230c <.L62>:
+		printf("%d,  ", cc[i]);
+    230c:	87c20000 	lh	v0,0(s8)
+    2310:	03c2102d 	daddu	v0,s8,v0
+    2314:	90420030 	lbu	v0,48(v0)
+    2318:	00402825 	move	a1,v0
+    231c:	df828050 	ld	v0,-32688(gp)
+    2320:	64444c68 	daddiu	a0,v0,19560
+    2324:	df828128 	ld	v0,-32472(gp)
+    2328:	0040c825 	move	t9,v0
+    232c:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2330:	87c20000 	lh	v0,0(s8)
+    2334:	3042ffff 	andi	v0,v0,0xffff
+    2338:	24420001 	addiu	v0,v0,1
+    233c:	3042ffff 	andi	v0,v0,0xffff
+    2340:	a7c20000 	sh	v0,0(s8)
+
+0000000000002344 <.L61>:
+    2344:	87c20000 	lh	v0,0(s8)
+    2348:	2403000f 	li	v1,15
+    234c:	5862ffef 	bgec	v1,v0,230c <.L62>
+	}
+	printf("\b\b\b}\n");
+    2350:	df828050 	ld	v0,-32688(gp)
+    2354:	64445908 	daddiu	a0,v0,22792
+    2358:	df828120 	ld	v0,-32480(gp)
+    235c:	0040c825 	move	t9,v0
+    2360:	f8190000 	jalrc	t9
+	printf("output: (v16u8)__builtin_msa_subv_b(b,g_v16u8Data)={");
+    2364:	df828050 	ld	v0,-32688(gp)
+    2368:	64445910 	daddiu	a0,v0,22800
+    236c:	df828128 	ld	v0,-32472(gp)
+    2370:	0040c825 	move	t9,v0
+    2374:	f8190000 	jalrc	t9
+	cc = (v16u8)__builtin_msa_subv_b((v16i8)b, (v16i8)g_v16u8Data);
+    2378:	7810f020 	ld.b	$w0,16(s8)
+    237c:	df828038 	ld	v0,-32712(gp)
+    2380:	64426ac0 	daddiu	v0,v0,27328
+    2384:	78001060 	ld.b	$w1,0(v0)
+    2388:	7881000e 	subv.b	$w0,$w0,$w1
+    238c:	7830f024 	st.b	$w0,48(s8)
+	for(i=0; i<16; i++) {
+    2390:	a7c00000 	sh	zero,0(s8)
+    2394:	c800000e 	bc	23d0 <.L63>
+
+0000000000002398 <.L64>:
+		printf("%d,  ", cc[i]);
+    2398:	87c20000 	lh	v0,0(s8)
+    239c:	03c2102d 	daddu	v0,s8,v0
+    23a0:	90420030 	lbu	v0,48(v0)
+    23a4:	00402825 	move	a1,v0
+    23a8:	df828050 	ld	v0,-32688(gp)
+    23ac:	64444c68 	daddiu	a0,v0,19560
+    23b0:	df828128 	ld	v0,-32472(gp)
+    23b4:	0040c825 	move	t9,v0
+    23b8:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    23bc:	87c20000 	lh	v0,0(s8)
+    23c0:	3042ffff 	andi	v0,v0,0xffff
+    23c4:	24420001 	addiu	v0,v0,1
+    23c8:	3042ffff 	andi	v0,v0,0xffff
+    23cc:	a7c20000 	sh	v0,0(s8)
+
+00000000000023d0 <.L63>:
+    23d0:	87c20000 	lh	v0,0(s8)
+    23d4:	2403000f 	li	v1,15
+    23d8:	5862ffef 	bgec	v1,v0,2398 <.L64>
+	}
+	printf("\b\b\b}\n");
+    23dc:	df828050 	ld	v0,-32688(gp)
+    23e0:	64445908 	daddiu	a0,v0,22792
+    23e4:	df828120 	ld	v0,-32480(gp)
+    23e8:	0040c825 	move	t9,v0
+    23ec:	f8190000 	jalrc	t9
+	printf("output: (v16i8)__builtin_msa_subv_b(b,g_v16u8Data)={");
+    23f0:	df828050 	ld	v0,-32688(gp)
+    23f4:	64445948 	daddiu	a0,v0,22856
+    23f8:	df828128 	ld	v0,-32472(gp)
+    23fc:	0040c825 	move	t9,v0
+    2400:	f8190000 	jalrc	t9
+	v16i8 ccc = __builtin_msa_subv_b((v16i8)b, (v16i8)g_v16u8Data);
+    2404:	7810f020 	ld.b	$w0,16(s8)
+    2408:	df828038 	ld	v0,-32712(gp)
+    240c:	64426ac0 	daddiu	v0,v0,27328
+    2410:	78001060 	ld.b	$w1,0(v0)
+    2414:	7881000e 	subv.b	$w0,$w0,$w1
+    2418:	7840f024 	st.b	$w0,64(s8)
+	for(i=0; i<16; i++) {
+    241c:	a7c00000 	sh	zero,0(s8)
+    2420:	c800000e 	bc	245c <.L65>
+
+0000000000002424 <.L66>:
+		printf("%d,  ", ccc[i]);
+    2424:	87c20000 	lh	v0,0(s8)
+    2428:	03c2102d 	daddu	v0,s8,v0
+    242c:	80420040 	lb	v0,64(v0)
+    2430:	00402825 	move	a1,v0
+    2434:	df828050 	ld	v0,-32688(gp)
+    2438:	64444c68 	daddiu	a0,v0,19560
+    243c:	df828128 	ld	v0,-32472(gp)
+    2440:	0040c825 	move	t9,v0
+    2444:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2448:	87c20000 	lh	v0,0(s8)
+    244c:	3042ffff 	andi	v0,v0,0xffff
+    2450:	24420001 	addiu	v0,v0,1
+    2454:	3042ffff 	andi	v0,v0,0xffff
+    2458:	a7c20000 	sh	v0,0(s8)
+
+000000000000245c <.L65>:
+    245c:	87c20000 	lh	v0,0(s8)
+    2460:	2403000f 	li	v1,15
+    2464:	5862ffef 	bgec	v1,v0,2424 <.L66>
+	}
+	printf("\b\b\b}\n\n");
+    2468:	df828050 	ld	v0,-32688(gp)
+    246c:	64444c70 	daddiu	a0,v0,19568
+    2470:	df828120 	ld	v0,-32480(gp)
+    2474:	0040c825 	move	t9,v0
+    2478:	f8190000 	jalrc	t9
+}
+    247c:	00000000 	nop
+    2480:	03c0e825 	move	sp,s8
+    2484:	dfbf0068 	ld	ra,104(sp)
+    2488:	dfbe0060 	ld	s8,96(sp)
+    248c:	dfbc0058 	ld	gp,88(sp)
+    2490:	67bd0070 	daddiu	sp,sp,112
+    2494:	d81f0000 	jrc	ra
+
+0000000000002498 <longMulTstFunc>:
+
+void longMulTstFunc()
+{
+    2498:	67bdff70 	daddiu	sp,sp,-144
+    249c:	ffbf0088 	sd	ra,136(sp)
+    24a0:	ffbe0080 	sd	s8,128(sp)
+    24a4:	ffbc0078 	sd	gp,120(sp)
+    24a8:	03a0f025 	move	s8,sp
+    24ac:	3c1c0002 	lui	gp,0x2
+    24b0:	0399e02d 	daddu	gp,gp,t9
+    24b4:	679cc748 	daddiu	gp,gp,-14520
+	short i=0;
+    24b8:	a7c00000 	sh	zero,0(s8)
+	v8i8 b = {-2, -2, -2, -2, -2, -2, -2, -2};
+    24bc:	3c02ff7f 	lui	v0,0xff7f
+    24c0:	34427f7f 	ori	v0,v0,0x7f7f
+    24c4:	00021438 	dsll	v0,v0,0x10
+    24c8:	34427f7f 	ori	v0,v0,0x7f7f
+    24cc:	00021478 	dsll	v0,v0,0x11
+    24d0:	3442fefe 	ori	v0,v0,0xfefe
+    24d4:	ffc20008 	sd	v0,8(s8)
+
+	////v8i16 __builtin_msa_mulv_h (v8i16, v8i16)
+	////test v8u16 < v8u8 * v8u8
+	printf("\n =================longMulTstFunc=====================================================================\n");
+    24d8:	df828050 	ld	v0,-32688(gp)
+    24dc:	64445980 	daddiu	a0,v0,22912
+    24e0:	df828120 	ld	v0,-32480(gp)
+    24e4:	0040c825 	move	t9,v0
+    24e8:	f8190000 	jalrc	t9
+	printf("input: 	g_v8u8Data1 = {128, 127, 126, 125, 124, 123, 122, 121},g_v8u8Data2 = {255, 254, 253, 252, 251, 250, 249, 248}\n");
+    24ec:	df828050 	ld	v0,-32688(gp)
+    24f0:	644459e8 	daddiu	a0,v0,23016
+    24f4:	df828120 	ld	v0,-32480(gp)
+    24f8:	0040c825 	move	t9,v0
+    24fc:	f8190000 	jalrc	t9
+	printf("output: msa_mull_u8(g_v8u8Data1, g_v8u8Data1)={");
+    2500:	df828050 	ld	v0,-32688(gp)
+    2504:	64445a60 	daddiu	a0,v0,23136
+    2508:	df828128 	ld	v0,-32472(gp)
+    250c:	0040c825 	move	t9,v0
+    2510:	f8190000 	jalrc	t9
+	v8u16 c = msa_mull_u8(g_v8u8Data1, g_v8u8Data1);
+    2514:	df828038 	ld	v0,-32712(gp)
+    2518:	dc436b90 	ld	v1,27536(v0)
+    251c:	df828038 	ld	v0,-32712(gp)
+    2520:	dc426b90 	ld	v0,27536(v0)
+    2524:	ffc30068 	sd	v1,104(s8)
+    2528:	ffc20060 	sd	v0,96(s8)
+           : [result]"=f"(result)
+           : [__a]"f"(__a), [__b]"f"(__b)
+           : /* No clobbers */);
+  return result;
+#else
+  return (v8u16)__builtin_msa_mulv_h((v8i16)V8U8_2_V8U16(__a), (v8i16)V8U8_2_V8U16(__b));
+    252c:	93c20068 	lbu	v0,104(s8)
+    2530:	7c024e20 	seh	a5,v0
+    2534:	93c20069 	lbu	v0,105(s8)
+    2538:	7c024620 	seh	a4,v0
+    253c:	93c2006a 	lbu	v0,106(s8)
+    2540:	7c023e20 	seh	a3,v0
+    2544:	93c2006b 	lbu	v0,107(s8)
+    2548:	7c023620 	seh	a2,v0
+    254c:	93c2006c 	lbu	v0,108(s8)
+    2550:	7c022e20 	seh	a1,v0
+    2554:	93c2006d 	lbu	v0,109(s8)
+    2558:	7c022620 	seh	a0,v0
+    255c:	93c2006e 	lbu	v0,110(s8)
+    2560:	7c021e20 	seh	v1,v0
+    2564:	93c2006f 	lbu	v0,111(s8)
+    2568:	7c021620 	seh	v0,v0
+    256c:	7b200007 	ldi.h	$w0,0
+    2570:	79204819 	insert.h	$w0[0],a5
+    2574:	79214019 	insert.h	$w0[1],a4
+    2578:	79223819 	insert.h	$w0[2],a3
+    257c:	79233019 	insert.h	$w0[3],a2
+    2580:	79242819 	insert.h	$w0[4],a1
+    2584:	79252019 	insert.h	$w0[5],a0
+    2588:	79261819 	insert.h	$w0[6],v1
+    258c:	79271019 	insert.h	$w0[7],v0
+    2590:	78be0059 	move.v	$w1,$w0
+    2594:	93c20060 	lbu	v0,96(s8)
+    2598:	7c024e20 	seh	a5,v0
+    259c:	93c20061 	lbu	v0,97(s8)
+    25a0:	7c024620 	seh	a4,v0
+    25a4:	93c20062 	lbu	v0,98(s8)
+    25a8:	7c023e20 	seh	a3,v0
+    25ac:	93c20063 	lbu	v0,99(s8)
+    25b0:	7c023620 	seh	a2,v0
+    25b4:	93c20064 	lbu	v0,100(s8)
+    25b8:	7c022e20 	seh	a1,v0
+    25bc:	93c20065 	lbu	v0,101(s8)
+    25c0:	7c022620 	seh	a0,v0
+    25c4:	93c20066 	lbu	v0,102(s8)
+    25c8:	7c021e20 	seh	v1,v0
+    25cc:	93c20067 	lbu	v0,103(s8)
+    25d0:	7c021620 	seh	v0,v0
+    25d4:	7b200007 	ldi.h	$w0,0
+    25d8:	79204819 	insert.h	$w0[0],a5
+    25dc:	79214019 	insert.h	$w0[1],a4
+    25e0:	79223819 	insert.h	$w0[2],a3
+    25e4:	79233019 	insert.h	$w0[3],a2
+    25e8:	79242819 	insert.h	$w0[4],a1
+    25ec:	79252019 	insert.h	$w0[5],a0
+    25f0:	79261819 	insert.h	$w0[6],v1
+    25f4:	79271019 	insert.h	$w0[7],v0
+    25f8:	78200812 	mulv.h	$w0,$w1,$w0
+    25fc:	7808f025 	st.h	$w0,16(s8)
+	for(i=0; i<8; i++) {
+    2600:	a7c00000 	sh	zero,0(s8)
+    2604:	c800000f 	bc	2644 <.L69>
+
+0000000000002608 <.L70>:
+		printf("%d,  ", c[i]);
+    2608:	87c20000 	lh	v0,0(s8)
+    260c:	00021078 	dsll	v0,v0,0x1
+    2610:	03c2102d 	daddu	v0,s8,v0
+    2614:	94420010 	lhu	v0,16(v0)
+    2618:	00402825 	move	a1,v0
+    261c:	df828050 	ld	v0,-32688(gp)
+    2620:	64444c68 	daddiu	a0,v0,19560
+    2624:	df828128 	ld	v0,-32472(gp)
+    2628:	0040c825 	move	t9,v0
+    262c:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    2630:	87c20000 	lh	v0,0(s8)
+    2634:	3042ffff 	andi	v0,v0,0xffff
+    2638:	24420001 	addiu	v0,v0,1
+    263c:	3042ffff 	andi	v0,v0,0xffff
+    2640:	a7c20000 	sh	v0,0(s8)
+
+0000000000002644 <.L69>:
+    2644:	87c20000 	lh	v0,0(s8)
+    2648:	24030007 	li	v1,7
+    264c:	5862ffee 	bgec	v1,v0,2608 <.L70>
+	}
+	printf("\b\b\b}\n");
+    2650:	df828050 	ld	v0,-32688(gp)
+    2654:	64445908 	daddiu	a0,v0,22792
+    2658:	df828120 	ld	v0,-32480(gp)
+    265c:	0040c825 	move	t9,v0
+    2660:	f8190000 	jalrc	t9
+	printf("output: msa_mull_u8(g_v8u8Data2, g_v8u8Data2)={");
+    2664:	df828050 	ld	v0,-32688(gp)
+    2668:	64445a90 	daddiu	a0,v0,23184
+    266c:	df828128 	ld	v0,-32472(gp)
+    2670:	0040c825 	move	t9,v0
+    2674:	f8190000 	jalrc	t9
+	c = msa_mull_u8(g_v8u8Data2, g_v8u8Data2);
+    2678:	df828038 	ld	v0,-32712(gp)
+    267c:	dc436b98 	ld	v1,27544(v0)
+    2680:	df828038 	ld	v0,-32712(gp)
+    2684:	dc426b98 	ld	v0,27544(v0)
+    2688:	ffc30058 	sd	v1,88(s8)
+    268c:	ffc20050 	sd	v0,80(s8)
+    2690:	93c20058 	lbu	v0,88(s8)
+    2694:	7c024e20 	seh	a5,v0
+    2698:	93c20059 	lbu	v0,89(s8)
+    269c:	7c024620 	seh	a4,v0
+    26a0:	93c2005a 	lbu	v0,90(s8)
+    26a4:	7c023e20 	seh	a3,v0
+    26a8:	93c2005b 	lbu	v0,91(s8)
+    26ac:	7c023620 	seh	a2,v0
+    26b0:	93c2005c 	lbu	v0,92(s8)
+    26b4:	7c022e20 	seh	a1,v0
+    26b8:	93c2005d 	lbu	v0,93(s8)
+    26bc:	7c022620 	seh	a0,v0
+    26c0:	93c2005e 	lbu	v0,94(s8)
+    26c4:	7c021e20 	seh	v1,v0
+    26c8:	93c2005f 	lbu	v0,95(s8)
+    26cc:	7c021620 	seh	v0,v0
+    26d0:	7b200007 	ldi.h	$w0,0
+    26d4:	79204819 	insert.h	$w0[0],a5
+    26d8:	79214019 	insert.h	$w0[1],a4
+    26dc:	79223819 	insert.h	$w0[2],a3
+    26e0:	79233019 	insert.h	$w0[3],a2
+    26e4:	79242819 	insert.h	$w0[4],a1
+    26e8:	79252019 	insert.h	$w0[5],a0
+    26ec:	79261819 	insert.h	$w0[6],v1
+    26f0:	79271019 	insert.h	$w0[7],v0
+    26f4:	78be0059 	move.v	$w1,$w0
+    26f8:	93c20050 	lbu	v0,80(s8)
+    26fc:	7c024e20 	seh	a5,v0
+    2700:	93c20051 	lbu	v0,81(s8)
+    2704:	7c024620 	seh	a4,v0
+    2708:	93c20052 	lbu	v0,82(s8)
+    270c:	7c023e20 	seh	a3,v0
+    2710:	93c20053 	lbu	v0,83(s8)
+    2714:	7c023620 	seh	a2,v0
+    2718:	93c20054 	lbu	v0,84(s8)
+    271c:	7c022e20 	seh	a1,v0
+    2720:	93c20055 	lbu	v0,85(s8)
+    2724:	7c022620 	seh	a0,v0
+    2728:	93c20056 	lbu	v0,86(s8)
+    272c:	7c021e20 	seh	v1,v0
+    2730:	93c20057 	lbu	v0,87(s8)
+    2734:	7c021620 	seh	v0,v0
+    2738:	7b200007 	ldi.h	$w0,0
+    273c:	79204819 	insert.h	$w0[0],a5
+    2740:	79214019 	insert.h	$w0[1],a4
+    2744:	79223819 	insert.h	$w0[2],a3
+    2748:	79233019 	insert.h	$w0[3],a2
+    274c:	79242819 	insert.h	$w0[4],a1
+    2750:	79252019 	insert.h	$w0[5],a0
+    2754:	79261819 	insert.h	$w0[6],v1
+    2758:	79271019 	insert.h	$w0[7],v0
+    275c:	78200812 	mulv.h	$w0,$w1,$w0
+    2760:	7808f025 	st.h	$w0,16(s8)
+	for(i=0; i<8; i++) {
+    2764:	a7c00000 	sh	zero,0(s8)
+    2768:	c800000f 	bc	27a8 <.L72>
+
+000000000000276c <.L73>:
+		printf("%d,  ", c[i]);
+    276c:	87c20000 	lh	v0,0(s8)
+    2770:	00021078 	dsll	v0,v0,0x1
+    2774:	03c2102d 	daddu	v0,s8,v0
+    2778:	94420010 	lhu	v0,16(v0)
+    277c:	00402825 	move	a1,v0
+    2780:	df828050 	ld	v0,-32688(gp)
+    2784:	64444c68 	daddiu	a0,v0,19560
+    2788:	df828128 	ld	v0,-32472(gp)
+    278c:	0040c825 	move	t9,v0
+    2790:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    2794:	87c20000 	lh	v0,0(s8)
+    2798:	3042ffff 	andi	v0,v0,0xffff
+    279c:	24420001 	addiu	v0,v0,1
+    27a0:	3042ffff 	andi	v0,v0,0xffff
+    27a4:	a7c20000 	sh	v0,0(s8)
+
+00000000000027a8 <.L72>:
+    27a8:	87c20000 	lh	v0,0(s8)
+    27ac:	24030007 	li	v1,7
+    27b0:	5862ffee 	bgec	v1,v0,276c <.L73>
+	}
+	printf("\b\b\b}\n\n");
+    27b4:	df828050 	ld	v0,-32688(gp)
+    27b8:	64444c70 	daddiu	a0,v0,19568
+    27bc:	df828120 	ld	v0,-32480(gp)
+    27c0:	0040c825 	move	t9,v0
+    27c4:	f8190000 	jalrc	t9
+
+	////test v8i16 < v8i8 * v8i8
+	printf("input: 	g_v8i8Data1 = {0, -1, 2, -3, 4, -5, 6, -7},g_v8i8Data2 = {8, -9, 10, -11, 12, -13, 14, -15}, b = __builtin_msa_fill_b(-2)\n");
+    27c8:	df828050 	ld	v0,-32688(gp)
+    27cc:	64445ac0 	daddiu	a0,v0,23232
+    27d0:	df828120 	ld	v0,-32480(gp)
+    27d4:	0040c825 	move	t9,v0
+    27d8:	f8190000 	jalrc	t9
+	printf("output: msa_mull_s8(g_v8i8Data1, g_v8i8Data1)={");
+    27dc:	df828050 	ld	v0,-32688(gp)
+    27e0:	64445b48 	daddiu	a0,v0,23368
+    27e4:	df828128 	ld	v0,-32472(gp)
+    27e8:	0040c825 	move	t9,v0
+    27ec:	f8190000 	jalrc	t9
+	v8i16 cc = msa_mull_s8(g_v8i8Data1, g_v8i8Data1);
+    27f0:	df828038 	ld	v0,-32712(gp)
+    27f4:	dc436b80 	ld	v1,27520(v0)
+    27f8:	df828038 	ld	v0,-32712(gp)
+    27fc:	dc426b80 	ld	v0,27520(v0)
+    2800:	ffc30048 	sd	v1,72(s8)
+    2804:	ffc20040 	sd	v0,64(s8)
+
+__extension__ extern __inline v8i16
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
+msa_mull_s8 (v8i8 __a, v8i8 __b)
+{
+  return __builtin_msa_mulv_h((v8i16)V8I8_2_V8I16(__a), (v8i16)V8I8_2_V8I16(__b));
+    2808:	83c20048 	lb	v0,72(s8)
+    280c:	7c024e20 	seh	a5,v0
+    2810:	83c20049 	lb	v0,73(s8)
+    2814:	7c024620 	seh	a4,v0
+    2818:	83c2004a 	lb	v0,74(s8)
+    281c:	7c023e20 	seh	a3,v0
+    2820:	83c2004b 	lb	v0,75(s8)
+    2824:	7c023620 	seh	a2,v0
+    2828:	83c2004c 	lb	v0,76(s8)
+    282c:	7c022e20 	seh	a1,v0
+    2830:	83c2004d 	lb	v0,77(s8)
+    2834:	7c022620 	seh	a0,v0
+    2838:	83c2004e 	lb	v0,78(s8)
+    283c:	7c021e20 	seh	v1,v0
+    2840:	83c2004f 	lb	v0,79(s8)
+    2844:	7c021620 	seh	v0,v0
+    2848:	7b200007 	ldi.h	$w0,0
+    284c:	79204819 	insert.h	$w0[0],a5
+    2850:	79214019 	insert.h	$w0[1],a4
+    2854:	79223819 	insert.h	$w0[2],a3
+    2858:	79233019 	insert.h	$w0[3],a2
+    285c:	79242819 	insert.h	$w0[4],a1
+    2860:	79252019 	insert.h	$w0[5],a0
+    2864:	79261819 	insert.h	$w0[6],v1
+    2868:	79271019 	insert.h	$w0[7],v0
+    286c:	78be0059 	move.v	$w1,$w0
+    2870:	83c20040 	lb	v0,64(s8)
+    2874:	7c024e20 	seh	a5,v0
+    2878:	83c20041 	lb	v0,65(s8)
+    287c:	7c024620 	seh	a4,v0
+    2880:	83c20042 	lb	v0,66(s8)
+    2884:	7c023e20 	seh	a3,v0
+    2888:	83c20043 	lb	v0,67(s8)
+    288c:	7c023620 	seh	a2,v0
+    2890:	83c20044 	lb	v0,68(s8)
+    2894:	7c022e20 	seh	a1,v0
+    2898:	83c20045 	lb	v0,69(s8)
+    289c:	7c022620 	seh	a0,v0
+    28a0:	83c20046 	lb	v0,70(s8)
+    28a4:	7c021e20 	seh	v1,v0
+    28a8:	83c20047 	lb	v0,71(s8)
+    28ac:	7c021620 	seh	v0,v0
+    28b0:	7b200007 	ldi.h	$w0,0
+    28b4:	79204819 	insert.h	$w0[0],a5
+    28b8:	79214019 	insert.h	$w0[1],a4
+    28bc:	79223819 	insert.h	$w0[2],a3
+    28c0:	79233019 	insert.h	$w0[3],a2
+    28c4:	79242819 	insert.h	$w0[4],a1
+    28c8:	79252019 	insert.h	$w0[5],a0
+    28cc:	79261819 	insert.h	$w0[6],v1
+    28d0:	79271019 	insert.h	$w0[7],v0
+    28d4:	78200812 	mulv.h	$w0,$w1,$w0
+    28d8:	7810f025 	st.h	$w0,32(s8)
+	for(i=0; i<8; i++) {
+    28dc:	a7c00000 	sh	zero,0(s8)
+    28e0:	c800000f 	bc	2920 <.L75>
+
+00000000000028e4 <.L76>:
+		printf("%d,  ", cc[i]);
+    28e4:	87c20000 	lh	v0,0(s8)
+    28e8:	00021078 	dsll	v0,v0,0x1
+    28ec:	03c2102d 	daddu	v0,s8,v0
+    28f0:	84420020 	lh	v0,32(v0)
+    28f4:	00402825 	move	a1,v0
+    28f8:	df828050 	ld	v0,-32688(gp)
+    28fc:	64444c68 	daddiu	a0,v0,19560
+    2900:	df828128 	ld	v0,-32472(gp)
+    2904:	0040c825 	move	t9,v0
+    2908:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    290c:	87c20000 	lh	v0,0(s8)
+    2910:	3042ffff 	andi	v0,v0,0xffff
+    2914:	24420001 	addiu	v0,v0,1
+    2918:	3042ffff 	andi	v0,v0,0xffff
+    291c:	a7c20000 	sh	v0,0(s8)
+
+0000000000002920 <.L75>:
+    2920:	87c20000 	lh	v0,0(s8)
+    2924:	24030007 	li	v1,7
+    2928:	5862ffee 	bgec	v1,v0,28e4 <.L76>
+	}
+	printf("\b\b\b}\n");
+    292c:	df828050 	ld	v0,-32688(gp)
+    2930:	64445908 	daddiu	a0,v0,22792
+    2934:	df828120 	ld	v0,-32480(gp)
+    2938:	0040c825 	move	t9,v0
+    293c:	f8190000 	jalrc	t9
+	printf("output: msa_mull_s8(g_v8i8Data2, b)={");
+    2940:	df828050 	ld	v0,-32688(gp)
+    2944:	64445b78 	daddiu	a0,v0,23416
+    2948:	df828128 	ld	v0,-32472(gp)
+    294c:	0040c825 	move	t9,v0
+    2950:	f8190000 	jalrc	t9
+	cc = msa_mull_s8(g_v8i8Data2, b);
+    2954:	df828038 	ld	v0,-32712(gp)
+    2958:	dc426b88 	ld	v0,27528(v0)
+    295c:	ffc20038 	sd	v0,56(s8)
+    2960:	dfc20008 	ld	v0,8(s8)
+    2964:	ffc20030 	sd	v0,48(s8)
+    2968:	83c20038 	lb	v0,56(s8)
+    296c:	7c024e20 	seh	a5,v0
+    2970:	83c20039 	lb	v0,57(s8)
+    2974:	7c024620 	seh	a4,v0
+    2978:	83c2003a 	lb	v0,58(s8)
+    297c:	7c023e20 	seh	a3,v0
+    2980:	83c2003b 	lb	v0,59(s8)
+    2984:	7c023620 	seh	a2,v0
+    2988:	83c2003c 	lb	v0,60(s8)
+    298c:	7c022e20 	seh	a1,v0
+    2990:	83c2003d 	lb	v0,61(s8)
+    2994:	7c022620 	seh	a0,v0
+    2998:	83c2003e 	lb	v0,62(s8)
+    299c:	7c021e20 	seh	v1,v0
+    29a0:	83c2003f 	lb	v0,63(s8)
+    29a4:	7c021620 	seh	v0,v0
+    29a8:	7b200007 	ldi.h	$w0,0
+    29ac:	79204819 	insert.h	$w0[0],a5
+    29b0:	79214019 	insert.h	$w0[1],a4
+    29b4:	79223819 	insert.h	$w0[2],a3
+    29b8:	79233019 	insert.h	$w0[3],a2
+    29bc:	79242819 	insert.h	$w0[4],a1
+    29c0:	79252019 	insert.h	$w0[5],a0
+    29c4:	79261819 	insert.h	$w0[6],v1
+    29c8:	79271019 	insert.h	$w0[7],v0
+    29cc:	78be0059 	move.v	$w1,$w0
+    29d0:	83c20030 	lb	v0,48(s8)
+    29d4:	7c024e20 	seh	a5,v0
+    29d8:	83c20031 	lb	v0,49(s8)
+    29dc:	7c024620 	seh	a4,v0
+    29e0:	83c20032 	lb	v0,50(s8)
+    29e4:	7c023e20 	seh	a3,v0
+    29e8:	83c20033 	lb	v0,51(s8)
+    29ec:	7c023620 	seh	a2,v0
+    29f0:	83c20034 	lb	v0,52(s8)
+    29f4:	7c022e20 	seh	a1,v0
+    29f8:	83c20035 	lb	v0,53(s8)
+    29fc:	7c022620 	seh	a0,v0
+    2a00:	83c20036 	lb	v0,54(s8)
+    2a04:	7c021e20 	seh	v1,v0
+    2a08:	83c20037 	lb	v0,55(s8)
+    2a0c:	7c021620 	seh	v0,v0
+    2a10:	7b200007 	ldi.h	$w0,0
+    2a14:	79204819 	insert.h	$w0[0],a5
+    2a18:	79214019 	insert.h	$w0[1],a4
+    2a1c:	79223819 	insert.h	$w0[2],a3
+    2a20:	79233019 	insert.h	$w0[3],a2
+    2a24:	79242819 	insert.h	$w0[4],a1
+    2a28:	79252019 	insert.h	$w0[5],a0
+    2a2c:	79261819 	insert.h	$w0[6],v1
+    2a30:	79271019 	insert.h	$w0[7],v0
+    2a34:	78200812 	mulv.h	$w0,$w1,$w0
+    2a38:	7810f025 	st.h	$w0,32(s8)
+	for(i=0; i<8; i++) {
+    2a3c:	a7c00000 	sh	zero,0(s8)
+    2a40:	c800000f 	bc	2a80 <.L78>
+
+0000000000002a44 <.L79>:
+		printf("%d,  ", cc[i]);
+    2a44:	87c20000 	lh	v0,0(s8)
+    2a48:	00021078 	dsll	v0,v0,0x1
+    2a4c:	03c2102d 	daddu	v0,s8,v0
+    2a50:	84420020 	lh	v0,32(v0)
+    2a54:	00402825 	move	a1,v0
+    2a58:	df828050 	ld	v0,-32688(gp)
+    2a5c:	64444c68 	daddiu	a0,v0,19560
+    2a60:	df828128 	ld	v0,-32472(gp)
+    2a64:	0040c825 	move	t9,v0
+    2a68:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    2a6c:	87c20000 	lh	v0,0(s8)
+    2a70:	3042ffff 	andi	v0,v0,0xffff
+    2a74:	24420001 	addiu	v0,v0,1
+    2a78:	3042ffff 	andi	v0,v0,0xffff
+    2a7c:	a7c20000 	sh	v0,0(s8)
+
+0000000000002a80 <.L78>:
+    2a80:	87c20000 	lh	v0,0(s8)
+    2a84:	24030007 	li	v1,7
+    2a88:	5862ffee 	bgec	v1,v0,2a44 <.L79>
+	}
+	printf("\b\b\b}\n\n");
+    2a8c:	df828050 	ld	v0,-32688(gp)
+    2a90:	64444c70 	daddiu	a0,v0,19568
+    2a94:	df828120 	ld	v0,-32480(gp)
+    2a98:	0040c825 	move	t9,v0
+    2a9c:	f8190000 	jalrc	t9
+}
+    2aa0:	00000000 	nop
+    2aa4:	03c0e825 	move	sp,s8
+    2aa8:	dfbf0088 	ld	ra,136(sp)
+    2aac:	dfbe0080 	ld	s8,128(sp)
+    2ab0:	dfbc0078 	ld	gp,120(sp)
+    2ab4:	67bd0090 	daddiu	sp,sp,144
+    2ab8:	d81f0000 	jrc	ra
+
+0000000000002abc <divTstFunc>:
+
+void divTstFunc()
+{
+    2abc:	67bdffb0 	daddiu	sp,sp,-80
+    2ac0:	ffbf0048 	sd	ra,72(sp)
+    2ac4:	ffbe0040 	sd	s8,64(sp)
+    2ac8:	ffbc0038 	sd	gp,56(sp)
+    2acc:	03a0f025 	move	s8,sp
+    2ad0:	3c1c0002 	lui	gp,0x2
+    2ad4:	0399e02d 	daddu	gp,gp,t9
+    2ad8:	679cc124 	daddiu	gp,gp,-16092
+	short i=0;
+    2adc:	a7c00000 	sh	zero,0(s8)
+
+	////test msa_mulq_lane_f32
+	printf("\n =================divTstFunc=====================================================================\n");
+    2ae0:	df828050 	ld	v0,-32688(gp)
+    2ae4:	64445ba0 	daddiu	a0,v0,23456
+    2ae8:	df828120 	ld	v0,-32480(gp)
+    2aec:	0040c825 	move	t9,v0
+    2af0:	f8190000 	jalrc	t9
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    2af4:	df828050 	ld	v0,-32688(gp)
+    2af8:	64445c08 	daddiu	a0,v0,23560
+    2afc:	df828120 	ld	v0,-32480(gp)
+    2b00:	0040c825 	move	t9,v0
+    2b04:	f8190000 	jalrc	t9
+	printf("output: c = msa_mulq_lane_f32(g_v4f32Data, g_v2f32Data1, 0)={");
+    2b08:	df828050 	ld	v0,-32688(gp)
+    2b0c:	64445178 	daddiu	a0,v0,20856
+    2b10:	df828128 	ld	v0,-32472(gp)
+    2b14:	0040c825 	move	t9,v0
+    2b18:	f8190000 	jalrc	t9
+	v4f32 c = __builtin_msa_fdiv_w(g_v4f32Data, g_v4f32Data1);
+    2b1c:	df828038 	ld	v0,-32712(gp)
+    2b20:	64426b20 	daddiu	v0,v0,27424
+    2b24:	78001062 	ld.w	$w1,0(v0)
+    2b28:	df828038 	ld	v0,-32712(gp)
+    2b2c:	64426b30 	daddiu	v0,v0,27440
+    2b30:	78001022 	ld.w	$w0,0(v0)
+    2b34:	78c0081b 	fdiv.w	$w0,$w1,$w0
+    2b38:	7804f026 	st.w	$w0,16(s8)
+	for(i=0; i<4; i++) {
+    2b3c:	a7c00000 	sh	zero,0(s8)
+    2b40:	c8000010 	bc	2b84 <.L81>
+
+0000000000002b44 <.L82>:
+		printf("%f,  ", c[i]);
+    2b44:	87c20000 	lh	v0,0(s8)
+    2b48:	000210b8 	dsll	v0,v0,0x2
+    2b4c:	03c2102d 	daddu	v0,s8,v0
+    2b50:	c4400010 	lwc1	$f0,16(v0)
+    2b54:	46000021 	cvt.d.s	$f0,$f0
+    2b58:	44250000 	dmfc1	a1,$f0
+    2b5c:	df828050 	ld	v0,-32688(gp)
+    2b60:	64444cd8 	daddiu	a0,v0,19672
+    2b64:	df828128 	ld	v0,-32472(gp)
+    2b68:	0040c825 	move	t9,v0
+    2b6c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    2b70:	87c20000 	lh	v0,0(s8)
+    2b74:	3042ffff 	andi	v0,v0,0xffff
+    2b78:	24420001 	addiu	v0,v0,1
+    2b7c:	3042ffff 	andi	v0,v0,0xffff
+    2b80:	a7c20000 	sh	v0,0(s8)
+
+0000000000002b84 <.L81>:
+    2b84:	87c20000 	lh	v0,0(s8)
+    2b88:	24030003 	li	v1,3
+    2b8c:	5862ffed 	bgec	v1,v0,2b44 <.L82>
+	}
+	printf("\b\b\b}\n\n");
+    2b90:	df828050 	ld	v0,-32688(gp)
+    2b94:	64444c70 	daddiu	a0,v0,19568
+    2b98:	df828120 	ld	v0,-32480(gp)
+    2b9c:	0040c825 	move	t9,v0
+    2ba0:	f8190000 	jalrc	t9
+	
+	////test msa_mulaq_lane_f32
+	printf("input: 	g_v2f64Data = {-0.0011111111, 1.0011111111}, g_v2f64Data1 = {0.00222222, 1.00222222}\n");
+    2ba4:	df828050 	ld	v0,-32688(gp)
+    2ba8:	64445c68 	daddiu	a0,v0,23656
+    2bac:	df828120 	ld	v0,-32480(gp)
+    2bb0:	0040c825 	move	t9,v0
+    2bb4:	f8190000 	jalrc	t9
+	printf("output: c = __builtin_msa_fdiv_d(g_v2f64Data, g_v2f64Data1)={");
+    2bb8:	df828050 	ld	v0,-32688(gp)
+    2bbc:	64445cc8 	daddiu	a0,v0,23752
+    2bc0:	df828128 	ld	v0,-32472(gp)
+    2bc4:	0040c825 	move	t9,v0
+    2bc8:	f8190000 	jalrc	t9
+	v2f64 cc = __builtin_msa_fdiv_d(g_v2f64Data, g_v2f64Data1);
+    2bcc:	df828038 	ld	v0,-32712(gp)
+    2bd0:	64426b50 	daddiu	v0,v0,27472
+    2bd4:	78001063 	ld.d	$w1,0(v0)
+    2bd8:	df828038 	ld	v0,-32712(gp)
+    2bdc:	64426b60 	daddiu	v0,v0,27488
+    2be0:	78001023 	ld.d	$w0,0(v0)
+    2be4:	78e0081b 	fdiv.d	$w0,$w1,$w0
+    2be8:	7804f027 	st.d	$w0,32(s8)
+	for(i=0; i<2; i++) {
+    2bec:	a7c00000 	sh	zero,0(s8)
+    2bf0:	c800000f 	bc	2c30 <.L83>
+
+0000000000002bf4 <.L84>:
+		printf("%.10f,  ", cc[i]);
+    2bf4:	87c20000 	lh	v0,0(s8)
+    2bf8:	000210f8 	dsll	v0,v0,0x3
+    2bfc:	03c2102d 	daddu	v0,s8,v0
+    2c00:	d4400020 	ldc1	$f0,32(v0)
+    2c04:	44250000 	dmfc1	a1,$f0
+    2c08:	df828050 	ld	v0,-32688(gp)
+    2c0c:	64444fa8 	daddiu	a0,v0,20392
+    2c10:	df828128 	ld	v0,-32472(gp)
+    2c14:	0040c825 	move	t9,v0
+    2c18:	f8190000 	jalrc	t9
+	for(i=0; i<2; i++) {
+    2c1c:	87c20000 	lh	v0,0(s8)
+    2c20:	3042ffff 	andi	v0,v0,0xffff
+    2c24:	24420001 	addiu	v0,v0,1
+    2c28:	3042ffff 	andi	v0,v0,0xffff
+    2c2c:	a7c20000 	sh	v0,0(s8)
+
+0000000000002c30 <.L83>:
+    2c30:	87c20000 	lh	v0,0(s8)
+    2c34:	24030001 	li	v1,1
+    2c38:	5862ffee 	bgec	v1,v0,2bf4 <.L84>
+	}
+	printf("\b\b\b}\n\n");
+    2c3c:	df828050 	ld	v0,-32688(gp)
+    2c40:	64444c70 	daddiu	a0,v0,19568
+    2c44:	df828120 	ld	v0,-32480(gp)
+    2c48:	0040c825 	move	t9,v0
+    2c4c:	f8190000 	jalrc	t9
+}
+    2c50:	00000000 	nop
+    2c54:	03c0e825 	move	sp,s8
+    2c58:	dfbf0048 	ld	ra,72(sp)
+    2c5c:	dfbe0040 	ld	s8,64(sp)
+    2c60:	dfbc0038 	ld	gp,56(sp)
+    2c64:	67bd0050 	daddiu	sp,sp,80
+    2c68:	d81f0000 	jrc	ra
+
+0000000000002c6c <andOrTstFunc>:
+
+void andOrTstFunc()
+{
+    2c6c:	67bdff10 	daddiu	sp,sp,-240
+    2c70:	ffbf00e8 	sd	ra,232(sp)
+    2c74:	ffbe00e0 	sd	s8,224(sp)
+    2c78:	ffbc00d8 	sd	gp,216(sp)
+    2c7c:	03a0f025 	move	s8,sp
+    2c80:	3c1c0002 	lui	gp,0x2
+    2c84:	0399e02d 	daddu	gp,gp,t9
+    2c88:	679cbf74 	daddiu	gp,gp,-16524
+	short i=0;
+    2c8c:	a7c00000 	sh	zero,0(s8)
+
+	////test v16u8
+	printf("\n =================andOrTstFunc=====================================================================\n");
+    2c90:	df828050 	ld	v0,-32688(gp)
+    2c94:	64445d08 	daddiu	a0,v0,23816
+    2c98:	df828120 	ld	v0,-32480(gp)
+    2c9c:	0040c825 	move	t9,v0
+    2ca0:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}\n");
+    2ca4:	df828050 	ld	v0,-32688(gp)
+    2ca8:	64445d70 	daddiu	a0,v0,23920
+    2cac:	df828120 	ld	v0,-32480(gp)
+    2cb0:	0040c825 	move	t9,v0
+    2cb4:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}\n");
+    2cb8:	df828050 	ld	v0,-32688(gp)
+    2cbc:	64445dc8 	daddiu	a0,v0,24008
+    2cc0:	df828120 	ld	v0,-32480(gp)
+    2cc4:	0040c825 	move	t9,v0
+    2cc8:	f8190000 	jalrc	t9
+	printf("output: msa_andq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={");
+    2ccc:	df828050 	ld	v0,-32688(gp)
+    2cd0:	64445e20 	daddiu	a0,v0,24096
+    2cd4:	df828128 	ld	v0,-32472(gp)
+    2cd8:	0040c825 	move	t9,v0
+    2cdc:	f8190000 	jalrc	t9
+	v16u8 c = msa_andq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1);
+    2ce0:	df828038 	ld	v0,-32712(gp)
+    2ce4:	64426af0 	daddiu	v0,v0,27376
+    2ce8:	78001021 	ld.h	$w0,0(v0)
+    2cec:	78be0059 	move.v	$w1,$w0
+    2cf0:	df828038 	ld	v0,-32712(gp)
+    2cf4:	64426b00 	daddiu	v0,v0,27392
+    2cf8:	78001021 	ld.h	$w0,0(v0)
+    2cfc:	7810f064 	st.b	$w1,16(s8)
+    2d00:	7820f024 	st.b	$w0,32(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_andq_##suffix (type __a, type __b) \
+{ \
+  return (type)__builtin_msa_and_v((v16u8)__a, (v16u8)__b); \
+}
+MSA_ANDV_EXPAND(u8, v16u8)
+    2d04:	7810f060 	ld.b	$w1,16(s8)
+    2d08:	7820f020 	ld.b	$w0,32(s8)
+    2d0c:	7800081e 	and.v	$w0,$w1,$w0
+    2d10:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    2d14:	a7c00000 	sh	zero,0(s8)
+    2d18:	c800000e 	bc	2d54 <.L87>
+
+0000000000002d1c <.L88>:
+		printf("0x%02x,  ", c[i]);
+    2d1c:	87c20000 	lh	v0,0(s8)
+    2d20:	03c2102d 	daddu	v0,s8,v0
+    2d24:	90420090 	lbu	v0,144(v0)
+    2d28:	00402825 	move	a1,v0
+    2d2c:	df828050 	ld	v0,-32688(gp)
+    2d30:	64445e60 	daddiu	a0,v0,24160
+    2d34:	df828128 	ld	v0,-32472(gp)
+    2d38:	0040c825 	move	t9,v0
+    2d3c:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2d40:	87c20000 	lh	v0,0(s8)
+    2d44:	3042ffff 	andi	v0,v0,0xffff
+    2d48:	24420001 	addiu	v0,v0,1
+    2d4c:	3042ffff 	andi	v0,v0,0xffff
+    2d50:	a7c20000 	sh	v0,0(s8)
+
+0000000000002d54 <.L87>:
+    2d54:	87c20000 	lh	v0,0(s8)
+    2d58:	2403000f 	li	v1,15
+    2d5c:	5862ffef 	bgec	v1,v0,2d1c <.L88>
+	}
+	printf("\b\b\b}\n");
+    2d60:	df828050 	ld	v0,-32688(gp)
+    2d64:	64445908 	daddiu	a0,v0,22792
+    2d68:	df828120 	ld	v0,-32480(gp)
+    2d6c:	0040c825 	move	t9,v0
+    2d70:	f8190000 	jalrc	t9
+
+	printf("output: msa_andq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={");
+    2d74:	df828050 	ld	v0,-32688(gp)
+    2d78:	64445e70 	daddiu	a0,v0,24176
+    2d7c:	df828128 	ld	v0,-32472(gp)
+    2d80:	0040c825 	move	t9,v0
+    2d84:	f8190000 	jalrc	t9
+	v16i8 cc = msa_andq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1);
+    2d88:	df828038 	ld	v0,-32712(gp)
+    2d8c:	64426af0 	daddiu	v0,v0,27376
+    2d90:	78001021 	ld.h	$w0,0(v0)
+    2d94:	78be0059 	move.v	$w1,$w0
+    2d98:	df828038 	ld	v0,-32712(gp)
+    2d9c:	64426b00 	daddiu	v0,v0,27392
+    2da0:	78001021 	ld.h	$w0,0(v0)
+    2da4:	7830f064 	st.b	$w1,48(s8)
+    2da8:	7840f024 	st.b	$w0,64(s8)
+MSA_ANDV_EXPAND(s8, v16i8)
+    2dac:	7830f060 	ld.b	$w1,48(s8)
+    2db0:	7840f020 	ld.b	$w0,64(s8)
+    2db4:	7800081e 	and.v	$w0,$w1,$w0
+    2db8:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    2dbc:	a7c00000 	sh	zero,0(s8)
+    2dc0:	c800000f 	bc	2e00 <.L90>
+
+0000000000002dc4 <.L91>:
+		printf("0x%02x,  ", (uint8_t)cc[i]);
+    2dc4:	87c20000 	lh	v0,0(s8)
+    2dc8:	03c2102d 	daddu	v0,s8,v0
+    2dcc:	804200a0 	lb	v0,160(v0)
+    2dd0:	304200ff 	andi	v0,v0,0xff
+    2dd4:	00402825 	move	a1,v0
+    2dd8:	df828050 	ld	v0,-32688(gp)
+    2ddc:	64445e60 	daddiu	a0,v0,24160
+    2de0:	df828128 	ld	v0,-32472(gp)
+    2de4:	0040c825 	move	t9,v0
+    2de8:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2dec:	87c20000 	lh	v0,0(s8)
+    2df0:	3042ffff 	andi	v0,v0,0xffff
+    2df4:	24420001 	addiu	v0,v0,1
+    2df8:	3042ffff 	andi	v0,v0,0xffff
+    2dfc:	a7c20000 	sh	v0,0(s8)
+
+0000000000002e00 <.L90>:
+    2e00:	87c20000 	lh	v0,0(s8)
+    2e04:	2403000f 	li	v1,15
+    2e08:	5862ffee 	bgec	v1,v0,2dc4 <.L91>
+	}
+	printf("\b\b\b}\n");
+    2e0c:	df828050 	ld	v0,-32688(gp)
+    2e10:	64445908 	daddiu	a0,v0,22792
+    2e14:	df828120 	ld	v0,-32480(gp)
+    2e18:	0040c825 	move	t9,v0
+    2e1c:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}\n");
+    2e20:	df828050 	ld	v0,-32688(gp)
+    2e24:	64445d70 	daddiu	a0,v0,23920
+    2e28:	df828120 	ld	v0,-32480(gp)
+    2e2c:	0040c825 	move	t9,v0
+    2e30:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}\n");
+    2e34:	df828050 	ld	v0,-32688(gp)
+    2e38:	64445dc8 	daddiu	a0,v0,24008
+    2e3c:	df828120 	ld	v0,-32480(gp)
+    2e40:	0040c825 	move	t9,v0
+    2e44:	f8190000 	jalrc	t9
+	printf("output: msa_orrq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={");
+    2e48:	df828050 	ld	v0,-32688(gp)
+    2e4c:	64445eb0 	daddiu	a0,v0,24240
+    2e50:	df828128 	ld	v0,-32472(gp)
+    2e54:	0040c825 	move	t9,v0
+    2e58:	f8190000 	jalrc	t9
+	v16u8 ccc = msa_orrq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1);
+    2e5c:	df828038 	ld	v0,-32712(gp)
+    2e60:	64426af0 	daddiu	v0,v0,27376
+    2e64:	78001021 	ld.h	$w0,0(v0)
+    2e68:	78be0059 	move.v	$w1,$w0
+    2e6c:	df828038 	ld	v0,-32712(gp)
+    2e70:	64426b00 	daddiu	v0,v0,27392
+    2e74:	78001021 	ld.h	$w0,0(v0)
+    2e78:	7850f064 	st.b	$w1,80(s8)
+    2e7c:	7860f024 	st.b	$w0,96(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_orrq_##suffix (type __a, type __b) \
+{ \
+  return (type)__builtin_msa_or_v((v16u8)__a, (v16u8)__b); \
+}
+MSA_ORV_EXPAND(u8, v16u8)
+    2e80:	7850f060 	ld.b	$w1,80(s8)
+    2e84:	7860f020 	ld.b	$w0,96(s8)
+    2e88:	7820081e 	or.v	$w0,$w1,$w0
+    2e8c:	78b0f024 	st.b	$w0,176(s8)
+	for(i=0; i<16; i++) {
+    2e90:	a7c00000 	sh	zero,0(s8)
+    2e94:	c800000e 	bc	2ed0 <.L93>
+
+0000000000002e98 <.L94>:
+		printf("0x%02x,  ", ccc[i]);
+    2e98:	87c20000 	lh	v0,0(s8)
+    2e9c:	03c2102d 	daddu	v0,s8,v0
+    2ea0:	904200b0 	lbu	v0,176(v0)
+    2ea4:	00402825 	move	a1,v0
+    2ea8:	df828050 	ld	v0,-32688(gp)
+    2eac:	64445e60 	daddiu	a0,v0,24160
+    2eb0:	df828128 	ld	v0,-32472(gp)
+    2eb4:	0040c825 	move	t9,v0
+    2eb8:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2ebc:	87c20000 	lh	v0,0(s8)
+    2ec0:	3042ffff 	andi	v0,v0,0xffff
+    2ec4:	24420001 	addiu	v0,v0,1
+    2ec8:	3042ffff 	andi	v0,v0,0xffff
+    2ecc:	a7c20000 	sh	v0,0(s8)
+
+0000000000002ed0 <.L93>:
+    2ed0:	87c20000 	lh	v0,0(s8)
+    2ed4:	2403000f 	li	v1,15
+    2ed8:	5862ffef 	bgec	v1,v0,2e98 <.L94>
+	}
+	printf("\b\b\b}\n");
+    2edc:	df828050 	ld	v0,-32688(gp)
+    2ee0:	64445908 	daddiu	a0,v0,22792
+    2ee4:	df828120 	ld	v0,-32480(gp)
+    2ee8:	0040c825 	move	t9,v0
+    2eec:	f8190000 	jalrc	t9
+
+	printf("output: msa_orrq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={");
+    2ef0:	df828050 	ld	v0,-32688(gp)
+    2ef4:	64445ef0 	daddiu	a0,v0,24304
+    2ef8:	df828128 	ld	v0,-32472(gp)
+    2efc:	0040c825 	move	t9,v0
+    2f00:	f8190000 	jalrc	t9
+	v16i8 cccc = msa_orrq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1);
+    2f04:	df828038 	ld	v0,-32712(gp)
+    2f08:	64426af0 	daddiu	v0,v0,27376
+    2f0c:	78001021 	ld.h	$w0,0(v0)
+    2f10:	78be0059 	move.v	$w1,$w0
+    2f14:	df828038 	ld	v0,-32712(gp)
+    2f18:	64426b00 	daddiu	v0,v0,27392
+    2f1c:	78001021 	ld.h	$w0,0(v0)
+    2f20:	7870f064 	st.b	$w1,112(s8)
+    2f24:	7880f024 	st.b	$w0,128(s8)
+MSA_ORV_EXPAND(s8, v16i8)
+    2f28:	7870f060 	ld.b	$w1,112(s8)
+    2f2c:	7880f020 	ld.b	$w0,128(s8)
+    2f30:	7820081e 	or.v	$w0,$w1,$w0
+    2f34:	78c0f024 	st.b	$w0,192(s8)
+	for(i=0; i<16; i++) {
+    2f38:	a7c00000 	sh	zero,0(s8)
+    2f3c:	c800000f 	bc	2f7c <.L96>
+
+0000000000002f40 <.L97>:
+		printf("0x%02x,  ", (uint8_t)cccc[i]);
+    2f40:	87c20000 	lh	v0,0(s8)
+    2f44:	03c2102d 	daddu	v0,s8,v0
+    2f48:	804200c0 	lb	v0,192(v0)
+    2f4c:	304200ff 	andi	v0,v0,0xff
+    2f50:	00402825 	move	a1,v0
+    2f54:	df828050 	ld	v0,-32688(gp)
+    2f58:	64445e60 	daddiu	a0,v0,24160
+    2f5c:	df828128 	ld	v0,-32472(gp)
+    2f60:	0040c825 	move	t9,v0
+    2f64:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    2f68:	87c20000 	lh	v0,0(s8)
+    2f6c:	3042ffff 	andi	v0,v0,0xffff
+    2f70:	24420001 	addiu	v0,v0,1
+    2f74:	3042ffff 	andi	v0,v0,0xffff
+    2f78:	a7c20000 	sh	v0,0(s8)
+
+0000000000002f7c <.L96>:
+    2f7c:	87c20000 	lh	v0,0(s8)
+    2f80:	2403000f 	li	v1,15
+    2f84:	5862ffee 	bgec	v1,v0,2f40 <.L97>
+	}
+	printf("\b\b\b}\n\n");
+    2f88:	df828050 	ld	v0,-32688(gp)
+    2f8c:	64444c70 	daddiu	a0,v0,19568
+    2f90:	df828120 	ld	v0,-32480(gp)
+    2f94:	0040c825 	move	t9,v0
+    2f98:	f8190000 	jalrc	t9
+}
+    2f9c:	00000000 	nop
+    2fa0:	03c0e825 	move	sp,s8
+    2fa4:	dfbf00e8 	ld	ra,232(sp)
+    2fa8:	dfbe00e0 	ld	s8,224(sp)
+    2fac:	dfbc00d8 	ld	gp,216(sp)
+    2fb0:	67bd00f0 	daddiu	sp,sp,240
+    2fb4:	d81f0000 	jrc	ra
+
+0000000000002fb8 <eorMvnTstFunc>:
+
+void eorMvnTstFunc()
+{
+    2fb8:	67bdff30 	daddiu	sp,sp,-208
+    2fbc:	ffbf00c8 	sd	ra,200(sp)
+    2fc0:	ffbe00c0 	sd	s8,192(sp)
+    2fc4:	ffbc00b8 	sd	gp,184(sp)
+    2fc8:	03a0f025 	move	s8,sp
+    2fcc:	3c1c0002 	lui	gp,0x2
+    2fd0:	0399e02d 	daddu	gp,gp,t9
+    2fd4:	679cbc28 	daddiu	gp,gp,-17368
+	short i=0;
+    2fd8:	a7c00000 	sh	zero,0(s8)
+
+	////test v16u8
+	printf("\n =================eorMvnTstFunc=====================================================================\n");
+    2fdc:	df828050 	ld	v0,-32688(gp)
+    2fe0:	64445f30 	daddiu	a0,v0,24368
+    2fe4:	df828120 	ld	v0,-32480(gp)
+    2fe8:	0040c825 	move	t9,v0
+    2fec:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}\n");
+    2ff0:	df828050 	ld	v0,-32688(gp)
+    2ff4:	64445d70 	daddiu	a0,v0,23920
+    2ff8:	df828120 	ld	v0,-32480(gp)
+    2ffc:	0040c825 	move	t9,v0
+    3000:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}\n");
+    3004:	df828050 	ld	v0,-32688(gp)
+    3008:	64445dc8 	daddiu	a0,v0,24008
+    300c:	df828120 	ld	v0,-32480(gp)
+    3010:	0040c825 	move	t9,v0
+    3014:	f8190000 	jalrc	t9
+	printf("output: msa_eorq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={");
+    3018:	df828050 	ld	v0,-32688(gp)
+    301c:	64445f98 	daddiu	a0,v0,24472
+    3020:	df828128 	ld	v0,-32472(gp)
+    3024:	0040c825 	move	t9,v0
+    3028:	f8190000 	jalrc	t9
+	v16u8 c = msa_eorq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1);
+    302c:	df828038 	ld	v0,-32712(gp)
+    3030:	64426af0 	daddiu	v0,v0,27376
+    3034:	78001021 	ld.h	$w0,0(v0)
+    3038:	78be0059 	move.v	$w1,$w0
+    303c:	df828038 	ld	v0,-32712(gp)
+    3040:	64426b00 	daddiu	v0,v0,27392
+    3044:	78001021 	ld.h	$w0,0(v0)
+    3048:	7810f064 	st.b	$w1,16(s8)
+    304c:	7820f024 	st.b	$w0,32(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_eorq_##suffix (type __a, type __b) \
+{ \
+  return (type)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b); \
+}
+MSA_XORV_EXPAND(u8, v16u8)
+    3050:	7810f060 	ld.b	$w1,16(s8)
+    3054:	7820f020 	ld.b	$w0,32(s8)
+    3058:	7860081e 	xor.v	$w0,$w1,$w0
+    305c:	7870f024 	st.b	$w0,112(s8)
+	for(i=0; i<16; i++) {
+    3060:	a7c00000 	sh	zero,0(s8)
+    3064:	c800000e 	bc	30a0 <.L100>
+
+0000000000003068 <.L101>:
+		printf("0x%02x,  ", c[i]);
+    3068:	87c20000 	lh	v0,0(s8)
+    306c:	03c2102d 	daddu	v0,s8,v0
+    3070:	90420070 	lbu	v0,112(v0)
+    3074:	00402825 	move	a1,v0
+    3078:	df828050 	ld	v0,-32688(gp)
+    307c:	64445e60 	daddiu	a0,v0,24160
+    3080:	df828128 	ld	v0,-32472(gp)
+    3084:	0040c825 	move	t9,v0
+    3088:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    308c:	87c20000 	lh	v0,0(s8)
+    3090:	3042ffff 	andi	v0,v0,0xffff
+    3094:	24420001 	addiu	v0,v0,1
+    3098:	3042ffff 	andi	v0,v0,0xffff
+    309c:	a7c20000 	sh	v0,0(s8)
+
+00000000000030a0 <.L100>:
+    30a0:	87c20000 	lh	v0,0(s8)
+    30a4:	2403000f 	li	v1,15
+    30a8:	5862ffef 	bgec	v1,v0,3068 <.L101>
+	}
+	printf("\b\b\b}\n");
+    30ac:	df828050 	ld	v0,-32688(gp)
+    30b0:	64445908 	daddiu	a0,v0,22792
+    30b4:	df828120 	ld	v0,-32480(gp)
+    30b8:	0040c825 	move	t9,v0
+    30bc:	f8190000 	jalrc	t9
+
+	printf("output: msa_eorq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={");
+    30c0:	df828050 	ld	v0,-32688(gp)
+    30c4:	64445fd8 	daddiu	a0,v0,24536
+    30c8:	df828128 	ld	v0,-32472(gp)
+    30cc:	0040c825 	move	t9,v0
+    30d0:	f8190000 	jalrc	t9
+	v16i8 cc = msa_eorq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1);
+    30d4:	df828038 	ld	v0,-32712(gp)
+    30d8:	64426af0 	daddiu	v0,v0,27376
+    30dc:	78001021 	ld.h	$w0,0(v0)
+    30e0:	78be0059 	move.v	$w1,$w0
+    30e4:	df828038 	ld	v0,-32712(gp)
+    30e8:	64426b00 	daddiu	v0,v0,27392
+    30ec:	78001021 	ld.h	$w0,0(v0)
+    30f0:	7830f064 	st.b	$w1,48(s8)
+    30f4:	7840f024 	st.b	$w0,64(s8)
+MSA_XORV_EXPAND(s8, v16i8)
+    30f8:	7830f060 	ld.b	$w1,48(s8)
+    30fc:	7840f020 	ld.b	$w0,64(s8)
+    3100:	7860081e 	xor.v	$w0,$w1,$w0
+    3104:	7880f024 	st.b	$w0,128(s8)
+	for(i=0; i<16; i++) {
+    3108:	a7c00000 	sh	zero,0(s8)
+    310c:	c800000f 	bc	314c <.L103>
+
+0000000000003110 <.L104>:
+		printf("0x%02x,  ", (uint8_t)cc[i]);
+    3110:	87c20000 	lh	v0,0(s8)
+    3114:	03c2102d 	daddu	v0,s8,v0
+    3118:	80420080 	lb	v0,128(v0)
+    311c:	304200ff 	andi	v0,v0,0xff
+    3120:	00402825 	move	a1,v0
+    3124:	df828050 	ld	v0,-32688(gp)
+    3128:	64445e60 	daddiu	a0,v0,24160
+    312c:	df828128 	ld	v0,-32472(gp)
+    3130:	0040c825 	move	t9,v0
+    3134:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3138:	87c20000 	lh	v0,0(s8)
+    313c:	3042ffff 	andi	v0,v0,0xffff
+    3140:	24420001 	addiu	v0,v0,1
+    3144:	3042ffff 	andi	v0,v0,0xffff
+    3148:	a7c20000 	sh	v0,0(s8)
+
+000000000000314c <.L103>:
+    314c:	87c20000 	lh	v0,0(s8)
+    3150:	2403000f 	li	v1,15
+    3154:	5862ffee 	bgec	v1,v0,3110 <.L104>
+	}
+	printf("\b\b\b}\n");
+    3158:	df828050 	ld	v0,-32688(gp)
+    315c:	64445908 	daddiu	a0,v0,22792
+    3160:	df828120 	ld	v0,-32480(gp)
+    3164:	0040c825 	move	t9,v0
+    3168:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}\n");
+    316c:	df828050 	ld	v0,-32688(gp)
+    3170:	64445d70 	daddiu	a0,v0,23920
+    3174:	df828120 	ld	v0,-32480(gp)
+    3178:	0040c825 	move	t9,v0
+    317c:	f8190000 	jalrc	t9
+	printf("input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}\n");
+    3180:	df828050 	ld	v0,-32688(gp)
+    3184:	64445dc8 	daddiu	a0,v0,24008
+    3188:	df828120 	ld	v0,-32480(gp)
+    318c:	0040c825 	move	t9,v0
+    3190:	f8190000 	jalrc	t9
+	printf("output: msa_mvnq_u8((v16u8)g_v8i16Data)={");
+    3194:	df828050 	ld	v0,-32688(gp)
+    3198:	64446018 	daddiu	a0,v0,24600
+    319c:	df828128 	ld	v0,-32472(gp)
+    31a0:	0040c825 	move	t9,v0
+    31a4:	f8190000 	jalrc	t9
+	v16u8 ccc = msa_mvnq_u8((v16u8)g_v8i16Data);
+    31a8:	df828038 	ld	v0,-32712(gp)
+    31ac:	64426af0 	daddiu	v0,v0,27376
+    31b0:	78001021 	ld.h	$w0,0(v0)
+    31b4:	7850f024 	st.b	$w0,80(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_mvnq_##suffix (type __a) \
+{ \
+  return (type)__builtin_msa_xori_b((v16u8)__a, 0xff); \
+}
+MSA_BITWISENOT_EXPAND(u8, v16u8)
+    31b8:	7850f020 	ld.b	$w0,80(s8)
+    31bc:	7bff0000 	xori.b	$w0,$w0,0xff
+    31c0:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    31c4:	a7c00000 	sh	zero,0(s8)
+    31c8:	c800000e 	bc	3204 <.L106>
+
+00000000000031cc <.L107>:
+		printf("0x%02x,  ", ccc[i]);
+    31cc:	87c20000 	lh	v0,0(s8)
+    31d0:	03c2102d 	daddu	v0,s8,v0
+    31d4:	90420090 	lbu	v0,144(v0)
+    31d8:	00402825 	move	a1,v0
+    31dc:	df828050 	ld	v0,-32688(gp)
+    31e0:	64445e60 	daddiu	a0,v0,24160
+    31e4:	df828128 	ld	v0,-32472(gp)
+    31e8:	0040c825 	move	t9,v0
+    31ec:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    31f0:	87c20000 	lh	v0,0(s8)
+    31f4:	3042ffff 	andi	v0,v0,0xffff
+    31f8:	24420001 	addiu	v0,v0,1
+    31fc:	3042ffff 	andi	v0,v0,0xffff
+    3200:	a7c20000 	sh	v0,0(s8)
+
+0000000000003204 <.L106>:
+    3204:	87c20000 	lh	v0,0(s8)
+    3208:	2403000f 	li	v1,15
+    320c:	5862ffef 	bgec	v1,v0,31cc <.L107>
+	}
+	printf("\b\b\b}\n");
+    3210:	df828050 	ld	v0,-32688(gp)
+    3214:	64445908 	daddiu	a0,v0,22792
+    3218:	df828120 	ld	v0,-32480(gp)
+    321c:	0040c825 	move	t9,v0
+    3220:	f8190000 	jalrc	t9
+
+	printf("output: msa_mvnq_u16((v8u16)g_v8i16Data1)={");
+    3224:	df828050 	ld	v0,-32688(gp)
+    3228:	64446048 	daddiu	a0,v0,24648
+    322c:	df828128 	ld	v0,-32472(gp)
+    3230:	0040c825 	move	t9,v0
+    3234:	f8190000 	jalrc	t9
+	v8u16 cccc = msa_mvnq_u16((v8u16)g_v8i16Data1);
+    3238:	df828038 	ld	v0,-32712(gp)
+    323c:	64426b00 	daddiu	v0,v0,27392
+    3240:	78001021 	ld.h	$w0,0(v0)
+    3244:	7830f025 	st.h	$w0,96(s8)
+MSA_BITWISENOT_EXPAND(s8, v16i8)
+MSA_BITWISENOT_EXPAND(u16, v8u16)
+    3248:	7860f020 	ld.b	$w0,96(s8)
+    324c:	7bff0000 	xori.b	$w0,$w0,0xff
+    3250:	7850f025 	st.h	$w0,160(s8)
+	for(i=0; i<8; i++) {
+    3254:	a7c00000 	sh	zero,0(s8)
+    3258:	c800000f 	bc	3298 <.L109>
+
+000000000000325c <.L110>:
+		printf("0x%04x,  ", (uint16_t)cccc[i]);
+    325c:	87c20000 	lh	v0,0(s8)
+    3260:	00021078 	dsll	v0,v0,0x1
+    3264:	03c2102d 	daddu	v0,s8,v0
+    3268:	944200a0 	lhu	v0,160(v0)
+    326c:	00402825 	move	a1,v0
+    3270:	df828050 	ld	v0,-32688(gp)
+    3274:	64446078 	daddiu	a0,v0,24696
+    3278:	df828128 	ld	v0,-32472(gp)
+    327c:	0040c825 	move	t9,v0
+    3280:	f8190000 	jalrc	t9
+	for(i=0; i<8; i++) {
+    3284:	87c20000 	lh	v0,0(s8)
+    3288:	3042ffff 	andi	v0,v0,0xffff
+    328c:	24420001 	addiu	v0,v0,1
+    3290:	3042ffff 	andi	v0,v0,0xffff
+    3294:	a7c20000 	sh	v0,0(s8)
+
+0000000000003298 <.L109>:
+    3298:	87c20000 	lh	v0,0(s8)
+    329c:	24030007 	li	v1,7
+    32a0:	5862ffee 	bgec	v1,v0,325c <.L110>
+	}
+	printf("\b\b\b}\n\n");
+    32a4:	df828050 	ld	v0,-32688(gp)
+    32a8:	64444c70 	daddiu	a0,v0,19568
+    32ac:	df828120 	ld	v0,-32480(gp)
+    32b0:	0040c825 	move	t9,v0
+    32b4:	f8190000 	jalrc	t9
+}
+    32b8:	00000000 	nop
+    32bc:	03c0e825 	move	sp,s8
+    32c0:	dfbf00c8 	ld	ra,200(sp)
+    32c4:	dfbe00c0 	ld	s8,192(sp)
+    32c8:	dfbc00b8 	ld	gp,184(sp)
+    32cc:	67bd00d0 	daddiu	sp,sp,208
+    32d0:	d81f0000 	jrc	ra
+
+00000000000032d4 <compareTstFunc>:
+
+void compareTstFunc()
+{
+    32d4:	67bdfd30 	daddiu	sp,sp,-720
+    32d8:	ffbf02c8 	sd	ra,712(sp)
+    32dc:	ffbe02c0 	sd	s8,704(sp)
+    32e0:	ffbc02b8 	sd	gp,696(sp)
+    32e4:	03a0f025 	move	s8,sp
+    32e8:	3c1c0002 	lui	gp,0x2
+    32ec:	0399e02d 	daddu	gp,gp,t9
+    32f0:	679cb90c 	daddiu	gp,gp,-18164
+	short i=0;
+    32f4:	a7c00000 	sh	zero,0(s8)
+
+	////test msa_ceqq
+	printf("\n =================compareTstFunc=====================================================================\n");
+    32f8:	df828050 	ld	v0,-32688(gp)
+    32fc:	64446088 	daddiu	a0,v0,24712
+    3300:	df828120 	ld	v0,-32480(gp)
+    3304:	0040c825 	move	t9,v0
+    3308:	f8190000 	jalrc	t9
+	printf("====test msa_ceqq=====\n");
+    330c:	df828050 	ld	v0,-32688(gp)
+    3310:	644460f0 	daddiu	a0,v0,24816
+    3314:	df828120 	ld	v0,-32480(gp)
+    3318:	0040c825 	move	t9,v0
+    331c:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    3320:	df828050 	ld	v0,-32688(gp)
+    3324:	64445360 	daddiu	a0,v0,21344
+    3328:	df828120 	ld	v0,-32480(gp)
+    332c:	0040c825 	move	t9,v0
+    3330:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}\n");
+    3334:	df828050 	ld	v0,-32688(gp)
+    3338:	64446108 	daddiu	a0,v0,24840
+    333c:	df828120 	ld	v0,-32480(gp)
+    3340:	0040c825 	move	t9,v0
+    3344:	f8190000 	jalrc	t9
+	printf("output: c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data)={");
+    3348:	df828050 	ld	v0,-32688(gp)
+    334c:	64446170 	daddiu	a0,v0,24944
+    3350:	df828128 	ld	v0,-32472(gp)
+    3354:	0040c825 	move	t9,v0
+    3358:	f8190000 	jalrc	t9
+	v16u8 c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data);
+    335c:	df828038 	ld	v0,-32712(gp)
+    3360:	64426ac0 	daddiu	v0,v0,27328
+    3364:	78001060 	ld.b	$w1,0(v0)
+    3368:	df828038 	ld	v0,-32712(gp)
+    336c:	64426ac0 	daddiu	v0,v0,27328
+    3370:	78001020 	ld.b	$w0,0(v0)
+    3374:	7810f064 	st.b	$w1,16(s8)
+    3378:	7820f024 	st.b	$w0,32(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ceqq_##suffix1 (type __a, type __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2((casttype)__a, (casttype)__b); \
+}
+MSA_CEQQ_IMPL(u8, ceq_b, v16u8, v16i8, v16u8)
+    337c:	7810f060 	ld.b	$w1,16(s8)
+    3380:	7820f020 	ld.b	$w0,32(s8)
+    3384:	7800080f 	ceq.b	$w0,$w1,$w0
+    3388:	67c20290 	daddiu	v0,s8,656
+    338c:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3390:	a7c00000 	sh	zero,0(s8)
+    3394:	c800000f 	bc	33d4 <.L113>
+
+0000000000003398 <.L114>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3398:	87c20000 	lh	v0,0(s8)
+    339c:	67c30290 	daddiu	v1,s8,656
+    33a0:	0062102d 	daddu	v0,v1,v0
+    33a4:	90420000 	lbu	v0,0(v0)
+    33a8:	00402825 	move	a1,v0
+    33ac:	df828050 	ld	v0,-32688(gp)
+    33b0:	644461a8 	daddiu	a0,v0,25000
+    33b4:	df828128 	ld	v0,-32472(gp)
+    33b8:	0040c825 	move	t9,v0
+    33bc:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    33c0:	87c20000 	lh	v0,0(s8)
+    33c4:	3042ffff 	andi	v0,v0,0xffff
+    33c8:	24420001 	addiu	v0,v0,1
+    33cc:	3042ffff 	andi	v0,v0,0xffff
+    33d0:	a7c20000 	sh	v0,0(s8)
+
+00000000000033d4 <.L113>:
+    33d4:	87c20000 	lh	v0,0(s8)
+    33d8:	2403000f 	li	v1,15
+    33dc:	5862ffee 	bgec	v1,v0,3398 <.L114>
+	}
+	printf("\b\b\b}\n");
+    33e0:	df828050 	ld	v0,-32688(gp)
+    33e4:	64445908 	daddiu	a0,v0,22792
+    33e8:	df828120 	ld	v0,-32480(gp)
+    33ec:	0040c825 	move	t9,v0
+    33f0:	f8190000 	jalrc	t9
+	printf("output: c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data1)={");
+    33f4:	df828050 	ld	v0,-32688(gp)
+    33f8:	644461b0 	daddiu	a0,v0,25008
+    33fc:	df828128 	ld	v0,-32472(gp)
+    3400:	0040c825 	move	t9,v0
+    3404:	f8190000 	jalrc	t9
+	c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data1);
+    3408:	df828038 	ld	v0,-32712(gp)
+    340c:	64426ac0 	daddiu	v0,v0,27328
+    3410:	78001060 	ld.b	$w1,0(v0)
+    3414:	df828038 	ld	v0,-32712(gp)
+    3418:	64426ad0 	daddiu	v0,v0,27344
+    341c:	78001020 	ld.b	$w0,0(v0)
+    3420:	7830f064 	st.b	$w1,48(s8)
+    3424:	7840f024 	st.b	$w0,64(s8)
+    3428:	7830f060 	ld.b	$w1,48(s8)
+    342c:	7840f020 	ld.b	$w0,64(s8)
+    3430:	7800080f 	ceq.b	$w0,$w1,$w0
+    3434:	67c20290 	daddiu	v0,s8,656
+    3438:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    343c:	a7c00000 	sh	zero,0(s8)
+    3440:	c800000f 	bc	3480 <.L116>
+
+0000000000003444 <.L117>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3444:	87c20000 	lh	v0,0(s8)
+    3448:	67c30290 	daddiu	v1,s8,656
+    344c:	0062102d 	daddu	v0,v1,v0
+    3450:	90420000 	lbu	v0,0(v0)
+    3454:	00402825 	move	a1,v0
+    3458:	df828050 	ld	v0,-32688(gp)
+    345c:	644461a8 	daddiu	a0,v0,25000
+    3460:	df828128 	ld	v0,-32472(gp)
+    3464:	0040c825 	move	t9,v0
+    3468:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    346c:	87c20000 	lh	v0,0(s8)
+    3470:	3042ffff 	andi	v0,v0,0xffff
+    3474:	24420001 	addiu	v0,v0,1
+    3478:	3042ffff 	andi	v0,v0,0xffff
+    347c:	a7c20000 	sh	v0,0(s8)
+
+0000000000003480 <.L116>:
+    3480:	87c20000 	lh	v0,0(s8)
+    3484:	2403000f 	li	v1,15
+    3488:	5862ffee 	bgec	v1,v0,3444 <.L117>
+	}
+	printf("\b\b\b}\n\n");
+    348c:	df828050 	ld	v0,-32688(gp)
+    3490:	64444c70 	daddiu	a0,v0,19568
+    3494:	df828120 	ld	v0,-32480(gp)
+    3498:	0040c825 	move	t9,v0
+    349c:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    34a0:	df828050 	ld	v0,-32688(gp)
+    34a4:	64445c08 	daddiu	a0,v0,23560
+    34a8:	df828120 	ld	v0,-32480(gp)
+    34ac:	0040c825 	move	t9,v0
+    34b0:	f8190000 	jalrc	t9
+	printf("output: cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data)={");
+    34b4:	df828050 	ld	v0,-32688(gp)
+    34b8:	644461e8 	daddiu	a0,v0,25064
+    34bc:	df828128 	ld	v0,-32472(gp)
+    34c0:	0040c825 	move	t9,v0
+    34c4:	f8190000 	jalrc	t9
+	v4u32 cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data);
+    34c8:	df828038 	ld	v0,-32712(gp)
+    34cc:	64426b20 	daddiu	v0,v0,27424
+    34d0:	78001062 	ld.w	$w1,0(v0)
+    34d4:	df828038 	ld	v0,-32712(gp)
+    34d8:	64426b20 	daddiu	v0,v0,27424
+    34dc:	78001022 	ld.w	$w0,0(v0)
+    34e0:	7814f066 	st.w	$w1,80(s8)
+    34e4:	7818f026 	st.w	$w0,96(s8)
+MSA_CEQQ_IMPL(s8, ceq_b, v16u8, v16i8, v16i8)
+MSA_CEQQ_IMPL(u16, ceq_h, v8u16, v8i16, v8u16)
+MSA_CEQQ_IMPL(s16, ceq_h, v8u16, v8i16, v8i16)
+MSA_CEQQ_IMPL(u32, ceq_w, v4u32, v4i32, v4u32)
+MSA_CEQQ_IMPL(s32, ceq_w, v4u32, v4i32, v4i32)
+MSA_CEQQ_IMPL(f32, fceq_w, v4u32, v4f32, v4f32)
+    34e8:	7814f062 	ld.w	$w1,80(s8)
+    34ec:	7818f022 	ld.w	$w0,96(s8)
+    34f0:	7880081a 	fceq.w	$w0,$w1,$w0
+    34f4:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    34f8:	a7c00000 	sh	zero,0(s8)
+    34fc:	c800000f 	bc	353c <.L119>
+
+0000000000003500 <.L120>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    3500:	87c20000 	lh	v0,0(s8)
+    3504:	000210b8 	dsll	v0,v0,0x2
+    3508:	03c2102d 	daddu	v0,s8,v0
+    350c:	8c4202a0 	lw	v0,672(v0)
+    3510:	00402825 	move	a1,v0
+    3514:	df828050 	ld	v0,-32688(gp)
+    3518:	644461a8 	daddiu	a0,v0,25000
+    351c:	df828128 	ld	v0,-32472(gp)
+    3520:	0040c825 	move	t9,v0
+    3524:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3528:	87c20000 	lh	v0,0(s8)
+    352c:	3042ffff 	andi	v0,v0,0xffff
+    3530:	24420001 	addiu	v0,v0,1
+    3534:	3042ffff 	andi	v0,v0,0xffff
+    3538:	a7c20000 	sh	v0,0(s8)
+
+000000000000353c <.L119>:
+    353c:	87c20000 	lh	v0,0(s8)
+    3540:	24030003 	li	v1,3
+    3544:	5862ffee 	bgec	v1,v0,3500 <.L120>
+	}
+	printf("\b\b\b}\n");
+    3548:	df828050 	ld	v0,-32688(gp)
+    354c:	64445908 	daddiu	a0,v0,22792
+    3550:	df828120 	ld	v0,-32480(gp)
+    3554:	0040c825 	move	t9,v0
+    3558:	f8190000 	jalrc	t9
+	printf("output: cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data1)={");
+    355c:	df828050 	ld	v0,-32688(gp)
+    3560:	64446220 	daddiu	a0,v0,25120
+    3564:	df828128 	ld	v0,-32472(gp)
+    3568:	0040c825 	move	t9,v0
+    356c:	f8190000 	jalrc	t9
+	cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data1);
+    3570:	df828038 	ld	v0,-32712(gp)
+    3574:	64426b20 	daddiu	v0,v0,27424
+    3578:	78001062 	ld.w	$w1,0(v0)
+    357c:	df828038 	ld	v0,-32712(gp)
+    3580:	64426b30 	daddiu	v0,v0,27440
+    3584:	78001022 	ld.w	$w0,0(v0)
+    3588:	781cf066 	st.w	$w1,112(s8)
+    358c:	7820f026 	st.w	$w0,128(s8)
+    3590:	781cf062 	ld.w	$w1,112(s8)
+    3594:	7820f022 	ld.w	$w0,128(s8)
+    3598:	7880081a 	fceq.w	$w0,$w1,$w0
+    359c:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    35a0:	a7c00000 	sh	zero,0(s8)
+    35a4:	c800000f 	bc	35e4 <.L122>
+
+00000000000035a8 <.L123>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    35a8:	87c20000 	lh	v0,0(s8)
+    35ac:	000210b8 	dsll	v0,v0,0x2
+    35b0:	03c2102d 	daddu	v0,s8,v0
+    35b4:	8c4202a0 	lw	v0,672(v0)
+    35b8:	00402825 	move	a1,v0
+    35bc:	df828050 	ld	v0,-32688(gp)
+    35c0:	644461a8 	daddiu	a0,v0,25000
+    35c4:	df828128 	ld	v0,-32472(gp)
+    35c8:	0040c825 	move	t9,v0
+    35cc:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    35d0:	87c20000 	lh	v0,0(s8)
+    35d4:	3042ffff 	andi	v0,v0,0xffff
+    35d8:	24420001 	addiu	v0,v0,1
+    35dc:	3042ffff 	andi	v0,v0,0xffff
+    35e0:	a7c20000 	sh	v0,0(s8)
+
+00000000000035e4 <.L122>:
+    35e4:	87c20000 	lh	v0,0(s8)
+    35e8:	24030003 	li	v1,3
+    35ec:	5862ffee 	bgec	v1,v0,35a8 <.L123>
+	}
+	printf("\b\b\b}\n\n");
+    35f0:	df828050 	ld	v0,-32688(gp)
+    35f4:	64444c70 	daddiu	a0,v0,19568
+    35f8:	df828120 	ld	v0,-32480(gp)
+    35fc:	0040c825 	move	t9,v0
+    3600:	f8190000 	jalrc	t9
+
+  ////test msa_cltq
+	printf("====test msa_cltq=====\n");
+    3604:	df828050 	ld	v0,-32688(gp)
+    3608:	64446258 	daddiu	a0,v0,25176
+    360c:	df828120 	ld	v0,-32480(gp)
+    3610:	0040c825 	move	t9,v0
+    3614:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    3618:	df828050 	ld	v0,-32688(gp)
+    361c:	64445360 	daddiu	a0,v0,21344
+    3620:	df828120 	ld	v0,-32480(gp)
+    3624:	0040c825 	move	t9,v0
+    3628:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}\n");
+    362c:	df828050 	ld	v0,-32688(gp)
+    3630:	64446108 	daddiu	a0,v0,24840
+    3634:	df828120 	ld	v0,-32480(gp)
+    3638:	0040c825 	move	t9,v0
+    363c:	f8190000 	jalrc	t9
+	printf("output: c = msa_cltq_u8(g_v16u8Data, g_v16u8Data)={");
+    3640:	df828050 	ld	v0,-32688(gp)
+    3644:	64446270 	daddiu	a0,v0,25200
+    3648:	df828128 	ld	v0,-32472(gp)
+    364c:	0040c825 	move	t9,v0
+    3650:	f8190000 	jalrc	t9
+	c = msa_cltq_u8(g_v16u8Data, g_v16u8Data);
+    3654:	df828038 	ld	v0,-32712(gp)
+    3658:	64426ac0 	daddiu	v0,v0,27328
+    365c:	78001060 	ld.b	$w1,0(v0)
+    3660:	df828038 	ld	v0,-32712(gp)
+    3664:	64426ac0 	daddiu	v0,v0,27328
+    3668:	78001020 	ld.b	$w0,0(v0)
+    366c:	7890f064 	st.b	$w1,144(s8)
+    3670:	78a0f024 	st.b	$w0,160(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_cltq_##suffix1 (type __a, type __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2(__a, __b); \
+}
+MSA_CLTQ_IMPL(u8, clt_u_b, v16u8, v16u8)
+    3674:	7890f060 	ld.b	$w1,144(s8)
+    3678:	78a0f020 	ld.b	$w0,160(s8)
+    367c:	7980080f 	clt_u.b	$w0,$w1,$w0
+    3680:	67c20290 	daddiu	v0,s8,656
+    3684:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3688:	a7c00000 	sh	zero,0(s8)
+    368c:	c800000f 	bc	36cc <.L125>
+
+0000000000003690 <.L126>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3690:	87c20000 	lh	v0,0(s8)
+    3694:	67c30290 	daddiu	v1,s8,656
+    3698:	0062102d 	daddu	v0,v1,v0
+    369c:	90420000 	lbu	v0,0(v0)
+    36a0:	00402825 	move	a1,v0
+    36a4:	df828050 	ld	v0,-32688(gp)
+    36a8:	644461a8 	daddiu	a0,v0,25000
+    36ac:	df828128 	ld	v0,-32472(gp)
+    36b0:	0040c825 	move	t9,v0
+    36b4:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    36b8:	87c20000 	lh	v0,0(s8)
+    36bc:	3042ffff 	andi	v0,v0,0xffff
+    36c0:	24420001 	addiu	v0,v0,1
+    36c4:	3042ffff 	andi	v0,v0,0xffff
+    36c8:	a7c20000 	sh	v0,0(s8)
+
+00000000000036cc <.L125>:
+    36cc:	87c20000 	lh	v0,0(s8)
+    36d0:	2403000f 	li	v1,15
+    36d4:	5862ffee 	bgec	v1,v0,3690 <.L126>
+	}
+	printf("\b\b\b}\n");
+    36d8:	df828050 	ld	v0,-32688(gp)
+    36dc:	64445908 	daddiu	a0,v0,22792
+    36e0:	df828120 	ld	v0,-32480(gp)
+    36e4:	0040c825 	move	t9,v0
+    36e8:	f8190000 	jalrc	t9
+	printf("output: c = msa_cltq_u8(g_v16u8Data, g_v16u8Data1)={");
+    36ec:	df828050 	ld	v0,-32688(gp)
+    36f0:	644462a8 	daddiu	a0,v0,25256
+    36f4:	df828128 	ld	v0,-32472(gp)
+    36f8:	0040c825 	move	t9,v0
+    36fc:	f8190000 	jalrc	t9
+	c = msa_cltq_u8(g_v16u8Data, g_v16u8Data1);
+    3700:	df828038 	ld	v0,-32712(gp)
+    3704:	64426ac0 	daddiu	v0,v0,27328
+    3708:	78001060 	ld.b	$w1,0(v0)
+    370c:	df828038 	ld	v0,-32712(gp)
+    3710:	64426ad0 	daddiu	v0,v0,27344
+    3714:	78001020 	ld.b	$w0,0(v0)
+    3718:	78b0f064 	st.b	$w1,176(s8)
+    371c:	78c0f024 	st.b	$w0,192(s8)
+    3720:	78b0f060 	ld.b	$w1,176(s8)
+    3724:	78c0f020 	ld.b	$w0,192(s8)
+    3728:	7980080f 	clt_u.b	$w0,$w1,$w0
+    372c:	67c20290 	daddiu	v0,s8,656
+    3730:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3734:	a7c00000 	sh	zero,0(s8)
+    3738:	c800000f 	bc	3778 <.L128>
+
+000000000000373c <.L129>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    373c:	87c20000 	lh	v0,0(s8)
+    3740:	67c30290 	daddiu	v1,s8,656
+    3744:	0062102d 	daddu	v0,v1,v0
+    3748:	90420000 	lbu	v0,0(v0)
+    374c:	00402825 	move	a1,v0
+    3750:	df828050 	ld	v0,-32688(gp)
+    3754:	644461a8 	daddiu	a0,v0,25000
+    3758:	df828128 	ld	v0,-32472(gp)
+    375c:	0040c825 	move	t9,v0
+    3760:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3764:	87c20000 	lh	v0,0(s8)
+    3768:	3042ffff 	andi	v0,v0,0xffff
+    376c:	24420001 	addiu	v0,v0,1
+    3770:	3042ffff 	andi	v0,v0,0xffff
+    3774:	a7c20000 	sh	v0,0(s8)
+
+0000000000003778 <.L128>:
+    3778:	87c20000 	lh	v0,0(s8)
+    377c:	2403000f 	li	v1,15
+    3780:	5862ffee 	bgec	v1,v0,373c <.L129>
+	}
+	printf("\b\b\b}\n\n");
+    3784:	df828050 	ld	v0,-32688(gp)
+    3788:	64444c70 	daddiu	a0,v0,19568
+    378c:	df828120 	ld	v0,-32480(gp)
+    3790:	0040c825 	move	t9,v0
+    3794:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    3798:	df828050 	ld	v0,-32688(gp)
+    379c:	64445c08 	daddiu	a0,v0,23560
+    37a0:	df828120 	ld	v0,-32480(gp)
+    37a4:	0040c825 	move	t9,v0
+    37a8:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data)={");
+    37ac:	df828050 	ld	v0,-32688(gp)
+    37b0:	644462e0 	daddiu	a0,v0,25312
+    37b4:	df828128 	ld	v0,-32472(gp)
+    37b8:	0040c825 	move	t9,v0
+    37bc:	f8190000 	jalrc	t9
+	cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data);
+    37c0:	df828038 	ld	v0,-32712(gp)
+    37c4:	64426b20 	daddiu	v0,v0,27424
+    37c8:	78001062 	ld.w	$w1,0(v0)
+    37cc:	df828038 	ld	v0,-32712(gp)
+    37d0:	64426b20 	daddiu	v0,v0,27424
+    37d4:	78001022 	ld.w	$w0,0(v0)
+    37d8:	7834f066 	st.w	$w1,208(s8)
+    37dc:	7838f026 	st.w	$w0,224(s8)
+MSA_CLTQ_IMPL(s8, clt_s_b, v16u8, v16i8)
+MSA_CLTQ_IMPL(u16, clt_u_h, v8u16, v8u16)
+MSA_CLTQ_IMPL(s16, clt_s_h, v8u16, v8i16)
+MSA_CLTQ_IMPL(u32, clt_u_w, v4u32, v4u32)
+MSA_CLTQ_IMPL(s32, clt_s_w, v4u32, v4i32)
+MSA_CLTQ_IMPL(f32, fclt_w, v4u32, v4f32)
+    37e0:	7834f062 	ld.w	$w1,208(s8)
+    37e4:	7838f022 	ld.w	$w0,224(s8)
+    37e8:	7900081a 	fclt.w	$w0,$w1,$w0
+    37ec:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    37f0:	a7c00000 	sh	zero,0(s8)
+    37f4:	c800000f 	bc	3834 <.L131>
+
+00000000000037f8 <.L132>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    37f8:	87c20000 	lh	v0,0(s8)
+    37fc:	000210b8 	dsll	v0,v0,0x2
+    3800:	03c2102d 	daddu	v0,s8,v0
+    3804:	8c4202a0 	lw	v0,672(v0)
+    3808:	00402825 	move	a1,v0
+    380c:	df828050 	ld	v0,-32688(gp)
+    3810:	644461a8 	daddiu	a0,v0,25000
+    3814:	df828128 	ld	v0,-32472(gp)
+    3818:	0040c825 	move	t9,v0
+    381c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3820:	87c20000 	lh	v0,0(s8)
+    3824:	3042ffff 	andi	v0,v0,0xffff
+    3828:	24420001 	addiu	v0,v0,1
+    382c:	3042ffff 	andi	v0,v0,0xffff
+    3830:	a7c20000 	sh	v0,0(s8)
+
+0000000000003834 <.L131>:
+    3834:	87c20000 	lh	v0,0(s8)
+    3838:	24030003 	li	v1,3
+    383c:	5862ffee 	bgec	v1,v0,37f8 <.L132>
+	}
+	printf("\b\b\b}\n");
+    3840:	df828050 	ld	v0,-32688(gp)
+    3844:	64445908 	daddiu	a0,v0,22792
+    3848:	df828120 	ld	v0,-32480(gp)
+    384c:	0040c825 	move	t9,v0
+    3850:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data1)={");
+    3854:	df828050 	ld	v0,-32688(gp)
+    3858:	64446318 	daddiu	a0,v0,25368
+    385c:	df828128 	ld	v0,-32472(gp)
+    3860:	0040c825 	move	t9,v0
+    3864:	f8190000 	jalrc	t9
+	cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data1);
+    3868:	df828038 	ld	v0,-32712(gp)
+    386c:	64426b20 	daddiu	v0,v0,27424
+    3870:	78001062 	ld.w	$w1,0(v0)
+    3874:	df828038 	ld	v0,-32712(gp)
+    3878:	64426b30 	daddiu	v0,v0,27440
+    387c:	78001022 	ld.w	$w0,0(v0)
+    3880:	783cf066 	st.w	$w1,240(s8)
+    3884:	7840f026 	st.w	$w0,256(s8)
+    3888:	783cf062 	ld.w	$w1,240(s8)
+    388c:	7840f022 	ld.w	$w0,256(s8)
+    3890:	7900081a 	fclt.w	$w0,$w1,$w0
+    3894:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    3898:	a7c00000 	sh	zero,0(s8)
+    389c:	c800000f 	bc	38dc <.L134>
+
+00000000000038a0 <.L135>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    38a0:	87c20000 	lh	v0,0(s8)
+    38a4:	000210b8 	dsll	v0,v0,0x2
+    38a8:	03c2102d 	daddu	v0,s8,v0
+    38ac:	8c4202a0 	lw	v0,672(v0)
+    38b0:	00402825 	move	a1,v0
+    38b4:	df828050 	ld	v0,-32688(gp)
+    38b8:	644461a8 	daddiu	a0,v0,25000
+    38bc:	df828128 	ld	v0,-32472(gp)
+    38c0:	0040c825 	move	t9,v0
+    38c4:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    38c8:	87c20000 	lh	v0,0(s8)
+    38cc:	3042ffff 	andi	v0,v0,0xffff
+    38d0:	24420001 	addiu	v0,v0,1
+    38d4:	3042ffff 	andi	v0,v0,0xffff
+    38d8:	a7c20000 	sh	v0,0(s8)
+
+00000000000038dc <.L134>:
+    38dc:	87c20000 	lh	v0,0(s8)
+    38e0:	24030003 	li	v1,3
+    38e4:	5862ffee 	bgec	v1,v0,38a0 <.L135>
+	}
+	printf("\b\b\b}\n\n");
+    38e8:	df828050 	ld	v0,-32688(gp)
+    38ec:	64444c70 	daddiu	a0,v0,19568
+    38f0:	df828120 	ld	v0,-32480(gp)
+    38f4:	0040c825 	move	t9,v0
+    38f8:	f8190000 	jalrc	t9
+
+  ////test msa_cgtq
+	printf("====test msa_cgtq=====\n");
+    38fc:	df828050 	ld	v0,-32688(gp)
+    3900:	64446350 	daddiu	a0,v0,25424
+    3904:	df828120 	ld	v0,-32480(gp)
+    3908:	0040c825 	move	t9,v0
+    390c:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    3910:	df828050 	ld	v0,-32688(gp)
+    3914:	64445360 	daddiu	a0,v0,21344
+    3918:	df828120 	ld	v0,-32480(gp)
+    391c:	0040c825 	move	t9,v0
+    3920:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}\n");
+    3924:	df828050 	ld	v0,-32688(gp)
+    3928:	64446108 	daddiu	a0,v0,24840
+    392c:	df828120 	ld	v0,-32480(gp)
+    3930:	0040c825 	move	t9,v0
+    3934:	f8190000 	jalrc	t9
+	printf("output: c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data)={");
+    3938:	df828050 	ld	v0,-32688(gp)
+    393c:	64446368 	daddiu	a0,v0,25448
+    3940:	df828128 	ld	v0,-32472(gp)
+    3944:	0040c825 	move	t9,v0
+    3948:	f8190000 	jalrc	t9
+	c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data);
+    394c:	df828038 	ld	v0,-32712(gp)
+    3950:	64426ac0 	daddiu	v0,v0,27328
+    3954:	78001060 	ld.b	$w1,0(v0)
+    3958:	df828038 	ld	v0,-32712(gp)
+    395c:	64426ac0 	daddiu	v0,v0,27328
+    3960:	78001020 	ld.b	$w0,0(v0)
+    3964:	7910f064 	st.b	$w1,272(s8)
+    3968:	7920f024 	st.b	$w0,288(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_cgtq_##suffix1 (type __a, type __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2(__b, __a); \
+}
+MSA_CGTQ_IMPL(u8, clt_u_b, v16u8, v16u8)
+    396c:	7920f060 	ld.b	$w1,288(s8)
+    3970:	7910f020 	ld.b	$w0,272(s8)
+    3974:	7980080f 	clt_u.b	$w0,$w1,$w0
+    3978:	67c20290 	daddiu	v0,s8,656
+    397c:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3980:	a7c00000 	sh	zero,0(s8)
+    3984:	c800000f 	bc	39c4 <.L137>
+
+0000000000003988 <.L138>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3988:	87c20000 	lh	v0,0(s8)
+    398c:	67c30290 	daddiu	v1,s8,656
+    3990:	0062102d 	daddu	v0,v1,v0
+    3994:	90420000 	lbu	v0,0(v0)
+    3998:	00402825 	move	a1,v0
+    399c:	df828050 	ld	v0,-32688(gp)
+    39a0:	644461a8 	daddiu	a0,v0,25000
+    39a4:	df828128 	ld	v0,-32472(gp)
+    39a8:	0040c825 	move	t9,v0
+    39ac:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    39b0:	87c20000 	lh	v0,0(s8)
+    39b4:	3042ffff 	andi	v0,v0,0xffff
+    39b8:	24420001 	addiu	v0,v0,1
+    39bc:	3042ffff 	andi	v0,v0,0xffff
+    39c0:	a7c20000 	sh	v0,0(s8)
+
+00000000000039c4 <.L137>:
+    39c4:	87c20000 	lh	v0,0(s8)
+    39c8:	2403000f 	li	v1,15
+    39cc:	5862ffee 	bgec	v1,v0,3988 <.L138>
+	}
+	printf("\b\b\b}\n");
+    39d0:	df828050 	ld	v0,-32688(gp)
+    39d4:	64445908 	daddiu	a0,v0,22792
+    39d8:	df828120 	ld	v0,-32480(gp)
+    39dc:	0040c825 	move	t9,v0
+    39e0:	f8190000 	jalrc	t9
+	printf("output: c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data1)={");
+    39e4:	df828050 	ld	v0,-32688(gp)
+    39e8:	644463a0 	daddiu	a0,v0,25504
+    39ec:	df828128 	ld	v0,-32472(gp)
+    39f0:	0040c825 	move	t9,v0
+    39f4:	f8190000 	jalrc	t9
+	c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data1);
+    39f8:	df828038 	ld	v0,-32712(gp)
+    39fc:	64426ac0 	daddiu	v0,v0,27328
+    3a00:	78001060 	ld.b	$w1,0(v0)
+    3a04:	df828038 	ld	v0,-32712(gp)
+    3a08:	64426ad0 	daddiu	v0,v0,27344
+    3a0c:	78001020 	ld.b	$w0,0(v0)
+    3a10:	7930f064 	st.b	$w1,304(s8)
+    3a14:	7940f024 	st.b	$w0,320(s8)
+    3a18:	7940f060 	ld.b	$w1,320(s8)
+    3a1c:	7930f020 	ld.b	$w0,304(s8)
+    3a20:	7980080f 	clt_u.b	$w0,$w1,$w0
+    3a24:	67c20290 	daddiu	v0,s8,656
+    3a28:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3a2c:	a7c00000 	sh	zero,0(s8)
+    3a30:	c800000f 	bc	3a70 <.L140>
+
+0000000000003a34 <.L141>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3a34:	87c20000 	lh	v0,0(s8)
+    3a38:	67c30290 	daddiu	v1,s8,656
+    3a3c:	0062102d 	daddu	v0,v1,v0
+    3a40:	90420000 	lbu	v0,0(v0)
+    3a44:	00402825 	move	a1,v0
+    3a48:	df828050 	ld	v0,-32688(gp)
+    3a4c:	644461a8 	daddiu	a0,v0,25000
+    3a50:	df828128 	ld	v0,-32472(gp)
+    3a54:	0040c825 	move	t9,v0
+    3a58:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3a5c:	87c20000 	lh	v0,0(s8)
+    3a60:	3042ffff 	andi	v0,v0,0xffff
+    3a64:	24420001 	addiu	v0,v0,1
+    3a68:	3042ffff 	andi	v0,v0,0xffff
+    3a6c:	a7c20000 	sh	v0,0(s8)
+
+0000000000003a70 <.L140>:
+    3a70:	87c20000 	lh	v0,0(s8)
+    3a74:	2403000f 	li	v1,15
+    3a78:	5862ffee 	bgec	v1,v0,3a34 <.L141>
+	}
+	printf("\b\b\b}\n\n");
+    3a7c:	df828050 	ld	v0,-32688(gp)
+    3a80:	64444c70 	daddiu	a0,v0,19568
+    3a84:	df828120 	ld	v0,-32480(gp)
+    3a88:	0040c825 	move	t9,v0
+    3a8c:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    3a90:	df828050 	ld	v0,-32688(gp)
+    3a94:	64445c08 	daddiu	a0,v0,23560
+    3a98:	df828120 	ld	v0,-32480(gp)
+    3a9c:	0040c825 	move	t9,v0
+    3aa0:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data)={");
+    3aa4:	df828050 	ld	v0,-32688(gp)
+    3aa8:	644463d8 	daddiu	a0,v0,25560
+    3aac:	df828128 	ld	v0,-32472(gp)
+    3ab0:	0040c825 	move	t9,v0
+    3ab4:	f8190000 	jalrc	t9
+	cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data);
+    3ab8:	df828038 	ld	v0,-32712(gp)
+    3abc:	64426b20 	daddiu	v0,v0,27424
+    3ac0:	78001062 	ld.w	$w1,0(v0)
+    3ac4:	df828038 	ld	v0,-32712(gp)
+    3ac8:	64426b20 	daddiu	v0,v0,27424
+    3acc:	78001022 	ld.w	$w0,0(v0)
+    3ad0:	7854f066 	st.w	$w1,336(s8)
+    3ad4:	7858f026 	st.w	$w0,352(s8)
+MSA_CGTQ_IMPL(s8, clt_s_b, v16u8, v16i8)
+MSA_CGTQ_IMPL(u16, clt_u_h, v8u16, v8u16)
+MSA_CGTQ_IMPL(s16, clt_s_h, v8u16, v8i16)
+MSA_CGTQ_IMPL(u32, clt_u_w, v4u32, v4u32)
+MSA_CGTQ_IMPL(s32, clt_s_w, v4u32, v4i32)
+MSA_CGTQ_IMPL(f32, fclt_w, v4u32, v4f32)
+    3ad8:	7858f062 	ld.w	$w1,352(s8)
+    3adc:	7854f022 	ld.w	$w0,336(s8)
+    3ae0:	7900081a 	fclt.w	$w0,$w1,$w0
+    3ae4:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    3ae8:	a7c00000 	sh	zero,0(s8)
+    3aec:	c800000f 	bc	3b2c <.L143>
+
+0000000000003af0 <.L144>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    3af0:	87c20000 	lh	v0,0(s8)
+    3af4:	000210b8 	dsll	v0,v0,0x2
+    3af8:	03c2102d 	daddu	v0,s8,v0
+    3afc:	8c4202a0 	lw	v0,672(v0)
+    3b00:	00402825 	move	a1,v0
+    3b04:	df828050 	ld	v0,-32688(gp)
+    3b08:	644461a8 	daddiu	a0,v0,25000
+    3b0c:	df828128 	ld	v0,-32472(gp)
+    3b10:	0040c825 	move	t9,v0
+    3b14:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3b18:	87c20000 	lh	v0,0(s8)
+    3b1c:	3042ffff 	andi	v0,v0,0xffff
+    3b20:	24420001 	addiu	v0,v0,1
+    3b24:	3042ffff 	andi	v0,v0,0xffff
+    3b28:	a7c20000 	sh	v0,0(s8)
+
+0000000000003b2c <.L143>:
+    3b2c:	87c20000 	lh	v0,0(s8)
+    3b30:	24030003 	li	v1,3
+    3b34:	5862ffee 	bgec	v1,v0,3af0 <.L144>
+	}
+	printf("\b\b\b}\n");
+    3b38:	df828050 	ld	v0,-32688(gp)
+    3b3c:	64445908 	daddiu	a0,v0,22792
+    3b40:	df828120 	ld	v0,-32480(gp)
+    3b44:	0040c825 	move	t9,v0
+    3b48:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data1)={");
+    3b4c:	df828050 	ld	v0,-32688(gp)
+    3b50:	64446410 	daddiu	a0,v0,25616
+    3b54:	df828128 	ld	v0,-32472(gp)
+    3b58:	0040c825 	move	t9,v0
+    3b5c:	f8190000 	jalrc	t9
+	cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data1);
+    3b60:	df828038 	ld	v0,-32712(gp)
+    3b64:	64426b20 	daddiu	v0,v0,27424
+    3b68:	78001062 	ld.w	$w1,0(v0)
+    3b6c:	df828038 	ld	v0,-32712(gp)
+    3b70:	64426b30 	daddiu	v0,v0,27440
+    3b74:	78001022 	ld.w	$w0,0(v0)
+    3b78:	785cf066 	st.w	$w1,368(s8)
+    3b7c:	7860f026 	st.w	$w0,384(s8)
+    3b80:	7860f062 	ld.w	$w1,384(s8)
+    3b84:	785cf022 	ld.w	$w0,368(s8)
+    3b88:	7900081a 	fclt.w	$w0,$w1,$w0
+    3b8c:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    3b90:	a7c00000 	sh	zero,0(s8)
+    3b94:	c800000f 	bc	3bd4 <.L146>
+
+0000000000003b98 <.L147>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    3b98:	87c20000 	lh	v0,0(s8)
+    3b9c:	000210b8 	dsll	v0,v0,0x2
+    3ba0:	03c2102d 	daddu	v0,s8,v0
+    3ba4:	8c4202a0 	lw	v0,672(v0)
+    3ba8:	00402825 	move	a1,v0
+    3bac:	df828050 	ld	v0,-32688(gp)
+    3bb0:	644461a8 	daddiu	a0,v0,25000
+    3bb4:	df828128 	ld	v0,-32472(gp)
+    3bb8:	0040c825 	move	t9,v0
+    3bbc:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3bc0:	87c20000 	lh	v0,0(s8)
+    3bc4:	3042ffff 	andi	v0,v0,0xffff
+    3bc8:	24420001 	addiu	v0,v0,1
+    3bcc:	3042ffff 	andi	v0,v0,0xffff
+    3bd0:	a7c20000 	sh	v0,0(s8)
+
+0000000000003bd4 <.L146>:
+    3bd4:	87c20000 	lh	v0,0(s8)
+    3bd8:	24030003 	li	v1,3
+    3bdc:	5862ffee 	bgec	v1,v0,3b98 <.L147>
+	}
+	printf("\b\b\b}\n\n");
+    3be0:	df828050 	ld	v0,-32688(gp)
+    3be4:	64444c70 	daddiu	a0,v0,19568
+    3be8:	df828120 	ld	v0,-32480(gp)
+    3bec:	0040c825 	move	t9,v0
+    3bf0:	f8190000 	jalrc	t9
+
+  ////test msa_cleq
+	printf("====test msa_cleq=====\n");
+    3bf4:	df828050 	ld	v0,-32688(gp)
+    3bf8:	64446448 	daddiu	a0,v0,25672
+    3bfc:	df828120 	ld	v0,-32480(gp)
+    3c00:	0040c825 	move	t9,v0
+    3c04:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    3c08:	df828050 	ld	v0,-32688(gp)
+    3c0c:	64445360 	daddiu	a0,v0,21344
+    3c10:	df828120 	ld	v0,-32480(gp)
+    3c14:	0040c825 	move	t9,v0
+    3c18:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}\n");
+    3c1c:	df828050 	ld	v0,-32688(gp)
+    3c20:	64446108 	daddiu	a0,v0,24840
+    3c24:	df828120 	ld	v0,-32480(gp)
+    3c28:	0040c825 	move	t9,v0
+    3c2c:	f8190000 	jalrc	t9
+	printf("output: c = msa_cleq_u8(g_v16u8Data, g_v16u8Data)={");
+    3c30:	df828050 	ld	v0,-32688(gp)
+    3c34:	64446460 	daddiu	a0,v0,25696
+    3c38:	df828128 	ld	v0,-32472(gp)
+    3c3c:	0040c825 	move	t9,v0
+    3c40:	f8190000 	jalrc	t9
+	c = msa_cleq_u8(g_v16u8Data, g_v16u8Data);
+    3c44:	df828038 	ld	v0,-32712(gp)
+    3c48:	64426ac0 	daddiu	v0,v0,27328
+    3c4c:	78001060 	ld.b	$w1,0(v0)
+    3c50:	df828038 	ld	v0,-32712(gp)
+    3c54:	64426ac0 	daddiu	v0,v0,27328
+    3c58:	78001020 	ld.b	$w0,0(v0)
+    3c5c:	7990f064 	st.b	$w1,400(s8)
+    3c60:	79a0f024 	st.b	$w0,416(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_cleq_##suffix1 (type __a, type __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2(__a, __b); \
+}
+MSA_CLEQ_IMPL(u8, cle_u_b, v16u8, v16u8)
+    3c64:	7990f060 	ld.b	$w1,400(s8)
+    3c68:	79a0f020 	ld.b	$w0,416(s8)
+    3c6c:	7a80080f 	cle_u.b	$w0,$w1,$w0
+    3c70:	67c20290 	daddiu	v0,s8,656
+    3c74:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3c78:	a7c00000 	sh	zero,0(s8)
+    3c7c:	c800000f 	bc	3cbc <.L149>
+
+0000000000003c80 <.L150>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3c80:	87c20000 	lh	v0,0(s8)
+    3c84:	67c30290 	daddiu	v1,s8,656
+    3c88:	0062102d 	daddu	v0,v1,v0
+    3c8c:	90420000 	lbu	v0,0(v0)
+    3c90:	00402825 	move	a1,v0
+    3c94:	df828050 	ld	v0,-32688(gp)
+    3c98:	644461a8 	daddiu	a0,v0,25000
+    3c9c:	df828128 	ld	v0,-32472(gp)
+    3ca0:	0040c825 	move	t9,v0
+    3ca4:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3ca8:	87c20000 	lh	v0,0(s8)
+    3cac:	3042ffff 	andi	v0,v0,0xffff
+    3cb0:	24420001 	addiu	v0,v0,1
+    3cb4:	3042ffff 	andi	v0,v0,0xffff
+    3cb8:	a7c20000 	sh	v0,0(s8)
+
+0000000000003cbc <.L149>:
+    3cbc:	87c20000 	lh	v0,0(s8)
+    3cc0:	2403000f 	li	v1,15
+    3cc4:	5862ffee 	bgec	v1,v0,3c80 <.L150>
+	}
+	printf("\b\b\b}\n");
+    3cc8:	df828050 	ld	v0,-32688(gp)
+    3ccc:	64445908 	daddiu	a0,v0,22792
+    3cd0:	df828120 	ld	v0,-32480(gp)
+    3cd4:	0040c825 	move	t9,v0
+    3cd8:	f8190000 	jalrc	t9
+	printf("output: c = msa_cleq_u8(g_v16u8Data, g_v16u8Data1)={");
+    3cdc:	df828050 	ld	v0,-32688(gp)
+    3ce0:	64446498 	daddiu	a0,v0,25752
+    3ce4:	df828128 	ld	v0,-32472(gp)
+    3ce8:	0040c825 	move	t9,v0
+    3cec:	f8190000 	jalrc	t9
+	c = msa_cleq_u8(g_v16u8Data, g_v16u8Data1);
+    3cf0:	df828038 	ld	v0,-32712(gp)
+    3cf4:	64426ac0 	daddiu	v0,v0,27328
+    3cf8:	78001060 	ld.b	$w1,0(v0)
+    3cfc:	df828038 	ld	v0,-32712(gp)
+    3d00:	64426ad0 	daddiu	v0,v0,27344
+    3d04:	78001020 	ld.b	$w0,0(v0)
+    3d08:	79b0f064 	st.b	$w1,432(s8)
+    3d0c:	79c0f024 	st.b	$w0,448(s8)
+    3d10:	79b0f060 	ld.b	$w1,432(s8)
+    3d14:	79c0f020 	ld.b	$w0,448(s8)
+    3d18:	7a80080f 	cle_u.b	$w0,$w1,$w0
+    3d1c:	67c20290 	daddiu	v0,s8,656
+    3d20:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3d24:	a7c00000 	sh	zero,0(s8)
+    3d28:	c800000f 	bc	3d68 <.L152>
+
+0000000000003d2c <.L153>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3d2c:	87c20000 	lh	v0,0(s8)
+    3d30:	67c30290 	daddiu	v1,s8,656
+    3d34:	0062102d 	daddu	v0,v1,v0
+    3d38:	90420000 	lbu	v0,0(v0)
+    3d3c:	00402825 	move	a1,v0
+    3d40:	df828050 	ld	v0,-32688(gp)
+    3d44:	644461a8 	daddiu	a0,v0,25000
+    3d48:	df828128 	ld	v0,-32472(gp)
+    3d4c:	0040c825 	move	t9,v0
+    3d50:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3d54:	87c20000 	lh	v0,0(s8)
+    3d58:	3042ffff 	andi	v0,v0,0xffff
+    3d5c:	24420001 	addiu	v0,v0,1
+    3d60:	3042ffff 	andi	v0,v0,0xffff
+    3d64:	a7c20000 	sh	v0,0(s8)
+
+0000000000003d68 <.L152>:
+    3d68:	87c20000 	lh	v0,0(s8)
+    3d6c:	2403000f 	li	v1,15
+    3d70:	5862ffee 	bgec	v1,v0,3d2c <.L153>
+	}
+	printf("\b\b\b}\n\n");
+    3d74:	df828050 	ld	v0,-32688(gp)
+    3d78:	64444c70 	daddiu	a0,v0,19568
+    3d7c:	df828120 	ld	v0,-32480(gp)
+    3d80:	0040c825 	move	t9,v0
+    3d84:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    3d88:	df828050 	ld	v0,-32688(gp)
+    3d8c:	64445c08 	daddiu	a0,v0,23560
+    3d90:	df828120 	ld	v0,-32480(gp)
+    3d94:	0040c825 	move	t9,v0
+    3d98:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data)={");
+    3d9c:	df828050 	ld	v0,-32688(gp)
+    3da0:	644464d0 	daddiu	a0,v0,25808
+    3da4:	df828128 	ld	v0,-32472(gp)
+    3da8:	0040c825 	move	t9,v0
+    3dac:	f8190000 	jalrc	t9
+	cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data);
+    3db0:	df828038 	ld	v0,-32712(gp)
+    3db4:	64426b20 	daddiu	v0,v0,27424
+    3db8:	78001062 	ld.w	$w1,0(v0)
+    3dbc:	df828038 	ld	v0,-32712(gp)
+    3dc0:	64426b20 	daddiu	v0,v0,27424
+    3dc4:	78001022 	ld.w	$w0,0(v0)
+    3dc8:	7874f066 	st.w	$w1,464(s8)
+    3dcc:	7878f026 	st.w	$w0,480(s8)
+MSA_CLEQ_IMPL(s8, cle_s_b, v16u8, v16i8)
+MSA_CLEQ_IMPL(u16, cle_u_h, v8u16, v8u16)
+MSA_CLEQ_IMPL(s16, cle_s_h, v8u16, v8i16)
+MSA_CLEQ_IMPL(u32, cle_u_w, v4u32, v4u32)
+MSA_CLEQ_IMPL(s32, cle_s_w, v4u32, v4i32)
+MSA_CLEQ_IMPL(f32, fcle_w, v4u32, v4f32)
+    3dd0:	7874f062 	ld.w	$w1,464(s8)
+    3dd4:	7878f022 	ld.w	$w0,480(s8)
+    3dd8:	7980081a 	fcle.w	$w0,$w1,$w0
+    3ddc:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    3de0:	a7c00000 	sh	zero,0(s8)
+    3de4:	c800000f 	bc	3e24 <.L155>
+
+0000000000003de8 <.L156>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    3de8:	87c20000 	lh	v0,0(s8)
+    3dec:	000210b8 	dsll	v0,v0,0x2
+    3df0:	03c2102d 	daddu	v0,s8,v0
+    3df4:	8c4202a0 	lw	v0,672(v0)
+    3df8:	00402825 	move	a1,v0
+    3dfc:	df828050 	ld	v0,-32688(gp)
+    3e00:	644461a8 	daddiu	a0,v0,25000
+    3e04:	df828128 	ld	v0,-32472(gp)
+    3e08:	0040c825 	move	t9,v0
+    3e0c:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3e10:	87c20000 	lh	v0,0(s8)
+    3e14:	3042ffff 	andi	v0,v0,0xffff
+    3e18:	24420001 	addiu	v0,v0,1
+    3e1c:	3042ffff 	andi	v0,v0,0xffff
+    3e20:	a7c20000 	sh	v0,0(s8)
+
+0000000000003e24 <.L155>:
+    3e24:	87c20000 	lh	v0,0(s8)
+    3e28:	24030003 	li	v1,3
+    3e2c:	5862ffee 	bgec	v1,v0,3de8 <.L156>
+	}
+	printf("\b\b\b}\n");
+    3e30:	df828050 	ld	v0,-32688(gp)
+    3e34:	64445908 	daddiu	a0,v0,22792
+    3e38:	df828120 	ld	v0,-32480(gp)
+    3e3c:	0040c825 	move	t9,v0
+    3e40:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data1)={");
+    3e44:	df828050 	ld	v0,-32688(gp)
+    3e48:	64446508 	daddiu	a0,v0,25864
+    3e4c:	df828128 	ld	v0,-32472(gp)
+    3e50:	0040c825 	move	t9,v0
+    3e54:	f8190000 	jalrc	t9
+	cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data1);
+    3e58:	df828038 	ld	v0,-32712(gp)
+    3e5c:	64426b20 	daddiu	v0,v0,27424
+    3e60:	78001062 	ld.w	$w1,0(v0)
+    3e64:	df828038 	ld	v0,-32712(gp)
+    3e68:	64426b30 	daddiu	v0,v0,27440
+    3e6c:	78001022 	ld.w	$w0,0(v0)
+    3e70:	787cf066 	st.w	$w1,496(s8)
+    3e74:	7880f026 	st.w	$w0,512(s8)
+    3e78:	787cf062 	ld.w	$w1,496(s8)
+    3e7c:	7880f022 	ld.w	$w0,512(s8)
+    3e80:	7980081a 	fcle.w	$w0,$w1,$w0
+    3e84:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    3e88:	a7c00000 	sh	zero,0(s8)
+    3e8c:	c800000f 	bc	3ecc <.L158>
+
+0000000000003e90 <.L159>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    3e90:	87c20000 	lh	v0,0(s8)
+    3e94:	000210b8 	dsll	v0,v0,0x2
+    3e98:	03c2102d 	daddu	v0,s8,v0
+    3e9c:	8c4202a0 	lw	v0,672(v0)
+    3ea0:	00402825 	move	a1,v0
+    3ea4:	df828050 	ld	v0,-32688(gp)
+    3ea8:	644461a8 	daddiu	a0,v0,25000
+    3eac:	df828128 	ld	v0,-32472(gp)
+    3eb0:	0040c825 	move	t9,v0
+    3eb4:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    3eb8:	87c20000 	lh	v0,0(s8)
+    3ebc:	3042ffff 	andi	v0,v0,0xffff
+    3ec0:	24420001 	addiu	v0,v0,1
+    3ec4:	3042ffff 	andi	v0,v0,0xffff
+    3ec8:	a7c20000 	sh	v0,0(s8)
+
+0000000000003ecc <.L158>:
+    3ecc:	87c20000 	lh	v0,0(s8)
+    3ed0:	24030003 	li	v1,3
+    3ed4:	5862ffee 	bgec	v1,v0,3e90 <.L159>
+	}
+	printf("\b\b\b}\n\n");
+    3ed8:	df828050 	ld	v0,-32688(gp)
+    3edc:	64444c70 	daddiu	a0,v0,19568
+    3ee0:	df828120 	ld	v0,-32480(gp)
+    3ee4:	0040c825 	move	t9,v0
+    3ee8:	f8190000 	jalrc	t9
+
+  ////test msa_cgeq
+	printf("====test msa_cgeq=====\n");
+    3eec:	df828050 	ld	v0,-32688(gp)
+    3ef0:	64446540 	daddiu	a0,v0,25920
+    3ef4:	df828120 	ld	v0,-32480(gp)
+    3ef8:	0040c825 	move	t9,v0
+    3efc:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}\n");
+    3f00:	df828050 	ld	v0,-32688(gp)
+    3f04:	64445360 	daddiu	a0,v0,21344
+    3f08:	df828120 	ld	v0,-32480(gp)
+    3f0c:	0040c825 	move	t9,v0
+    3f10:	f8190000 	jalrc	t9
+	printf("input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}\n");
+    3f14:	df828050 	ld	v0,-32688(gp)
+    3f18:	64446108 	daddiu	a0,v0,24840
+    3f1c:	df828120 	ld	v0,-32480(gp)
+    3f20:	0040c825 	move	t9,v0
+    3f24:	f8190000 	jalrc	t9
+	printf("output: c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data)={");
+    3f28:	df828050 	ld	v0,-32688(gp)
+    3f2c:	64446558 	daddiu	a0,v0,25944
+    3f30:	df828128 	ld	v0,-32472(gp)
+    3f34:	0040c825 	move	t9,v0
+    3f38:	f8190000 	jalrc	t9
+	c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data);
+    3f3c:	df828038 	ld	v0,-32712(gp)
+    3f40:	64426ac0 	daddiu	v0,v0,27328
+    3f44:	78001060 	ld.b	$w1,0(v0)
+    3f48:	df828038 	ld	v0,-32712(gp)
+    3f4c:	64426ac0 	daddiu	v0,v0,27328
+    3f50:	78001020 	ld.b	$w0,0(v0)
+    3f54:	67c20210 	daddiu	v0,s8,528
+    3f58:	78001064 	st.b	$w1,0(v0)
+    3f5c:	67c20220 	daddiu	v0,s8,544
+    3f60:	78001024 	st.b	$w0,0(v0)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_cgeq_##suffix1 (type __a, type __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2(__b, __a); \
+}
+MSA_CGEQ_IMPL(u8, cle_u_b, v16u8, v16u8)
+    3f64:	67c30220 	daddiu	v1,s8,544
+    3f68:	67c20210 	daddiu	v0,s8,528
+    3f6c:	78001860 	ld.b	$w1,0(v1)
+    3f70:	78001020 	ld.b	$w0,0(v0)
+    3f74:	7a80080f 	cle_u.b	$w0,$w1,$w0
+    3f78:	67c20290 	daddiu	v0,s8,656
+    3f7c:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    3f80:	a7c00000 	sh	zero,0(s8)
+    3f84:	c800000f 	bc	3fc4 <.L161>
+
+0000000000003f88 <.L162>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    3f88:	87c20000 	lh	v0,0(s8)
+    3f8c:	67c30290 	daddiu	v1,s8,656
+    3f90:	0062102d 	daddu	v0,v1,v0
+    3f94:	90420000 	lbu	v0,0(v0)
+    3f98:	00402825 	move	a1,v0
+    3f9c:	df828050 	ld	v0,-32688(gp)
+    3fa0:	644461a8 	daddiu	a0,v0,25000
+    3fa4:	df828128 	ld	v0,-32472(gp)
+    3fa8:	0040c825 	move	t9,v0
+    3fac:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    3fb0:	87c20000 	lh	v0,0(s8)
+    3fb4:	3042ffff 	andi	v0,v0,0xffff
+    3fb8:	24420001 	addiu	v0,v0,1
+    3fbc:	3042ffff 	andi	v0,v0,0xffff
+    3fc0:	a7c20000 	sh	v0,0(s8)
+
+0000000000003fc4 <.L161>:
+    3fc4:	87c20000 	lh	v0,0(s8)
+    3fc8:	2403000f 	li	v1,15
+    3fcc:	5862ffee 	bgec	v1,v0,3f88 <.L162>
+	}
+	printf("\b\b\b}\n");
+    3fd0:	df828050 	ld	v0,-32688(gp)
+    3fd4:	64445908 	daddiu	a0,v0,22792
+    3fd8:	df828120 	ld	v0,-32480(gp)
+    3fdc:	0040c825 	move	t9,v0
+    3fe0:	f8190000 	jalrc	t9
+	printf("output: c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data1)={");
+    3fe4:	df828050 	ld	v0,-32688(gp)
+    3fe8:	64446590 	daddiu	a0,v0,26000
+    3fec:	df828128 	ld	v0,-32472(gp)
+    3ff0:	0040c825 	move	t9,v0
+    3ff4:	f8190000 	jalrc	t9
+	c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data1);
+    3ff8:	df828038 	ld	v0,-32712(gp)
+    3ffc:	64426ac0 	daddiu	v0,v0,27328
+    4000:	78001060 	ld.b	$w1,0(v0)
+    4004:	df828038 	ld	v0,-32712(gp)
+    4008:	64426ad0 	daddiu	v0,v0,27344
+    400c:	78001020 	ld.b	$w0,0(v0)
+    4010:	67c20230 	daddiu	v0,s8,560
+    4014:	78001064 	st.b	$w1,0(v0)
+    4018:	67c20240 	daddiu	v0,s8,576
+    401c:	78001024 	st.b	$w0,0(v0)
+    4020:	67c30240 	daddiu	v1,s8,576
+    4024:	67c20230 	daddiu	v0,s8,560
+    4028:	78001860 	ld.b	$w1,0(v1)
+    402c:	78001020 	ld.b	$w0,0(v0)
+    4030:	7a80080f 	cle_u.b	$w0,$w1,$w0
+    4034:	67c20290 	daddiu	v0,s8,656
+    4038:	78001024 	st.b	$w0,0(v0)
+	for(i=0; i<16; i++) {
+    403c:	a7c00000 	sh	zero,0(s8)
+    4040:	c800000f 	bc	4080 <.L164>
+
+0000000000004044 <.L165>:
+		printf("0x%x,  ", (uint8_t)c[i]);
+    4044:	87c20000 	lh	v0,0(s8)
+    4048:	67c30290 	daddiu	v1,s8,656
+    404c:	0062102d 	daddu	v0,v1,v0
+    4050:	90420000 	lbu	v0,0(v0)
+    4054:	00402825 	move	a1,v0
+    4058:	df828050 	ld	v0,-32688(gp)
+    405c:	644461a8 	daddiu	a0,v0,25000
+    4060:	df828128 	ld	v0,-32472(gp)
+    4064:	0040c825 	move	t9,v0
+    4068:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    406c:	87c20000 	lh	v0,0(s8)
+    4070:	3042ffff 	andi	v0,v0,0xffff
+    4074:	24420001 	addiu	v0,v0,1
+    4078:	3042ffff 	andi	v0,v0,0xffff
+    407c:	a7c20000 	sh	v0,0(s8)
+
+0000000000004080 <.L164>:
+    4080:	87c20000 	lh	v0,0(s8)
+    4084:	2403000f 	li	v1,15
+    4088:	5862ffee 	bgec	v1,v0,4044 <.L165>
+	}
+	printf("\b\b\b}\n\n");
+    408c:	df828050 	ld	v0,-32688(gp)
+    4090:	64444c70 	daddiu	a0,v0,19568
+    4094:	df828120 	ld	v0,-32480(gp)
+    4098:	0040c825 	move	t9,v0
+    409c:	f8190000 	jalrc	t9
+
+	printf("input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}\n");
+    40a0:	df828050 	ld	v0,-32688(gp)
+    40a4:	64445c08 	daddiu	a0,v0,23560
+    40a8:	df828120 	ld	v0,-32480(gp)
+    40ac:	0040c825 	move	t9,v0
+    40b0:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data)={");
+    40b4:	df828050 	ld	v0,-32688(gp)
+    40b8:	644465c8 	daddiu	a0,v0,26056
+    40bc:	df828128 	ld	v0,-32472(gp)
+    40c0:	0040c825 	move	t9,v0
+    40c4:	f8190000 	jalrc	t9
+	cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data);
+    40c8:	df828038 	ld	v0,-32712(gp)
+    40cc:	64426b20 	daddiu	v0,v0,27424
+    40d0:	78001062 	ld.w	$w1,0(v0)
+    40d4:	df828038 	ld	v0,-32712(gp)
+    40d8:	64426b20 	daddiu	v0,v0,27424
+    40dc:	78001022 	ld.w	$w0,0(v0)
+    40e0:	7894f066 	st.w	$w1,592(s8)
+    40e4:	7898f026 	st.w	$w0,608(s8)
+MSA_CGEQ_IMPL(s8, cle_s_b, v16u8, v16i8)
+MSA_CGEQ_IMPL(u16, cle_u_h, v8u16, v8u16)
+MSA_CGEQ_IMPL(s16, cle_s_h, v8u16, v8i16)
+MSA_CGEQ_IMPL(u32, cle_u_w, v4u32, v4u32)
+MSA_CGEQ_IMPL(s32, cle_s_w, v4u32, v4i32)
+MSA_CGEQ_IMPL(f32, fcle_w, v4u32, v4f32)
+    40e8:	7898f062 	ld.w	$w1,608(s8)
+    40ec:	7894f022 	ld.w	$w0,592(s8)
+    40f0:	7980081a 	fcle.w	$w0,$w1,$w0
+    40f4:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    40f8:	a7c00000 	sh	zero,0(s8)
+    40fc:	c800000f 	bc	413c <.L167>
+
+0000000000004100 <.L168>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    4100:	87c20000 	lh	v0,0(s8)
+    4104:	000210b8 	dsll	v0,v0,0x2
+    4108:	03c2102d 	daddu	v0,s8,v0
+    410c:	8c4202a0 	lw	v0,672(v0)
+    4110:	00402825 	move	a1,v0
+    4114:	df828050 	ld	v0,-32688(gp)
+    4118:	644461a8 	daddiu	a0,v0,25000
+    411c:	df828128 	ld	v0,-32472(gp)
+    4120:	0040c825 	move	t9,v0
+    4124:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    4128:	87c20000 	lh	v0,0(s8)
+    412c:	3042ffff 	andi	v0,v0,0xffff
+    4130:	24420001 	addiu	v0,v0,1
+    4134:	3042ffff 	andi	v0,v0,0xffff
+    4138:	a7c20000 	sh	v0,0(s8)
+
+000000000000413c <.L167>:
+    413c:	87c20000 	lh	v0,0(s8)
+    4140:	24030003 	li	v1,3
+    4144:	5862ffee 	bgec	v1,v0,4100 <.L168>
+	}
+	printf("\b\b\b}\n");
+    4148:	df828050 	ld	v0,-32688(gp)
+    414c:	64445908 	daddiu	a0,v0,22792
+    4150:	df828120 	ld	v0,-32480(gp)
+    4154:	0040c825 	move	t9,v0
+    4158:	f8190000 	jalrc	t9
+	printf("output: cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data1)={");
+    415c:	df828050 	ld	v0,-32688(gp)
+    4160:	64446600 	daddiu	a0,v0,26112
+    4164:	df828128 	ld	v0,-32472(gp)
+    4168:	0040c825 	move	t9,v0
+    416c:	f8190000 	jalrc	t9
+	cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data1);
+    4170:	df828038 	ld	v0,-32712(gp)
+    4174:	64426b20 	daddiu	v0,v0,27424
+    4178:	78001062 	ld.w	$w1,0(v0)
+    417c:	df828038 	ld	v0,-32712(gp)
+    4180:	64426b30 	daddiu	v0,v0,27440
+    4184:	78001022 	ld.w	$w0,0(v0)
+    4188:	789cf066 	st.w	$w1,624(s8)
+    418c:	78a0f026 	st.w	$w0,640(s8)
+    4190:	78a0f062 	ld.w	$w1,640(s8)
+    4194:	789cf022 	ld.w	$w0,624(s8)
+    4198:	7980081a 	fcle.w	$w0,$w1,$w0
+    419c:	78a8f026 	st.w	$w0,672(s8)
+	for(i=0; i<4; i++) {
+    41a0:	a7c00000 	sh	zero,0(s8)
+    41a4:	c800000f 	bc	41e4 <.L170>
+
+00000000000041a8 <.L171>:
+		printf("0x%x,  ", (uint32_t)cc[i]);
+    41a8:	87c20000 	lh	v0,0(s8)
+    41ac:	000210b8 	dsll	v0,v0,0x2
+    41b0:	03c2102d 	daddu	v0,s8,v0
+    41b4:	8c4202a0 	lw	v0,672(v0)
+    41b8:	00402825 	move	a1,v0
+    41bc:	df828050 	ld	v0,-32688(gp)
+    41c0:	644461a8 	daddiu	a0,v0,25000
+    41c4:	df828128 	ld	v0,-32472(gp)
+    41c8:	0040c825 	move	t9,v0
+    41cc:	f8190000 	jalrc	t9
+	for(i=0; i<4; i++) {
+    41d0:	87c20000 	lh	v0,0(s8)
+    41d4:	3042ffff 	andi	v0,v0,0xffff
+    41d8:	24420001 	addiu	v0,v0,1
+    41dc:	3042ffff 	andi	v0,v0,0xffff
+    41e0:	a7c20000 	sh	v0,0(s8)
+
+00000000000041e4 <.L170>:
+    41e4:	87c20000 	lh	v0,0(s8)
+    41e8:	24030003 	li	v1,3
+    41ec:	5862ffee 	bgec	v1,v0,41a8 <.L171>
+	}
+	printf("\b\b\b}\n\n");
+    41f0:	df828050 	ld	v0,-32688(gp)
+    41f4:	64444c70 	daddiu	a0,v0,19568
+    41f8:	df828120 	ld	v0,-32480(gp)
+    41fc:	0040c825 	move	t9,v0
+    4200:	f8190000 	jalrc	t9
+}
+    4204:	00000000 	nop
+    4208:	03c0e825 	move	sp,s8
+    420c:	dfbf02c8 	ld	ra,712(sp)
+    4210:	dfbe02c0 	ld	s8,704(sp)
+    4214:	dfbc02b8 	ld	gp,696(sp)
+    4218:	67bd02d0 	daddiu	sp,sp,720
+    421c:	d81f0000 	jrc	ra
+
+0000000000004220 <bitshiftTstFunc>:
+
+void bitshiftTstFunc()
+{
+    4220:	67bdff30 	daddiu	sp,sp,-208
+    4224:	ffbf00c8 	sd	ra,200(sp)
+    4228:	ffbe00c0 	sd	s8,192(sp)
+    422c:	ffbc00b8 	sd	gp,184(sp)
+    4230:	03a0f025 	move	s8,sp
+    4234:	3c1c0002 	lui	gp,0x2
+    4238:	0399e02d 	daddu	gp,gp,t9
+    423c:	679ca9c0 	daddiu	gp,gp,-22080
+	short i=0;
+    4240:	a7c00000 	sh	zero,0(s8)
+  static v16i8 v16i8Data =  {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a};
+  static v16u8 v16u8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7};
+  static v16i8 v16i8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7};
+
+	////test msa_shlq_u8 & msa_shrq_u8
+	printf("\n==================bitshiftTstFunc=====================================================================\n");
+    4244:	df828050 	ld	v0,-32688(gp)
+    4248:	64446638 	daddiu	a0,v0,26168
+    424c:	df828120 	ld	v0,-32480(gp)
+    4250:	0040c825 	move	t9,v0
+    4254:	f8190000 	jalrc	t9
+	printf("====test msa_shlq_u8 & msa_shrq_u8=====\n");
+    4258:	df828050 	ld	v0,-32688(gp)
+    425c:	644466a0 	daddiu	a0,v0,26272
+    4260:	df828120 	ld	v0,-32480(gp)
+    4264:	0040c825 	move	t9,v0
+    4268:	f8190000 	jalrc	t9
+	printf("input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    426c:	df828050 	ld	v0,-32688(gp)
+    4270:	644466c8 	daddiu	a0,v0,26312
+    4274:	df828120 	ld	v0,-32480(gp)
+    4278:	0040c825 	move	t9,v0
+    427c:	f8190000 	jalrc	t9
+	printf("input: 	v16u8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7}\n");
+    4280:	df828050 	ld	v0,-32688(gp)
+    4284:	64446740 	daddiu	a0,v0,26432
+    4288:	df828120 	ld	v0,-32480(gp)
+    428c:	0040c825 	move	t9,v0
+    4290:	f8190000 	jalrc	t9
+	printf("output: c = msa_shlq_u8(v16u8Data, v16i8Data1)={");
+    4294:	df828050 	ld	v0,-32688(gp)
+    4298:	64446788 	daddiu	a0,v0,26504
+    429c:	df828128 	ld	v0,-32472(gp)
+    42a0:	0040c825 	move	t9,v0
+    42a4:	f8190000 	jalrc	t9
+	v16u8 c = msa_shlq_u8(v16u8Data, v16i8Data1);
+    42a8:	df828038 	ld	v0,-32712(gp)
+    42ac:	64426ba0 	daddiu	v0,v0,27552
+    42b0:	78001060 	ld.b	$w1,0(v0)
+    42b4:	df828038 	ld	v0,-32712(gp)
+    42b8:	64426bb0 	daddiu	v0,v0,27568
+    42bc:	78001020 	ld.b	$w0,0(v0)
+    42c0:	7810f064 	st.b	$w1,16(s8)
+    42c4:	7820f024 	st.b	$w0,32(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_shlq_##suffix1 (type __a, casttype __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2((casttype)__a, (casttype)__b); \
+}
+MSA_SHLQ_IMPL(u8, sll_b, v16u8, v16i8, v16u8)
+    42c8:	7810f060 	ld.b	$w1,16(s8)
+    42cc:	7820f020 	ld.b	$w0,32(s8)
+    42d0:	7800080d 	sll.b	$w0,$w1,$w0
+    42d4:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    42d8:	a7c00000 	sh	zero,0(s8)
+    42dc:	c800000e 	bc	4318 <.L174>
+
+00000000000042e0 <.L175>:
+		printf("0x%02x,  ", (uint8_t)c[i]);
+    42e0:	87c20000 	lh	v0,0(s8)
+    42e4:	03c2102d 	daddu	v0,s8,v0
+    42e8:	90420090 	lbu	v0,144(v0)
+    42ec:	00402825 	move	a1,v0
+    42f0:	df828050 	ld	v0,-32688(gp)
+    42f4:	64445e60 	daddiu	a0,v0,24160
+    42f8:	df828128 	ld	v0,-32472(gp)
+    42fc:	0040c825 	move	t9,v0
+    4300:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4304:	87c20000 	lh	v0,0(s8)
+    4308:	3042ffff 	andi	v0,v0,0xffff
+    430c:	24420001 	addiu	v0,v0,1
+    4310:	3042ffff 	andi	v0,v0,0xffff
+    4314:	a7c20000 	sh	v0,0(s8)
+
+0000000000004318 <.L174>:
+    4318:	87c20000 	lh	v0,0(s8)
+    431c:	2403000f 	li	v1,15
+    4320:	5862ffef 	bgec	v1,v0,42e0 <.L175>
+	}
+	printf("\b\b\b}\n");
+    4324:	df828050 	ld	v0,-32688(gp)
+    4328:	64445908 	daddiu	a0,v0,22792
+    432c:	df828120 	ld	v0,-32480(gp)
+    4330:	0040c825 	move	t9,v0
+    4334:	f8190000 	jalrc	t9
+	printf("output: c = msa_shrq_u8(v16u8Data, v16i8Data1)={");
+    4338:	df828050 	ld	v0,-32688(gp)
+    433c:	644467c0 	daddiu	a0,v0,26560
+    4340:	df828128 	ld	v0,-32472(gp)
+    4344:	0040c825 	move	t9,v0
+    4348:	f8190000 	jalrc	t9
+	c = msa_shrq_u8(v16u8Data, v16i8Data1);
+    434c:	df828038 	ld	v0,-32712(gp)
+    4350:	64426ba0 	daddiu	v0,v0,27552
+    4354:	78001060 	ld.b	$w1,0(v0)
+    4358:	df828038 	ld	v0,-32712(gp)
+    435c:	64426bb0 	daddiu	v0,v0,27568
+    4360:	78001020 	ld.b	$w0,0(v0)
+    4364:	7830f064 	st.b	$w1,48(s8)
+    4368:	7840f024 	st.b	$w0,64(s8)
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_shrq_##suffix1 (type __a, casttype __b) \
+{ \
+  return (rettype)__builtin_msa_##suffix2((casttype)__a, (casttype)__b); \
+}
+MSA_SHRQ_IMPL(u8, srl_b, v16u8, v16i8, v16u8)
+    436c:	7830f060 	ld.b	$w1,48(s8)
+    4370:	7840f020 	ld.b	$w0,64(s8)
+    4374:	7900080d 	srl.b	$w0,$w1,$w0
+    4378:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    437c:	a7c00000 	sh	zero,0(s8)
+    4380:	c800000e 	bc	43bc <.L177>
+
+0000000000004384 <.L178>:
+		printf("0x%02x,  ", (uint8_t)c[i]);
+    4384:	87c20000 	lh	v0,0(s8)
+    4388:	03c2102d 	daddu	v0,s8,v0
+    438c:	90420090 	lbu	v0,144(v0)
+    4390:	00402825 	move	a1,v0
+    4394:	df828050 	ld	v0,-32688(gp)
+    4398:	64445e60 	daddiu	a0,v0,24160
+    439c:	df828128 	ld	v0,-32472(gp)
+    43a0:	0040c825 	move	t9,v0
+    43a4:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    43a8:	87c20000 	lh	v0,0(s8)
+    43ac:	3042ffff 	andi	v0,v0,0xffff
+    43b0:	24420001 	addiu	v0,v0,1
+    43b4:	3042ffff 	andi	v0,v0,0xffff
+    43b8:	a7c20000 	sh	v0,0(s8)
+
+00000000000043bc <.L177>:
+    43bc:	87c20000 	lh	v0,0(s8)
+    43c0:	2403000f 	li	v1,15
+    43c4:	5862ffef 	bgec	v1,v0,4384 <.L178>
+	}
+	printf("\b\b\b}\n\n");
+    43c8:	df828050 	ld	v0,-32688(gp)
+    43cc:	64444c70 	daddiu	a0,v0,19568
+    43d0:	df828120 	ld	v0,-32480(gp)
+    43d4:	0040c825 	move	t9,v0
+    43d8:	f8190000 	jalrc	t9
+
+	printf("input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    43dc:	df828050 	ld	v0,-32688(gp)
+    43e0:	644467f8 	daddiu	a0,v0,26616
+    43e4:	df828120 	ld	v0,-32480(gp)
+    43e8:	0040c825 	move	t9,v0
+    43ec:	f8190000 	jalrc	t9
+	printf("input: 	v16u8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7}\n");
+    43f0:	df828050 	ld	v0,-32688(gp)
+    43f4:	64446740 	daddiu	a0,v0,26432
+    43f8:	df828120 	ld	v0,-32480(gp)
+    43fc:	0040c825 	move	t9,v0
+    4400:	f8190000 	jalrc	t9
+	printf("output: cc = msa_shlq_s8(v16i8Data, v16i8Data1)={");
+    4404:	df828050 	ld	v0,-32688(gp)
+    4408:	64446870 	daddiu	a0,v0,26736
+    440c:	df828128 	ld	v0,-32472(gp)
+    4410:	0040c825 	move	t9,v0
+    4414:	f8190000 	jalrc	t9
+	v16i8 cc = msa_shlq_s8(v16i8Data, v16i8Data1);
+    4418:	df828038 	ld	v0,-32712(gp)
+    441c:	64426bc0 	daddiu	v0,v0,27584
+    4420:	78001060 	ld.b	$w1,0(v0)
+    4424:	df828038 	ld	v0,-32712(gp)
+    4428:	64426bb0 	daddiu	v0,v0,27568
+    442c:	78001020 	ld.b	$w0,0(v0)
+    4430:	7850f064 	st.b	$w1,80(s8)
+    4434:	7860f024 	st.b	$w0,96(s8)
+MSA_SHLQ_IMPL(s8, sll_b, v16i8, v16i8, v16i8)
+    4438:	7850f060 	ld.b	$w1,80(s8)
+    443c:	7860f020 	ld.b	$w0,96(s8)
+    4440:	7800080d 	sll.b	$w0,$w1,$w0
+    4444:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    4448:	a7c00000 	sh	zero,0(s8)
+    444c:	c800000f 	bc	448c <.L180>
+
+0000000000004450 <.L181>:
+		printf("0x%02x,  ", (int8_t)cc[i]&0xff);
+    4450:	87c20000 	lh	v0,0(s8)
+    4454:	03c2102d 	daddu	v0,s8,v0
+    4458:	804200a0 	lb	v0,160(v0)
+    445c:	304200ff 	andi	v0,v0,0xff
+    4460:	00402825 	move	a1,v0
+    4464:	df828050 	ld	v0,-32688(gp)
+    4468:	64445e60 	daddiu	a0,v0,24160
+    446c:	df828128 	ld	v0,-32472(gp)
+    4470:	0040c825 	move	t9,v0
+    4474:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4478:	87c20000 	lh	v0,0(s8)
+    447c:	3042ffff 	andi	v0,v0,0xffff
+    4480:	24420001 	addiu	v0,v0,1
+    4484:	3042ffff 	andi	v0,v0,0xffff
+    4488:	a7c20000 	sh	v0,0(s8)
+
+000000000000448c <.L180>:
+    448c:	87c20000 	lh	v0,0(s8)
+    4490:	2403000f 	li	v1,15
+    4494:	5862ffee 	bgec	v1,v0,4450 <.L181>
+	}
+	printf("\b\b\b}\n");
+    4498:	df828050 	ld	v0,-32688(gp)
+    449c:	64445908 	daddiu	a0,v0,22792
+    44a0:	df828120 	ld	v0,-32480(gp)
+    44a4:	0040c825 	move	t9,v0
+    44a8:	f8190000 	jalrc	t9
+	printf("output: cc = msa_shrq_s8(v16i8Data, v16i8Data1)={");
+    44ac:	df828050 	ld	v0,-32688(gp)
+    44b0:	644468a8 	daddiu	a0,v0,26792
+    44b4:	df828128 	ld	v0,-32472(gp)
+    44b8:	0040c825 	move	t9,v0
+    44bc:	f8190000 	jalrc	t9
+	cc = msa_shrq_s8(v16i8Data, v16i8Data1);
+    44c0:	df828038 	ld	v0,-32712(gp)
+    44c4:	64426bc0 	daddiu	v0,v0,27584
+    44c8:	78001060 	ld.b	$w1,0(v0)
+    44cc:	df828038 	ld	v0,-32712(gp)
+    44d0:	64426bb0 	daddiu	v0,v0,27568
+    44d4:	78001020 	ld.b	$w0,0(v0)
+    44d8:	7870f064 	st.b	$w1,112(s8)
+    44dc:	7880f024 	st.b	$w0,128(s8)
+MSA_SHRQ_IMPL(s8, srl_b, v16i8, v16i8, v16i8)
+    44e0:	7870f060 	ld.b	$w1,112(s8)
+    44e4:	7880f020 	ld.b	$w0,128(s8)
+    44e8:	7900080d 	srl.b	$w0,$w1,$w0
+    44ec:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    44f0:	a7c00000 	sh	zero,0(s8)
+    44f4:	c800000f 	bc	4534 <.L183>
+
+00000000000044f8 <.L184>:
+		printf("0x%02x,  ", (int8_t)cc[i]&0xff);
+    44f8:	87c20000 	lh	v0,0(s8)
+    44fc:	03c2102d 	daddu	v0,s8,v0
+    4500:	804200a0 	lb	v0,160(v0)
+    4504:	304200ff 	andi	v0,v0,0xff
+    4508:	00402825 	move	a1,v0
+    450c:	df828050 	ld	v0,-32688(gp)
+    4510:	64445e60 	daddiu	a0,v0,24160
+    4514:	df828128 	ld	v0,-32472(gp)
+    4518:	0040c825 	move	t9,v0
+    451c:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4520:	87c20000 	lh	v0,0(s8)
+    4524:	3042ffff 	andi	v0,v0,0xffff
+    4528:	24420001 	addiu	v0,v0,1
+    452c:	3042ffff 	andi	v0,v0,0xffff
+    4530:	a7c20000 	sh	v0,0(s8)
+
+0000000000004534 <.L183>:
+    4534:	87c20000 	lh	v0,0(s8)
+    4538:	2403000f 	li	v1,15
+    453c:	5862ffee 	bgec	v1,v0,44f8 <.L184>
+	}
+	printf("\b\b\b}\n\n");
+    4540:	df828050 	ld	v0,-32688(gp)
+    4544:	64444c70 	daddiu	a0,v0,19568
+    4548:	df828120 	ld	v0,-32480(gp)
+    454c:	0040c825 	move	t9,v0
+    4550:	f8190000 	jalrc	t9
+
+	////test msa_shlq_n_u8 & msa_shrq_n_u8
+	printf("====test msa_shlq_n_u8 & msa_shrq_n_u8=====\n");
+    4554:	df828050 	ld	v0,-32688(gp)
+    4558:	644468e0 	daddiu	a0,v0,26848
+    455c:	df828120 	ld	v0,-32480(gp)
+    4560:	0040c825 	move	t9,v0
+    4564:	f8190000 	jalrc	t9
+	printf("input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    4568:	df828050 	ld	v0,-32688(gp)
+    456c:	644466c8 	daddiu	a0,v0,26312
+    4570:	df828120 	ld	v0,-32480(gp)
+    4574:	0040c825 	move	t9,v0
+    4578:	f8190000 	jalrc	t9
+	printf("output: c = msa_shlq_n_u8(v16u8Data, 4)={");
+    457c:	df828050 	ld	v0,-32688(gp)
+    4580:	64446910 	daddiu	a0,v0,26896
+    4584:	df828128 	ld	v0,-32472(gp)
+    4588:	0040c825 	move	t9,v0
+    458c:	f8190000 	jalrc	t9
+	c = msa_shlq_n_u8(v16u8Data, 4);
+    4590:	df828038 	ld	v0,-32712(gp)
+    4594:	64426ba0 	daddiu	v0,v0,27552
+    4598:	78001020 	ld.b	$w0,0(v0)
+    459c:	78740009 	slli.b	$w0,$w0,0x4
+    45a0:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    45a4:	a7c00000 	sh	zero,0(s8)
+    45a8:	c800000e 	bc	45e4 <.L185>
+
+00000000000045ac <.L186>:
+		printf("0x%02x,  ", (uint8_t)c[i]);
+    45ac:	87c20000 	lh	v0,0(s8)
+    45b0:	03c2102d 	daddu	v0,s8,v0
+    45b4:	90420090 	lbu	v0,144(v0)
+    45b8:	00402825 	move	a1,v0
+    45bc:	df828050 	ld	v0,-32688(gp)
+    45c0:	64445e60 	daddiu	a0,v0,24160
+    45c4:	df828128 	ld	v0,-32472(gp)
+    45c8:	0040c825 	move	t9,v0
+    45cc:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    45d0:	87c20000 	lh	v0,0(s8)
+    45d4:	3042ffff 	andi	v0,v0,0xffff
+    45d8:	24420001 	addiu	v0,v0,1
+    45dc:	3042ffff 	andi	v0,v0,0xffff
+    45e0:	a7c20000 	sh	v0,0(s8)
+
+00000000000045e4 <.L185>:
+    45e4:	87c20000 	lh	v0,0(s8)
+    45e8:	2403000f 	li	v1,15
+    45ec:	5862ffef 	bgec	v1,v0,45ac <.L186>
+	}
+	printf("\b\b\b}\n");
+    45f0:	df828050 	ld	v0,-32688(gp)
+    45f4:	64445908 	daddiu	a0,v0,22792
+    45f8:	df828120 	ld	v0,-32480(gp)
+    45fc:	0040c825 	move	t9,v0
+    4600:	f8190000 	jalrc	t9
+	printf("output: c = msa_shrq_n_u8(v16u8Data, 4)={");
+    4604:	df828050 	ld	v0,-32688(gp)
+    4608:	64446940 	daddiu	a0,v0,26944
+    460c:	df828128 	ld	v0,-32472(gp)
+    4610:	0040c825 	move	t9,v0
+    4614:	f8190000 	jalrc	t9
+	c = msa_shrq_n_u8(v16u8Data, 4);
+    4618:	df828038 	ld	v0,-32712(gp)
+    461c:	64426ba0 	daddiu	v0,v0,27552
+    4620:	78001020 	ld.b	$w0,0(v0)
+    4624:	79740009 	srli.b	$w0,$w0,0x4
+    4628:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    462c:	a7c00000 	sh	zero,0(s8)
+    4630:	c800000e 	bc	466c <.L187>
+
+0000000000004634 <.L188>:
+		printf("0x%02x,  ", (uint8_t)c[i]);
+    4634:	87c20000 	lh	v0,0(s8)
+    4638:	03c2102d 	daddu	v0,s8,v0
+    463c:	90420090 	lbu	v0,144(v0)
+    4640:	00402825 	move	a1,v0
+    4644:	df828050 	ld	v0,-32688(gp)
+    4648:	64445e60 	daddiu	a0,v0,24160
+    464c:	df828128 	ld	v0,-32472(gp)
+    4650:	0040c825 	move	t9,v0
+    4654:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4658:	87c20000 	lh	v0,0(s8)
+    465c:	3042ffff 	andi	v0,v0,0xffff
+    4660:	24420001 	addiu	v0,v0,1
+    4664:	3042ffff 	andi	v0,v0,0xffff
+    4668:	a7c20000 	sh	v0,0(s8)
+
+000000000000466c <.L187>:
+    466c:	87c20000 	lh	v0,0(s8)
+    4670:	2403000f 	li	v1,15
+    4674:	5862ffef 	bgec	v1,v0,4634 <.L188>
+	}
+	printf("\b\b\b}\n\n");
+    4678:	df828050 	ld	v0,-32688(gp)
+    467c:	64444c70 	daddiu	a0,v0,19568
+    4680:	df828120 	ld	v0,-32480(gp)
+    4684:	0040c825 	move	t9,v0
+    4688:	f8190000 	jalrc	t9
+
+	printf("input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    468c:	df828050 	ld	v0,-32688(gp)
+    4690:	644467f8 	daddiu	a0,v0,26616
+    4694:	df828120 	ld	v0,-32480(gp)
+    4698:	0040c825 	move	t9,v0
+    469c:	f8190000 	jalrc	t9
+	printf("output: cc = msa_shlq_n_s8(v16i8Data, 4)={");
+    46a0:	df828050 	ld	v0,-32688(gp)
+    46a4:	64446970 	daddiu	a0,v0,26992
+    46a8:	df828128 	ld	v0,-32472(gp)
+    46ac:	0040c825 	move	t9,v0
+    46b0:	f8190000 	jalrc	t9
+	cc = msa_shlq_n_s8(v16i8Data, 4);
+    46b4:	df828038 	ld	v0,-32712(gp)
+    46b8:	64426bc0 	daddiu	v0,v0,27584
+    46bc:	78001020 	ld.b	$w0,0(v0)
+    46c0:	78740009 	slli.b	$w0,$w0,0x4
+    46c4:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    46c8:	a7c00000 	sh	zero,0(s8)
+    46cc:	c800000f 	bc	470c <.L189>
+
+00000000000046d0 <.L190>:
+		printf("0x%02x,  ", (int8_t)cc[i]&0xff);
+    46d0:	87c20000 	lh	v0,0(s8)
+    46d4:	03c2102d 	daddu	v0,s8,v0
+    46d8:	804200a0 	lb	v0,160(v0)
+    46dc:	304200ff 	andi	v0,v0,0xff
+    46e0:	00402825 	move	a1,v0
+    46e4:	df828050 	ld	v0,-32688(gp)
+    46e8:	64445e60 	daddiu	a0,v0,24160
+    46ec:	df828128 	ld	v0,-32472(gp)
+    46f0:	0040c825 	move	t9,v0
+    46f4:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    46f8:	87c20000 	lh	v0,0(s8)
+    46fc:	3042ffff 	andi	v0,v0,0xffff
+    4700:	24420001 	addiu	v0,v0,1
+    4704:	3042ffff 	andi	v0,v0,0xffff
+    4708:	a7c20000 	sh	v0,0(s8)
+
+000000000000470c <.L189>:
+    470c:	87c20000 	lh	v0,0(s8)
+    4710:	2403000f 	li	v1,15
+    4714:	5862ffee 	bgec	v1,v0,46d0 <.L190>
+	}
+	printf("\b\b\b}\n");
+    4718:	df828050 	ld	v0,-32688(gp)
+    471c:	64445908 	daddiu	a0,v0,22792
+    4720:	df828120 	ld	v0,-32480(gp)
+    4724:	0040c825 	move	t9,v0
+    4728:	f8190000 	jalrc	t9
+	printf("output: cc = msa_shrq_n_s8(v16i8Data, 4)={");
+    472c:	df828050 	ld	v0,-32688(gp)
+    4730:	644469a0 	daddiu	a0,v0,27040
+    4734:	df828128 	ld	v0,-32472(gp)
+    4738:	0040c825 	move	t9,v0
+    473c:	f8190000 	jalrc	t9
+	cc = msa_shrq_n_s8(v16i8Data, 4);
+    4740:	df828038 	ld	v0,-32712(gp)
+    4744:	64426bc0 	daddiu	v0,v0,27584
+    4748:	78001020 	ld.b	$w0,0(v0)
+    474c:	79740009 	srli.b	$w0,$w0,0x4
+    4750:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    4754:	a7c00000 	sh	zero,0(s8)
+    4758:	c800000f 	bc	4798 <.L191>
+
+000000000000475c <.L192>:
+		printf("0x%02x,  ", (int8_t)cc[i]&0xff);
+    475c:	87c20000 	lh	v0,0(s8)
+    4760:	03c2102d 	daddu	v0,s8,v0
+    4764:	804200a0 	lb	v0,160(v0)
+    4768:	304200ff 	andi	v0,v0,0xff
+    476c:	00402825 	move	a1,v0
+    4770:	df828050 	ld	v0,-32688(gp)
+    4774:	64445e60 	daddiu	a0,v0,24160
+    4778:	df828128 	ld	v0,-32472(gp)
+    477c:	0040c825 	move	t9,v0
+    4780:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4784:	87c20000 	lh	v0,0(s8)
+    4788:	3042ffff 	andi	v0,v0,0xffff
+    478c:	24420001 	addiu	v0,v0,1
+    4790:	3042ffff 	andi	v0,v0,0xffff
+    4794:	a7c20000 	sh	v0,0(s8)
+
+0000000000004798 <.L191>:
+    4798:	87c20000 	lh	v0,0(s8)
+    479c:	2403000f 	li	v1,15
+    47a0:	5862ffee 	bgec	v1,v0,475c <.L192>
+	}
+	printf("\b\b\b}\n\n");
+    47a4:	df828050 	ld	v0,-32688(gp)
+    47a8:	64444c70 	daddiu	a0,v0,19568
+    47ac:	df828120 	ld	v0,-32480(gp)
+    47b0:	0040c825 	move	t9,v0
+    47b4:	f8190000 	jalrc	t9
+
+	////test msa_rshrq_n_u8
+	printf("====test msa_rshrq_n_u8=====\n");
+    47b8:	df828050 	ld	v0,-32688(gp)
+    47bc:	644469d0 	daddiu	a0,v0,27088
+    47c0:	df828120 	ld	v0,-32480(gp)
+    47c4:	0040c825 	move	t9,v0
+    47c8:	f8190000 	jalrc	t9
+	printf("input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    47cc:	df828050 	ld	v0,-32688(gp)
+    47d0:	644466c8 	daddiu	a0,v0,26312
+    47d4:	df828120 	ld	v0,-32480(gp)
+    47d8:	0040c825 	move	t9,v0
+    47dc:	f8190000 	jalrc	t9
+	printf("output: c = msa_rshrq_n_u8(v16u8Data, 4)={");
+    47e0:	df828050 	ld	v0,-32688(gp)
+    47e4:	644469f0 	daddiu	a0,v0,27120
+    47e8:	df828128 	ld	v0,-32472(gp)
+    47ec:	0040c825 	move	t9,v0
+    47f0:	f8190000 	jalrc	t9
+	c = msa_rshrq_n_u8(v16u8Data, 4);
+    47f4:	df828038 	ld	v0,-32712(gp)
+    47f8:	64426ba0 	daddiu	v0,v0,27552
+    47fc:	78001020 	ld.b	$w0,0(v0)
+    4800:	79f4000a 	srlri.b	$w0,$w0,0x4
+    4804:	7890f024 	st.b	$w0,144(s8)
+	for(i=0; i<16; i++) {
+    4808:	a7c00000 	sh	zero,0(s8)
+    480c:	c800000e 	bc	4848 <.L193>
+
+0000000000004810 <.L194>:
+		printf("0x%02x,  ", (uint8_t)c[i]);
+    4810:	87c20000 	lh	v0,0(s8)
+    4814:	03c2102d 	daddu	v0,s8,v0
+    4818:	90420090 	lbu	v0,144(v0)
+    481c:	00402825 	move	a1,v0
+    4820:	df828050 	ld	v0,-32688(gp)
+    4824:	64445e60 	daddiu	a0,v0,24160
+    4828:	df828128 	ld	v0,-32472(gp)
+    482c:	0040c825 	move	t9,v0
+    4830:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    4834:	87c20000 	lh	v0,0(s8)
+    4838:	3042ffff 	andi	v0,v0,0xffff
+    483c:	24420001 	addiu	v0,v0,1
+    4840:	3042ffff 	andi	v0,v0,0xffff
+    4844:	a7c20000 	sh	v0,0(s8)
+
+0000000000004848 <.L193>:
+    4848:	87c20000 	lh	v0,0(s8)
+    484c:	2403000f 	li	v1,15
+    4850:	5862ffef 	bgec	v1,v0,4810 <.L194>
+	}
+	printf("\b\b\b}\n\n");
+    4854:	df828050 	ld	v0,-32688(gp)
+    4858:	64444c70 	daddiu	a0,v0,19568
+    485c:	df828120 	ld	v0,-32480(gp)
+    4860:	0040c825 	move	t9,v0
+    4864:	f8190000 	jalrc	t9
+
+	printf("input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}\n");
+    4868:	df828050 	ld	v0,-32688(gp)
+    486c:	644467f8 	daddiu	a0,v0,26616
+    4870:	df828120 	ld	v0,-32480(gp)
+    4874:	0040c825 	move	t9,v0
+    4878:	f8190000 	jalrc	t9
+	printf("output: cc = msa_rshrq_n_s8(v16i8Data, 4)={");
+    487c:	df828050 	ld	v0,-32688(gp)
+    4880:	64446a20 	daddiu	a0,v0,27168
+    4884:	df828128 	ld	v0,-32472(gp)
+    4888:	0040c825 	move	t9,v0
+    488c:	f8190000 	jalrc	t9
+	cc = msa_rshrq_n_s8(v16i8Data, 4);
+    4890:	df828038 	ld	v0,-32712(gp)
+    4894:	64426bc0 	daddiu	v0,v0,27584
+    4898:	78001020 	ld.b	$w0,0(v0)
+    489c:	79f4000a 	srlri.b	$w0,$w0,0x4
+    48a0:	78a0f024 	st.b	$w0,160(s8)
+	for(i=0; i<16; i++) {
+    48a4:	a7c00000 	sh	zero,0(s8)
+    48a8:	c800000f 	bc	48e8 <.L195>
+
+00000000000048ac <.L196>:
+		printf("0x%02x,  ", (int8_t)cc[i]&0xff);
+    48ac:	87c20000 	lh	v0,0(s8)
+    48b0:	03c2102d 	daddu	v0,s8,v0
+    48b4:	804200a0 	lb	v0,160(v0)
+    48b8:	304200ff 	andi	v0,v0,0xff
+    48bc:	00402825 	move	a1,v0
+    48c0:	df828050 	ld	v0,-32688(gp)
+    48c4:	64445e60 	daddiu	a0,v0,24160
+    48c8:	df828128 	ld	v0,-32472(gp)
+    48cc:	0040c825 	move	t9,v0
+    48d0:	f8190000 	jalrc	t9
+	for(i=0; i<16; i++) {
+    48d4:	87c20000 	lh	v0,0(s8)
+    48d8:	3042ffff 	andi	v0,v0,0xffff
+    48dc:	24420001 	addiu	v0,v0,1
+    48e0:	3042ffff 	andi	v0,v0,0xffff
+    48e4:	a7c20000 	sh	v0,0(s8)
+
+00000000000048e8 <.L195>:
+    48e8:	87c20000 	lh	v0,0(s8)
+    48ec:	2403000f 	li	v1,15
+    48f0:	5862ffee 	bgec	v1,v0,48ac <.L196>
+	}
+	printf("\b\b\b}\n\n");
+    48f4:	df828050 	ld	v0,-32688(gp)
+    48f8:	64444c70 	daddiu	a0,v0,19568
+    48fc:	df828120 	ld	v0,-32480(gp)
+    4900:	0040c825 	move	t9,v0
+    4904:	f8190000 	jalrc	t9
+
+}
+    4908:	00000000 	nop
+    490c:	03c0e825 	move	sp,s8
+    4910:	dfbf00c8 	ld	ra,200(sp)
+    4914:	dfbe00c0 	ld	s8,192(sp)
+    4918:	dfbc00b8 	ld	gp,184(sp)
+    491c:	67bd00d0 	daddiu	sp,sp,208
+    4920:	d81f0000 	jrc	ra
+
+0000000000004924 <main>:
+
+int main(int argc, char **argv)
+{
+    4924:	67bdffd0 	daddiu	sp,sp,-48
+    4928:	ffbf0028 	sd	ra,40(sp)
+    492c:	ffbe0020 	sd	s8,32(sp)
+    4930:	ffbc0018 	sd	gp,24(sp)
+    4934:	03a0f025 	move	s8,sp
+    4938:	3c1c0002 	lui	gp,0x2
+    493c:	0399e02d 	daddu	gp,gp,t9
+    4940:	679ca2bc 	daddiu	gp,gp,-23876
+    4944:	00801025 	move	v0,a0
+    4948:	ffc50008 	sd	a1,8(s8)
+    494c:	00021000 	sll	v0,v0,0x0
+    4950:	afc20000 	sw	v0,0(s8)
+	getLaneTstFunc();
+    4954:	df828058 	ld	v0,-32680(gp)
+    4958:	0040c825 	move	t9,v0
+    495c:	f8190000 	jalrc	t9
+	combineTstFunc();
+    4960:	df828060 	ld	v0,-32672(gp)
+    4964:	0040c825 	move	t9,v0
+    4968:	f8190000 	jalrc	t9
+	getLowTstFunc();
+    496c:	df828068 	ld	v0,-32664(gp)
+    4970:	0040c825 	move	t9,v0
+    4974:	f8190000 	jalrc	t9
+	getHighTstFunc();
+    4978:	df828070 	ld	v0,-32656(gp)
+    497c:	0040c825 	move	t9,v0
+    4980:	f8190000 	jalrc	t9
+	multiplicationTstFunc();
+    4984:	df828078 	ld	v0,-32648(gp)
+    4988:	0040c825 	move	t9,v0
+    498c:	f8190000 	jalrc	t9
+	vsumTstFunc();
+    4990:	df828080 	ld	v0,-32640(gp)
+    4994:	0040c825 	move	t9,v0
+    4998:	f8190000 	jalrc	t9
+	paddlpTstFunc();
+    499c:	df828088 	ld	v0,-32632(gp)
+    49a0:	0040c825 	move	t9,v0
+    49a4:	f8190000 	jalrc	t9
+	perfValidTstFunc();
+    49a8:	df828090 	ld	v0,-32624(gp)
+    49ac:	0040c825 	move	t9,v0
+    49b0:	f8190000 	jalrc	t9
+	addvSubvTstFunc();
+    49b4:	df828098 	ld	v0,-32616(gp)
+    49b8:	0040c825 	move	t9,v0
+    49bc:	f8190000 	jalrc	t9
+	longMulTstFunc();
+    49c0:	df8280a0 	ld	v0,-32608(gp)
+    49c4:	0040c825 	move	t9,v0
+    49c8:	f8190000 	jalrc	t9
+	divTstFunc();
+    49cc:	df8280a8 	ld	v0,-32600(gp)
+    49d0:	0040c825 	move	t9,v0
+    49d4:	f8190000 	jalrc	t9
+	andOrTstFunc();
+    49d8:	df8280b0 	ld	v0,-32592(gp)
+    49dc:	0040c825 	move	t9,v0
+    49e0:	f8190000 	jalrc	t9
+	eorMvnTstFunc();
+    49e4:	df8280b8 	ld	v0,-32584(gp)
+    49e8:	0040c825 	move	t9,v0
+    49ec:	f8190000 	jalrc	t9
+	compareTstFunc();
+    49f0:	df8280c0 	ld	v0,-32576(gp)
+    49f4:	0040c825 	move	t9,v0
+    49f8:	f8190000 	jalrc	t9
+	bitshiftTstFunc();
+    49fc:	df8280c8 	ld	v0,-32568(gp)
+    4a00:	0040c825 	move	t9,v0
+    4a04:	f8190000 	jalrc	t9
+    4a08:	00001025 	move	v0,zero
+}
+    4a0c:	03c0e825 	move	sp,s8
+    4a10:	dfbf0028 	ld	ra,40(sp)
+    4a14:	dfbe0020 	ld	s8,32(sp)
+    4a18:	dfbc0018 	ld	gp,24(sp)
+    4a1c:	67bd0030 	daddiu	sp,sp,48
+    4a20:	d81f0000 	jrc	ra
+	...
+
+0000000000004a30 <__libc_csu_init>:
+    4a30:	67bdffc0 	daddiu	sp,sp,-64
+    4a34:	ffbc0030 	sd	gp,48(sp)
+    4a38:	3c1c0002 	lui	gp,0x2
+    4a3c:	0399e02d 	daddu	gp,gp,t9
+    4a40:	ffb20010 	sd	s2,16(sp)
+    4a44:	679ca1b0 	daddiu	gp,gp,-24144
+    4a48:	ffb00000 	sd	s0,0(sp)
+    4a4c:	df9280d0 	ld	s2,-32560(gp)
+    4a50:	ffb50028 	sd	s5,40(sp)
+    4a54:	df9080d8 	ld	s0,-32552(gp)
+    4a58:	ffb40020 	sd	s4,32(sp)
+    4a5c:	df9980e0 	ld	t9,-32544(gp)
+    4a60:	ffb30018 	sd	s3,24(sp)
+    4a64:	ffbf0038 	sd	ra,56(sp)
+    4a68:	00809825 	move	s3,a0
+    4a6c:	0250902f 	dsubu	s2,s2,s0
+    4a70:	ffb10008 	sd	s1,8(sp)
+    4a74:	001290fb 	dsra	s2,s2,0x3
+    4a78:	00a0a025 	move	s4,a1
+    4a7c:	0411f06c 	bal	c30 <_init>
+    4a80:	00c0a825 	move	s5,a2
+    4a84:	da40000a 	beqzc	s2,4ab0 <.L1>
+    4a88:	00008825 	move	s1,zero
+    4a8c:	00000000 	nop
+
+0000000000004a90 <.L3>:
+    4a90:	de190000 	ld	t9,0(s0)
+    4a94:	02a03025 	move	a2,s5
+    4a98:	02802825 	move	a1,s4
+    4a9c:	02602025 	move	a0,s3
+    4aa0:	66310001 	daddiu	s1,s1,1
+    4aa4:	0320f809 	jalr	t9
+    4aa8:	66100008 	daddiu	s0,s0,8
+    4aac:	6232fff8 	bnec	s1,s2,4a90 <.L3>
+
+0000000000004ab0 <.L1>:
+    4ab0:	dfbf0038 	ld	ra,56(sp)
+    4ab4:	dfbc0030 	ld	gp,48(sp)
+    4ab8:	dfb50028 	ld	s5,40(sp)
+    4abc:	dfb40020 	ld	s4,32(sp)
+    4ac0:	dfb30018 	ld	s3,24(sp)
+    4ac4:	dfb20010 	ld	s2,16(sp)
+    4ac8:	dfb10008 	ld	s1,8(sp)
+    4acc:	dfb00000 	ld	s0,0(sp)
+    4ad0:	03e00009 	jr	ra
+    4ad4:	67bd0040 	daddiu	sp,sp,64
+
+0000000000004ad8 <__libc_csu_fini>:
+    4ad8:	d81f0000 	jrc	ra
+    4adc:	00000000 	nop
+
+Disassembly of section .MIPS.stubs:
+
+0000000000004ae0 <_MIPS_STUBS_>:
+    4ae0:	df998010 	ld	t9,-32752(gp)
+    4ae4:	03e07825 	move	t3,ra
+    4ae8:	0320f809 	jalr	t9
+    4aec:	6418001c 	daddiu	t8,zero,28
+    4af0:	df998010 	ld	t9,-32752(gp)
+    4af4:	03e07825 	move	t3,ra
+    4af8:	0320f809 	jalr	t9
+    4afc:	6418001b 	daddiu	t8,zero,27
+    4b00:	df998010 	ld	t9,-32752(gp)
+    4b04:	03e07825 	move	t3,ra
+    4b08:	0320f809 	jalr	t9
+    4b0c:	6418001a 	daddiu	t8,zero,26
+    4b10:	df998010 	ld	t9,-32752(gp)
+    4b14:	03e07825 	move	t3,ra
+    4b18:	0320f809 	jalr	t9
+    4b1c:	64180018 	daddiu	t8,zero,24
+	...
+
+Disassembly of section .fini:
+
+0000000000004b30 <_fini>:
+    4b30:	67bdfff0 	daddiu	sp,sp,-16
+    4b34:	ffbc0000 	sd	gp,0(sp)
+    4b38:	3c1c0002 	lui	gp,0x2
+    4b3c:	0399e02d 	daddu	gp,gp,t9
+    4b40:	ffbf0008 	sd	ra,8(sp)
+    4b44:	679ca0b0 	daddiu	gp,gp,-24400
+    4b48:	dfbf0008 	ld	ra,8(sp)
+    4b4c:	dfbc0000 	ld	gp,0(sp)
+    4b50:	03e00009 	jr	ra
+    4b54:	67bd0010 	daddiu	sp,sp,16

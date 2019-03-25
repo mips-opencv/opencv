@@ -1,0 +1,213 @@
+
+ =================getLaneTstFunc=====================================================================
+input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}
+output: __builtin_msa_copy_s_b(g_v16i8Data, i)={0,  -1,  2,  -3,  4,  -5,  6,  -7,  8,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}
+output: _msa_copy_s_w(g_v4f32Data, i)={-0.001000,  1.001000,  -2.002000,  3.003000,  }
+
+
+ =================combineTstFunc=====================================================================
+input: 	g_v8i8Data1 = {0, -1, 2, -3, 4, -5, 6, -7}, g_v8i8Data2 = {8, -9, 10, -11, 12, -13, 14, -15}
+output: msa_vcombine_s8(g_v8i8Data1, g_v8i8Data2)={0,  -1,  2,  -3,  4,  -5,  6,  -7,  8,  -9,  10,  -11,  12,  -13,  14,  -15,  }
+
+input: 	g_v2f32Data1 = {-0.001, 1.001}, g_v2f32Data2 = {-2.002, 3.003}
+output: msa_vcombine_f32(g_v2f32Data1, g_v2f32Data2)={-0.001000,  1.001000,  -2.002000,  3.003000,  }
+
+
+ =================getLowTstFunc=====================================================================
+input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}
+output: v8i8 c = msa_get_low_s8(g_v16i8Data)={0,  -1,  2,  -3,  4,  -5,  6,  -7,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}
+output: v2f32 cc = msa_get_low_f32(g_v4f32Data)={-0.001000,  1.001000,  }
+
+input: g_v2f64Data = {-0.0011111111, 1.0011111111}
+output: v1f64 ccc = msa_get_low_f64(g_v4f64Data)={-0.0011111111,  }
+
+
+ =================getHighTstFunc=====================================================================
+input: 	g_v16i8Data = {0, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15}
+output: v8i8 c = msa_get_high_s8(g_v16i8Data)={8,  -9,  10,  -11,  12,  -13,  14,  -15,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}
+output: msa_get_high_f32(g_v4f32Data)={-2.002000,  3.003000,  }
+
+input: g_v2f64Data = {-0.0011111111, 1.0011111111}
+output: v1f64 ccc = msa_get_high_f64(g_v2f64Data)={1.0011111111,  }
+
+
+ =================multiplicationTstFunc=====================================================================
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v2f32Data1 = {-0.001, 1.001}
+output: c = msa_mulq_lane_f32(g_v4f32Data, g_v2f32Data1, 0)={0.000001,  -0.001001,  0.002002,  -0.003003,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v2f32Data1 = {-0.001, 1.001}
+output: c = msa_mulaq_lane_f32(g_v4f32Data, g_v4f32Data, g_v2f32Data1, 1)={-0.002001,  2.003001,  -4.006002,  6.009003,  }
+
+
+ =================vsumTstFunc=====================================================================
+input: 	g_v4u32Data = {0, 1, 2, 3}
+output: uint32_t c = msa_sum_u32(g_v4u32Data)={6,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}
+output: float cc = msa_sum_f32(g_v4f32Data)={2.001000,  }
+
+
+ =================paddlpTstFunc=====================================================================
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+output: v8u16 c = msa_paddlq_u8(g_v16u8Data)={1,  5,  9,  13,  17,  21,  25,  29,  }
+
+input: 	g_v8u16Data = {0, 1, 2, 3, 4, 5, 6, 7}
+output: v4u32 c = msa_paddlq_u16(g_v8u16Data)={1,  5,  9,  13,  }
+
+input: 	g_v4u32Data = {0, 1, 2, 3}
+output: v2u64 c = msa_paddlq_u32(g_v4u32Data)={1,  5,  }
+
+
+ =================perfCompareTstFunc=====================================================================
+
+ ==assign VS __builtin_msa_fill_b+__builtin_msa_dotp_u_h==========================
+Running msa_paddlq_u8_tt(g_v16u8Data), escapedTimeUs=94
+Running msa_paddlq_u8(g_v16u8Data), escapedTimeUs=11
+
+ ==assign VS __builtin_msa_fill_b=======================================
+Running u16i8data = msa_replicate_tt(-2), escapedTimeUs=11
+Running u16i8data = msa_replicate(-2), escapedTimeUs=9
+
+ ==msa_getq_lane_f32 inline VS define=======================================
+input:  g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}
+Running msa_getq_lane_f32(g_v4f32Data, 0)), escapedTimeUs=14
+Running ((float)g_v4f32Data[LANE_IMM0_3(2)]), escapedTimeUs=13
+output: msa_getq_lane_f32(g_v4f32Data, i)={-0.001000,  1.001000,  -2.002000,  3.003000,  }
+
+
+ =================addvSubvTstFunc=====================================================================
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, b = (v16u8)__builtin_msa_fill_b(128)
+output: (v16u8)__builtin_msa_addv_b(g_v16u8Data, b)={128,  129,  130,  131,  132,  133,  134,  135,  136,  137,  138,  139,  140,  141,  142,  143,  }
+
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, b = (v16u8)__builtin_msa_fill_b(128)
+output: (v16u8)__builtin_msa_subv_b(g_v16u8Data, b)={128,  129,  130,  131,  132,  133,  134,  135,  136,  137,  138,  139,  140,  141,  142,  143,  }
+output: (v16u8)__builtin_msa_subv_b(b,g_v16u8Data)={128,  127,  126,  125,  124,  123,  122,  121,  120,  119,  118,  117,  116,  115,  114,  113,  }
+output: (v16i8)__builtin_msa_subv_b(b,g_v16u8Data)={-128,  127,  126,  125,  124,  123,  122,  121,  120,  119,  118,  117,  116,  115,  114,  113,  }
+
+
+ =================longMulTstFunc=====================================================================
+input: 	g_v8u8Data1 = {128, 127, 126, 125, 124, 123, 122, 121},g_v8u8Data2 = {255, 254, 253, 252, 251, 250, 249, 248}
+output: msa_mull_u8(g_v8u8Data1, g_v8u8Data1)={16384,  16129,  15876,  15625,  15376,  15129,  14884,  14641,  }
+output: msa_mull_u8(g_v8u8Data2, g_v8u8Data2)={65025,  64516,  64009,  63504,  63001,  62500,  62001,  61504,  }
+
+input: 	g_v8i8Data1 = {0, -1, 2, -3, 4, -5, 6, -7},g_v8i8Data2 = {8, -9, 10, -11, 12, -13, 14, -15}, b = __builtin_msa_fill_b(-2)
+output: msa_mull_s8(g_v8i8Data1, g_v8i8Data1)={0,  1,  4,  9,  16,  25,  36,  49,  }
+output: msa_mull_s8(g_v8i8Data2, b)={-16,  18,  -20,  22,  -24,  26,  -28,  30,  }
+
+
+ =================divTstFunc=====================================================================
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: c = msa_mulq_lane_f32(g_v4f32Data, g_v2f32Data1, 0)={-0.100000,  -0.991089,  -0.991089,  -0.991089,  }
+
+input: 	g_v2f64Data = {-0.0011111111, 1.0011111111}, g_v2f64Data1 = {0.00222222, 1.00222222}
+output: c = __builtin_msa_fdiv_d(g_v2f64Data, g_v2f64Data1)={-0.5000004950,  0.9988913548,  }
+
+
+ =================andOrTstFunc=====================================================================
+input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}
+input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}
+output: msa_andq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0xff,  0xff,  }
+output: msa_andq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0xff,  0xff,  }
+input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}
+input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}
+output: msa_orrq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={0xff,  0xff,  0xff,  0xff,  0xaa,  0xaa,  0xaa,  0xaa,  0x55,  0x55,  0x55,  0x55,  0xff,  0xff,  0xff,  0xff,  }
+output: msa_orrq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={0xff,  0xff,  0xff,  0xff,  0xaa,  0xaa,  0xaa,  0xaa,  0x55,  0x55,  0x55,  0x55,  0xff,  0xff,  0xff,  0xff,  }
+
+
+ =================eorMvnTstFunc=====================================================================
+input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}
+input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}
+output: msa_eorq_u8((v16u8)g_v8i16Data, (v16u8)g_v8i16Data1)={0xff,  0xff,  0xff,  0xff,  0xaa,  0xaa,  0xaa,  0xaa,  0x55,  0x55,  0x55,  0x55,  0xff,  0xff,  0x00,  0x00,  }
+output: msa_eorq_s8((v16i8)g_v8i16Data, (v16i8)g_v8i16Data1)={0xff,  0xff,  0xff,  0xff,  0xaa,  0xaa,  0xaa,  0xaa,  0x55,  0x55,  0x55,  0x55,  0xff,  0xff,  0x00,  0x00,  }
+input: 	g_v8i16Data =  {0xff00, 0x00ff, 0xaa00, 0x00aa, 0x5500, 0x0055, 0x0, 0xffff}
+input: 	g_v8i16Data1 = {0x00ff, 0xff00, 0x00aa, 0xaa00, 0x0055, 0x5500, 0xffff, 0xffff}
+output: msa_mvnq_u8((v16u8)g_v8i16Data)={0xff,  0x00,  0x00,  0xff,  0xff,  0x55,  0x55,  0xff,  0xff,  0xaa,  0xaa,  0xff,  0xff,  0xff,  0x00,  0x00,  }
+output: msa_mvnq_u16((v8u16)g_v8i16Data1)={0xff00,  0x00ff,  0xff55,  0x55ff,  0xffaa,  0xaaff,  0x0000,  0x0000,  }
+
+
+ =================compareTstFunc=====================================================================
+====test msa_ceqq=====
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}
+output: c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data)={0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  }
+output: c = msa_ceqq_u8(g_v16u8Data, g_v16u8Data1)={0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data)={0xffffffff,  0xffffffff,  0xffffffff,  0xffffffff,  }
+output: cc = msa_ceqq_f32(g_v4f32Data, g_v4f32Data1)={0x0,  0x0,  0x0,  0x0,  }
+
+====test msa_cltq=====
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}
+output: c = msa_cltq_u8(g_v16u8Data, g_v16u8Data)={0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  }
+output: c = msa_cltq_u8(g_v16u8Data, g_v16u8Data1)={0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data)={0x0,  0x0,  0x0,  0x0,  }
+output: cc = msa_cltq_f32(g_v4f32Data, g_v4f32Data1)={0xffffffff,  0x0,  0xffffffff,  0x0,  }
+
+====test msa_cgtq=====
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}
+output: c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data)={0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  }
+output: c = msa_cgtq_u8(g_v16u8Data, g_v16u8Data1)={0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data)={0x0,  0x0,  0x0,  0x0,  }
+output: cc = msa_cgtq_f32(g_v4f32Data, g_v4f32Data1)={0x0,  0xffffffff,  0x0,  0xffffffff,  }
+
+====test msa_cleq=====
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}
+output: c = msa_cleq_u8(g_v16u8Data, g_v16u8Data)={0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  }
+output: c = msa_cleq_u8(g_v16u8Data, g_v16u8Data1)={0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data)={0xffffffff,  0xffffffff,  0xffffffff,  0xffffffff,  }
+output: cc = msa_cleq_f32(g_v4f32Data, g_v4f32Data1)={0xffffffff,  0x0,  0xffffffff,  0x0,  }
+
+====test msa_cgeq=====
+input: 	g_v16u8Data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+input: 	g_v16u8Data1 = {255, 254, 253, 252, 251, 250, 249, 248, 128, 127, 126, 125, 124, 123, 122, 121}
+output: c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data)={0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  0xff,  }
+output: c = msa_cgeq_u8(g_v16u8Data, g_v16u8Data1)={0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  }
+
+input: 	g_v4f32Data = {-0.001, 1.001, -2.002, 3.003}, g_v4f32Data1 = {0.01, -1.01, 2.02, -3.03}
+output: cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data)={0xffffffff,  0xffffffff,  0xffffffff,  0xffffffff,  }
+output: cc = msa_cgeq_f32(g_v4f32Data, g_v4f32Data1)={0x0,  0xffffffff,  0x0,  0xffffffff,  }
+
+
+==================bitshiftTstFunc=====================================================================
+====test msa_shlq_u8 & msa_shrq_u8=====
+input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+input: 	v16u8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7}
+output: c = msa_shlq_u8(v16u8Data, v16i8Data1)={0xff,  0xfe,  0xfc,  0xf8,  0xf0,  0xe0,  0xc0,  0x80,  0xff,  0x14,  0x28,  0x50,  0xa0,  0x40,  0x80,  0x00,  }
+output: c = msa_shrq_u8(v16u8Data, v16i8Data1)={0xff,  0x7f,  0x3f,  0x1f,  0x0f,  0x07,  0x03,  0x01,  0xff,  0x05,  0x02,  0x01,  0x00,  0x00,  0x00,  0x00,  }
+
+input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+input: 	v16u8Data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7}
+output: cc = msa_shlq_s8(v16i8Data, v16i8Data1)={0xff,  0xfe,  0xfc,  0xf8,  0xf0,  0xe0,  0xc0,  0x80,  0xff,  0x14,  0x28,  0x50,  0xa0,  0x40,  0x80,  0x00,  }
+output: cc = msa_shrq_s8(v16i8Data, v16i8Data1)={0xff,  0x7f,  0x3f,  0x1f,  0x0f,  0x07,  0x03,  0x01,  0xff,  0x05,  0x02,  0x01,  0x00,  0x00,  0x00,  0x00,  }
+
+====test msa_shlq_n_u8 & msa_shrq_n_u8=====
+input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+output: c = msa_shlq_n_u8(v16u8Data, 4)={0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  }
+output: c = msa_shrq_n_u8(v16u8Data, 4)={0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  }
+
+input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+output: cc = msa_shlq_n_s8(v16i8Data, 4)={0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xf0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  0xa0,  }
+output: cc = msa_shrq_n_s8(v16i8Data, 4)={0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x0f,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  }
+
+====test msa_rshrq_n_u8=====
+input: 	v16u8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+output: c = msa_rshrq_n_u8(v16u8Data, 4)={0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x01,  0x01,  0x01,  0x01,  0x01,  0x01,  0x01,  }
+
+input: 	v16i8Data = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a, 0x0a}
+output: cc = msa_rshrq_n_s8(v16i8Data, 4)={0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x10,  0x01,  0x01,  0x01,  0x01,  0x01,  0x01,  0x01,  }
+
