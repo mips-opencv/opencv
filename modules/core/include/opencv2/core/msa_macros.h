@@ -1509,8 +1509,6 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 /* vector type reinterpretion */
 #define MSA_TPV_REINTERPRET(_Tpv, Vec)  ((_Tpv)Vec)
 
-
-#if 1 /* get_lane() is implemented by ygwu, currently use the implementation by fwu above. */
 #ifdef _MIPSEB
 #define LANE_IMM0_1(x)  (0b1 - (x & 0b1))
 #define LANE_IMM0_3(x)  (0b11 - (x & 0b11))
@@ -1522,69 +1520,27 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define LANE_IMM0_7(x)  (x & 0b111)
 #define LANE_IMM0_15(x) (x & 0b1111)
 #endif
-
-__extension__ extern __inline float
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_getq_lane_f32 (v4f32 __a, const int __b)
-{
-	return __a[LANE_IMM0_3(__b)];
-}
-
-__extension__ extern __inline double
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_getq_lane_f64 (v2f64 __a, const int __b)
-{
-	return __a[LANE_IMM0_1(__b)];
-}
-
-__extension__ extern __inline uint8_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_u8 (v8u8 __a, const int __b)
-{
-  return __a[LANE_IMM0_7(__b)];
-}
-
-__extension__ extern __inline int8_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_s8 (v8i8 __a, const int __b)
-{
-  return __a[LANE_IMM0_7(__b)];
-}
-
-__extension__ extern __inline uint16_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_u16 (v4u16 __a, const int __b)
-{
-	return __a[LANE_IMM0_3(__b)];
-}
-
-__extension__ extern __inline int16_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_s16 (v4i16 __a, const int __b)
-{
-	return __a[LANE_IMM0_3(__b)];
-}
-
-__extension__ extern __inline uint32_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_u32 (v2u32 __a, const int __b)
-{
-	return __a[LANE_IMM0_1(__b)];
-}
-
-__extension__ extern __inline int32_t
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_s32 (v2i32 __a, const int __b)
-{
-	return __a[LANE_IMM0_1(__b)];
-}
-
-__extension__ extern __inline float
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_get_lane_f32 (v2f32 __a, const int __b)
-{
-	return __a[LANE_IMM0_1(__b)];
-}
+#define msa_getq_lane_f32(__a, __b)      ((float)__a[LANE_IMM0_3(__b)])
+#define msa_getq_lane_f64(__a, __b)      ((double)__a[LANE_IMM0_1(__b)])
+#define msa_get_lane_u8(__a, __b)        ((uint8_t)__a[LANE_IMM0_7(__b)])
+#define msa_get_lane_s8(__a, __b)        ((int8_t)__a[LANE_IMM0_7(__b)])
+#define msa_get_lane_u16(__a, __b)       ((uint16_t)__a[LANE_IMM0_3(__b)])
+#define msa_get_lane_s16(__a, __b)       ((int16_t)__a[LANE_IMM0_3(__b)])
+#define msa_get_lane_u32(__a, __b)       ((uint32_t)__a[LANE_IMM0_1(__b)])
+#define msa_get_lane_s32(__a, __b)       ((int32_t)__a[LANE_IMM0_1(__b)])
+#define msa_get_lane_f32(__a, __b)       ((float)__a[LANE_IMM0_3(__b)])
+#define msa_getq_lane_u8(a, imm0_15)     __builtin_msa_copy_u_b((v16i8)a, imm0_15)
+#define msa_getq_lane_s8                 __builtin_msa_copy_s_b
+#define msa_getq_lane_u16(a, imm0_7)     __builtin_msa_copy_u_h((v8i16)a, imm0_7)
+#define msa_getq_lane_s16                __builtin_msa_copy_s_h
+#define msa_getq_lane_u32(a, imm0_3)     __builtin_msa_copy_u_w((v4i32)a, imm0_3)
+#define msa_getq_lane_s32                __builtin_msa_copy_s_w
+#if (__mips == 64)
+#define msa_getq_lane_u64(a, imm0_1)     __builtin_msa_copy_u_d((v2i64)a, imm0_1)
+#define msa_getq_lane_s64                __builtin_msa_copy_s_d
+#else
+#define msa_getq_lane_u64(a, imm0_1)     ((uint64_t)__a[LANE_IMM0_1(__b)])
+#define msa_getq_lane_s64(a, imm0_1)     ((int64_t)__a[LANE_IMM0_1(__b)])
 #endif
 
 /* combine */
@@ -2013,7 +1969,8 @@ MSA_BITWISENOT_EXPAND(s32, v4i32)
 MSA_BITWISENOT_EXPAND(u64, v2u64)
 MSA_BITWISENOT_EXPAND(s64, v2i64)
 
-/* compare equal: vcgt -> ri = ai == bi ? 1...1:0...0 */
+/* compare equal: ceq -> ri = ai == bi ? 1...1:0...0 */
+#if 0
 #define MSA_CEQQ_IMPL(suffix1, suffix2, rettype, casttype, type) \
 __extension__ extern __inline rettype         \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -2031,8 +1988,21 @@ MSA_CEQQ_IMPL(f32, fceq_w, v4u32, v4f32, v4f32)
 MSA_CEQQ_IMPL(u64, ceq_d, v2u64, v2i64, v2u64)
 MSA_CEQQ_IMPL(s64, ceq_d, v2u64, v2i64, v2i64)
 MSA_CEQQ_IMPL(f64, fceq_d, v2u64, v2f64, v2f64)
+#else
+#define msa_ceqq_u8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)__a, (v16i8)__b))
+#define msa_ceqq_s8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)__a, (v16i8)__b))
+#define msa_ceqq_u16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)__a, (v8i16)__b))
+#define msa_ceqq_s16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)__a, (v8i16)__b))
+#define msa_ceqq_u32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)__a, (v4i32)__b))
+#define msa_ceqq_s32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)__a, (v4i32)__b))
+#define msa_ceqq_f32(__a, __b) ((v4u32)__builtin_msa_fceq_w((v4f32)__a, (v4f32)__b))
+#define msa_ceqq_u64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)__a, (v2i64)__b))
+#define msa_ceqq_s64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)__a, (v2i64)__b))
+#define msa_ceqq_f64(__a, __b) ((v2u64)__builtin_msa_fceq_d((v2f64)__a, (v2f64)__b))
+#endif
 
-/* Compare less-than: vclt -> ri = ai < bi ? 1...1:0...0 */
+/* Compare less-than: clt -> ri = ai < bi ? 1...1:0...0 */
+#if 0
 #define MSA_CLTQ_IMPL(suffix1, suffix2, rettype, type) \
 __extension__ extern __inline rettype         \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -2050,8 +2020,20 @@ MSA_CLTQ_IMPL(f32, fclt_w, v4u32, v4f32)
 MSA_CLTQ_IMPL(u64, clt_u_d, v2u64, v2u64)
 MSA_CLTQ_IMPL(s64, clt_s_d, v2u64, v2i64)
 MSA_CLTQ_IMPL(f64, fclt_d, v2u64, v2f64)
+#else
+#define msa_cltq_u8(__a, __b)  ((v16u8)__builtin_msa_clt_u_b((v16u8)__a, (v16u8)__b))
+#define msa_cltq_s8(__a, __b)  ((v16u8)__builtin_msa_clt_s_b((v16i8)__a, (v16i8)__b))
+#define msa_cltq_u16(__a, __b) ((v8u16)__builtin_msa_clt_u_h((v8u16)__a, (v8u16)__b))
+#define msa_cltq_s16(__a, __b) ((v8u16)__builtin_msa_clt_s_h((v8i16)__a, (v8i16)__b))
+#define msa_cltq_u32(__a, __b) ((v4u32)__builtin_msa_clt_u_w((v4u32)__a, (v4u32)__b))
+#define msa_cltq_s32(__a, __b) ((v4u32)__builtin_msa_clt_s_w((v4i32)__a, (v4i32)__b))
+#define msa_cltq_f32(__a, __b) ((v4u32)__builtin_msa_fclt_w((v4f32)__a, (v4f32)__b))
+#define msa_cltq_u64(__a, __b) ((v2u64)__builtin_msa_clt_u_d((v2u64)__a, (v2u64)__b))
+#define msa_cltq_s64(__a, __b) ((v2u64)__builtin_msa_clt_s_d((v2i64)__a, (v2i64)__b))
+#define msa_cltq_f64(__a, __b) ((v2u64)__builtin_msa_fclt_d((v2f64)__a, (v2f64)__b))
+#endif
 
-/* compare greater-than: vcgt -> ri = ai > bi ? 1...1:0...0 */
+/* compare greater-than: cgt -> ri = ai > bi ? 1...1:0...0 */
 #define MSA_CGTQ_IMPL(suffix1, suffix2, rettype, type) \
 __extension__ extern __inline rettype         \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -2108,7 +2090,7 @@ MSA_CGEQ_IMPL(u64, cle_u_d, v2u64, v2u64)
 MSA_CGEQ_IMPL(s64, cle_s_d, v2u64, v2i64)
 MSA_CGEQ_IMPL(f64, fcle_d, v2u64, v2f64)
 
-/* Shift Right Logical: shl -> ri = ai << bi;  */
+/* Shift Left Logical: shl -> ri = ai << bi;  */
 #define MSA_SHLQ_IMPL(suffix1, suffix2, rettype, casttype, type) \
 __extension__ extern __inline rettype         \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -2125,24 +2107,7 @@ MSA_SHLQ_IMPL(s32, sll_w, v4i32, v4i32, v4i32)
 MSA_SHLQ_IMPL(u64, sll_d, v2u64, v2i64, v2u64)
 MSA_SHLQ_IMPL(s64, sll_d, v2i64, v2i64, v2i64)
 
-/* Immediate Shift Right Logical: shl -> ri = ai << imm;  */
-#if 0
-#define MSA_SHLQ_N_IMPL(suffix1, suffix2, rettype, casttype, type) \
-__extension__ extern __inline rettype         \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_shlq_n_##suffix1 (type __a, const int __imm) \
-{ \
-  return (rettype)__builtin_msa_##suffix2((casttype)__a, __imm); \
-}
-MSA_SHLQ_N_IMPL(u8, slli_b, v16u8, v16i8, v16u8)
-MSA_SHLQ_N_IMPL(s8, slli_b, v16i8, v16i8, v16i8)
-MSA_SHLQ_N_IMPL(u16, slli_h, v8u16, v8i16, v8u16)
-MSA_SHLQ_N_IMPL(s16, slli_h, v8i16, v8i16, v8i16)
-MSA_SHLQ_N_IMPL(u32, slli_w, v4u32, v4i32, v4u32)
-MSA_SHLQ_N_IMPL(s32, slli_w, v4i32, v4i32, v4i32)
-MSA_SHLQ_N_IMPL(u64, slli_d, v2u64, v2i64, v2u64)
-MSA_SHLQ_N_IMPL(s64, slli_d, v2i64, v2i64, v2i64)
-#else
+/* Immediate Shift Left Logical: shl -> ri = ai << imm;  */
 #define msa_shlq_n_u8(__a, __imm) ((v16u8)__builtin_msa_slli_b((v16i8)__a, __imm))
 #define msa_shlq_n_s8(__a, __imm) ((v16i8)__builtin_msa_slli_b((v16i8)__a, __imm))
 #define msa_shlq_n_u16(__a, __imm) ((v8u16)__builtin_msa_slli_h((v8i16)__a, __imm))
@@ -2151,9 +2116,8 @@ MSA_SHLQ_N_IMPL(s64, slli_d, v2i64, v2i64, v2i64)
 #define msa_shlq_n_s32(__a, __imm) ((v4i32)__builtin_msa_slli_w((v4i32)__a, __imm))
 #define msa_shlq_n_u64(__a, __imm) ((v2u64)__builtin_msa_slli_d((v2i64)__a, __imm))
 #define msa_shlq_n_s64(__a, __imm) ((v2i64)__builtin_msa_slli_d((v2i64)__a, __imm))
-#endif
 
-/* shift right logical: shl -> ri = ai >> bi;  */
+/* shift right: shrq -> ri = ai >> bi;  */
 #define MSA_SHRQ_IMPL(suffix1, suffix2, rettype, casttype, type) \
 __extension__ extern __inline rettype         \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -2162,33 +2126,15 @@ msa_shrq_##suffix1 (type __a, casttype __b) \
   return (rettype)__builtin_msa_##suffix2((casttype)__a, (casttype)__b); \
 }
 MSA_SHRQ_IMPL(u8, srl_b, v16u8, v16i8, v16u8)
-MSA_SHRQ_IMPL(s8, srl_b, v16i8, v16i8, v16i8)
+MSA_SHRQ_IMPL(s8, sra_b, v16i8, v16i8, v16i8)
 MSA_SHRQ_IMPL(u16, srl_h, v8u16, v8i16, v8u16)
-MSA_SHRQ_IMPL(s16, srl_h, v8i16, v8i16, v8i16)
+MSA_SHRQ_IMPL(s16, sra_h, v8i16, v8i16, v8i16)
 MSA_SHRQ_IMPL(u32, srl_w, v4u32, v4i32, v4u32)
-MSA_SHRQ_IMPL(s32, srl_w, v4i32, v4i32, v4i32)
+MSA_SHRQ_IMPL(s32, sra_w, v4i32, v4i32, v4i32)
 MSA_SHRQ_IMPL(u64, srl_d, v2u64, v2i64, v2u64)
-MSA_SHRQ_IMPL(s64, srl_d, v2i64, v2i64, v2i64)
+MSA_SHRQ_IMPL(s64, sra_d, v2i64, v2i64, v2i64)
 
-/* Immediate Shift Right Logical: shl -> ri = ai >> imm;  */
-#if 0
-#define MSA_SHRQ_N_IMPL(suffix1, suffix2, rettype, casttype, type) \
-__extension__ extern __inline rettype         \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_shrq_n_##suffix1 (type __a, const int __imm) \
-{ \
-  return (rettype)__builtin_msa_##suffix2((casttype)__a, __imm); \
-}
-MSA_SHRQ_N_IMPL(u8, srli_b, v16u8, v16i8, v16u8)
-MSA_SHRQ_N_IMPL(s8, srli_b, v16i8, v16i8, v16i8)
-MSA_SHRQ_N_IMPL(u16, srli_h, v8u16, v8i16, v8u16)
-MSA_SHRQ_N_IMPL(s16, srli_h, v8i16, v8i16, v8i16)
-MSA_SHRQ_N_IMPL(u32, srli_w, v4u32, v4i32, v4u32)
-MSA_SHRQ_N_IMPL(s32, srli_w, v4i32, v4i32, v4i32)
-MSA_SHRQ_N_IMPL(u64, srli_d, v2u64, v2i64, v2u64)
-MSA_SHRQ_N_IMPL(s64, srli_d, v2i64, v2i64, v2i64)
-#else
-#if 1
+/* Immediate Shift Right: shr -> ri = ai >> imm;  */
 #define msa_shrq_n_u8(__a, __imm) ((v16u8)__builtin_msa_srli_b((v16i8)__a, __imm))
 #define msa_shrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srai_b((v16i8)__a, __imm))
 #define msa_shrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srli_h((v8i16)__a, __imm))
@@ -2197,36 +2143,8 @@ MSA_SHRQ_N_IMPL(s64, srli_d, v2i64, v2i64, v2i64)
 #define msa_shrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srai_w((v4i32)__a, __imm))
 #define msa_shrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srli_d((v2i64)__a, __imm))
 #define msa_shrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srai_d((v2i64)__a, __imm))
-#else
-#define msa_shrq_n_u8    __builtin_msa_srli_b
-#define msa_shrq_n_s8    __builtin_msa_srli_b
-#define msa_shrq_n_u16   __builtin_msa_srli_h
-#define msa_shrq_n_s16   __builtin_msa_srli_h
-#define msa_shrq_n_u32   __builtin_msa_srli_w
-#define msa_shrq_n_s32   __builtin_msa_srli_w
-#define msa_shrq_n_u64   __builtin_msa_srli_d
-#define msa_shrq_n_s64   __builtin_msa_srli_d
-#endif
-#endif
 
-/* Immediate Shift Right Logical Rounded: shl -> ri = ai >> (rounded)imm;  */
-#if 0
-#define MSA_RSHRQ_N_IMPL(suffix1, suffix2, rettype, casttype, type) \
-__extension__ extern __inline rettype         \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_rshrq_n_##suffix1 (type __a, const int __imm) \
-{ \
-  return (rettype)__builtin_msa_##suffix2((casttype)__a, __imm); \
-}
-MSA_RSHRQ_N_IMPL(u8, srlri_b, v16u8, v16i8, v16u8)
-MSA_RSHRQ_N_IMPL(s8, srlri_b, v16i8, v16i8, v16i8)
-MSA_RSHRQ_N_IMPL(u16, srlri_h, v8u16, v8i16, v8u16)
-MSA_RSHRQ_N_IMPL(s16, srlri_h, v8i16, v8i16, v8i16)
-MSA_RSHRQ_N_IMPL(u32, srlri_w, v4u32, v4i32, v4u32)
-MSA_RSHRQ_N_IMPL(s32, srlri_w, v4i32, v4i32, v4i32)
-MSA_RSHRQ_N_IMPL(u64, srlri_d, v2u64, v2i64, v2u64)
-MSA_RSHRQ_N_IMPL(s64, srlri_d, v2i64, v2i64, v2i64)
-#else
+/* Immediate Shift Right Rounded: shr -> ri = ai >> (rounded)imm;  */
 #define msa_rshrq_n_u8(__a, __imm) ((v16u8)__builtin_msa_srlri_b((v16i8)__a, __imm))
 #define msa_rshrq_n_s8(__a, __imm) ((v16i8)__builtin_msa_srari_b((v16i8)__a, __imm))
 #define msa_rshrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srlri_h((v8i16)__a, __imm))
@@ -2235,19 +2153,8 @@ MSA_RSHRQ_N_IMPL(s64, srlri_d, v2i64, v2i64, v2i64)
 #define msa_rshrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srari_w((v4i32)__a, __imm))
 #define msa_rshrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srlri_d((v2i64)__a, __imm))
 #define msa_rshrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srari_d((v2i64)__a, __imm))
-#endif
 
 /* rename the msa builtin func to unify the name style for intrin_msa.hpp */
-#if 1
-#define msa_getq_lane_u8(a, imm0_15)      __builtin_msa_copy_u_b((v16i8)a, imm0_15)
-#define msa_getq_lane_s8      __builtin_msa_copy_s_b
-#define msa_getq_lane_u16(a, imm0_7)     __builtin_msa_copy_u_h((v8i16)a, imm0_7)
-#define msa_getq_lane_s16     __builtin_msa_copy_s_h
-#define msa_getq_lane_u32(a, imm0_3)     __builtin_msa_copy_u_w((v4i32)a, imm0_3)
-#define msa_getq_lane_s32     __builtin_msa_copy_s_w
-#define msa_getq_lane_u64(a, imm0_1)     __builtin_msa_copy_u_d((v2i64)a, imm0_1)
-#define msa_getq_lane_s64     __builtin_msa_copy_s_d
-#endif
 #define msa_qaddq_u8          __builtin_msa_adds_u_b
 #define msa_qaddq_s8          __builtin_msa_adds_s_b
 #define msa_qaddq_u16         __builtin_msa_adds_u_h
@@ -2866,4 +2773,4 @@ msa_cvtfhq_f64_f32 (v4f32 __a)
 } // extern "C"
 #endif
 
-#endif /* OPENCV_CORE_HAL_MSA_MACROS_H */
+#endif /* OPENCV_CORE_MSA_MACROS_H */
