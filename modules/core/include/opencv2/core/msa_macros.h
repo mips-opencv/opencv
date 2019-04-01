@@ -22,346 +22,62 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 
 
 /* ld1: load values from the memory and return a doubleword vector */
-__extension__ extern __inline v2f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_f32 (const float *__a)
-{
-  return (v2f32) ((v1f64){*(double*)__a});
-}
-
-__extension__ extern __inline v1f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_f64 (const double *__a)
-{
-  return (v1f64) {*__a};
-}
-
-__extension__ extern __inline v8i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_s8 (const int8_t *__a)
-{
-  return (v8i8) ((v1i64){*(int64_t*)__a});
-}
-
-__extension__ extern __inline v4i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_s16 (const int16_t *__a)
-{
-  return (v4i16) ((v1i64){*(int64_t*)__a});
-}
-
-__extension__ extern __inline v2i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_s32 (const int32_t *__a)
-{
-  return (v2i32) ((v1i64){*(int64_t*)__a});
-}
-
-__extension__ extern __inline v1i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_s64 (const int64_t *__a)
-{
-  return (v1i64) {*__a};
-}
-
-__extension__ extern __inline v8u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_u8 (const uint8_t *__a)
-{
-  return (v8u8) ((v1u64){*(uint64_t*)__a});
-}
-
-__extension__ extern __inline v4u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_u16 (const uint16_t *__a)
-{
- return (v4u16) ((v1u64){*(uint64_t*)__a});
-}
-
-__extension__ extern __inline v2u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_u32 (const uint32_t *__a)
-{
-  return (v2u32) ((v1u64){*(uint64_t*)__a});
-}
-
-__extension__ extern __inline v1u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1_u64 (const uint64_t *__a)
-{
-  return (v1u64) {*__a};
-}
+#define msa_ld1_f32(__a) ((v2f32) ((v1f64){*(double*)__a}))
+#define msa_ld1_f64(__a) ((v1f64) {*__a})
+#define msa_ld1_s8(__a) ((v8i8) ((v1i64){*(int64_t*)__a}))
+#define msa_ld1_s16(__a) ((v4i16) ((v1i64){*(int64_t*)__a}))
+#define msa_ld1_s32(__a) ((v2i32) ((v1i64){*(int64_t*)__a}))
+#define msa_ld1_s64(__a) ((v1i64) {*__a})
+#define msa_ld1_u8(__a) ((v8u8) ((v1u64){*(uint64_t*)__a}))
+#define msa_ld1_u16(__a) ((v4u16) ((v1u64){*(uint64_t*)__a}))
+#define msa_ld1_u32(__a) ((v2u32) ((v1u64){*(uint64_t*)__a}))
+#define msa_ld1_u64(__a) ((v1u64) {*__a})
 
 /* ld1q: load values from the memory and return a quadword vector */
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_f32 (const float *__a)
-{
-  return (v4f32) ((v2f64){((double*)__a)[0],((double*)__a)[1]});
-}
+#define msa_ld1q_f32(__a) ((v4f32) ((v2f64){((double*)__a)[0],((double*)__a)[1]}))
+#define msa_ld1q_f64(__a) ((v2f64){__a[0], __a[1]})
+#define msa_ld1q_s8(__a) ((v16i8) __msa_ld_b(__a,0))
+#define msa_ld1q_s16(__a) ((v8i16) __msa_ld_h(__a,0))
+#define msa_ld1q_s32(__a) ((v4i32) __msa_ld_w(__a,0))
+#define msa_ld1q_s64(__a) ((v2i64) __msa_ld_d(__a,0))
+#define msa_ld1q_u8(__a) ((v16u8) __msa_ld_b(__a,0))
+#define msa_ld1q_u16(__a) ((v8u16) __msa_ld_h (__a, 0))
+#define msa_ld1q_u32(__a) ((v4u32) __msa_ld_w(__a,0))
+#define msa_ld1q_u64(__a) ((v2u64) __msa_ld_d(__a,0))
 
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_f64 (const double *__a)
-{
-  return (v2f64){__a[0], __a[1]};
-}
+/* duplicate elements for 64-bit doubleword vectors */
+#define msa_dup_n_f32(__a) ((v2f32) {__a, __a})
+#define msa_dup_n_f64(__a) ((v1f64) {__a})
+#define msa_dup_n_s8(__a) ((v8i8) {__a, __a, __a, __a, __a, __a, __a, __a})
+#define msa_dup_n_s16(__a) ((v4i16) {__a, __a, __a, __a})
+#define msa_dup_n_s32(__a) ((v2i32) {__a, __a})
+#define msa_dup_n_s64(__a) ((v1i64) {__a})
+#define msa_dup_n_u8(__a) ((v8u8) {__a, __a, __a, __a, __a, __a, __a, __a})
+#define msa_dup_n_u16(__a) ((v4u16) {__a, __a, __a, __a})
+#define msa_dup_n_u32(__a) ((v2u32) {__a, __a})
+#define msa_dup_n_u64(__a) ((v1u64) {__a})
 
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_s8 (const int8_t *__a)
-{
-  return (v16i8) __msa_ld_b(__a,0);
-}
+/* duplicate elements for 128-bit quadword vectors */
+#define msa_dupq_lane_s8(__a, __b) ((v16i8)__msa_splat_b (__a, __b))
+#define msa_dupq_lane_s16(__a, __b) ((v8i16)__msa_splat_h (__a, __b))
+#define msa_dupq_lane_s32(__a,__b) ((v4i32)__msa_splat_w (__a, __b))
+#define msa_dupq_lane_u8(__a, __b) ((v16u8)__msa_splat_b ((v16i8) __a, __b))
+#define msa_dupq_lane_u16(__a, __b) ((v8u16)__msa_splat_h ((v8i16) __a, __b))
+#define msa_dupq_lane_u32(__a, __b) ((v4u32)__msa_splat_w ((v4i32) __a, __b))
+#define msa_dupq_lane_s64(__a, __b) ((v2i64) __msa_splat_d (__a, __b))
+#define msa_dupq_lane_u64(__a, __b) ((v2u64)__msa_splat_d ((v2i64) __a, __b))
+#define msa_dupq_n_s8(__a) ((v16i8)__msa_fill_b ((int32_t) __a))
+#define msa_dupq_n_s16(__a) ((v8i16)__msa_fill_h ((int32_t) __a))
+#define msa_dupq_n_s32(__a) ((v4i32)__msa_fill_w ((int32_t) __a))
+#define msa_dupq_n_u8(__a) ((v16u8)__msa_fill_b ((int32_t) __a))
+#define msa_dupq_n_u16(__a) ((v8u16)__msa_fill_h ((int32_t) __a))
+#define msa_dupq_n_u32(__a) ((v4u32)__msa_fill_w ((int32_t) __a))
+#define msa_dupq_n_s64(__a) ((v2i64)__msa_fill_d ((int64_t) __a))
+#define msa_dupq_n_u64(__a) ((v2u64)__msa_fill_d ((int64_t) __a))
+#define msa_dupq_n_f32(__a) ((v4f32) {__a, __a, __a, __a})
+#define msa_dupq_n_f64(__a) ((v2f64) {__a, __a})
 
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_s16 (const int16_t *__a)
-{
-  return (v8i16) __msa_ld_h(__a,0);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_s32 (const int32_t *__a)
-{
-  return (v4i32) __msa_ld_w(__a,0);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_s64 (const int64_t *__a)
-{
-  return (v2i64) __msa_ld_d(__a,0);
-}
-
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_u8 (const uint8_t *__a)
-{
-  return (v16u8) __msa_ld_b(__a,0);
-}
-
-__extension__ extern __inline v8u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_u16 (const uint16_t *__a)
-{
-  return (v8u16) __msa_ld_h (__a, 0);
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_u32 (const uint32_t *__a)
-{
-  return (v4u32) __msa_ld_w(__a,0);
-}
-
-__extension__ extern __inline v2u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ld1q_u64 (const uint64_t *__a)
-{
-  return (v2u64) __msa_ld_d(__a,0);
-}
-
-/* dup_n */
-__extension__ extern __inline v2f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_f32 (float __a)
-{
-  return (v2f32) {__a, __a};
-}
-
-__extension__ extern __inline v1f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_f64 (double __a)
-{
-  return (v1f64) {__a};
-}
-
-__extension__ extern __inline v8i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_s8 (int8_t __a)
-{
-  return (v8i8) {__a, __a, __a, __a, __a, __a, __a, __a};
-}
-
-__extension__ extern __inline v4i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_s16 (int16_t __a)
-{
-  return (v4i16) {__a, __a, __a, __a};
-}
-
-__extension__ extern __inline v2i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_s32 (int32_t __a)
-{
-  return (v2i32) {__a, __a};
-}
-
-__extension__ extern __inline v1i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_s64 (int64_t __a)
-{
-  return (v1i64) {__a};
-}
-
-__extension__ extern __inline v8u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_u8 (uint8_t __a)
-{
-  return (v8u8) {__a, __a, __a, __a, __a, __a, __a, __a};
-}
-
-__extension__ extern __inline v4u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_u16 (uint16_t __a)
-{
-  return (v4u16) {__a, __a, __a, __a};
-}
-
-__extension__ extern __inline v2u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_u32 (uint32_t __a)
-{
-  return (v2u32) {__a, __a};
-}
-
-__extension__ extern __inline v1u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dup_n_u64 (uint64_t __a)
-{
-  return (v1u64) {__a};
-}
-
-/* Note: splat takes more exe time than directly converting from an array */
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_s8 (v16i8 __a, const int __b)
-{
-  return (v16i8)__msa_splat_b (__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_s16 (v8i16 __a, const int __b)
-{
-  return (v8i16)__msa_splat_h (__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_s32 (v4i32 __a, const int __b)
-{
-  return (v4i32)__msa_splat_w (__a, __b);
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_u8 (v16u8 __a, const int __b)
-{
-  return (v16u8)__msa_splat_b ((v16i8) __a, __b);
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_u16 (v8u16 __a, const int __b)
-{
-  return (v8u16)__msa_splat_h ((v8i16) __a, __b);
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_u32 (v4u32 __a, const int __b)
-{
-  return (v4u32)__msa_splat_w ((v4i32) __a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_s64 (v2i64 __a, const int __b)
-{
-  return (v2i64) __msa_splat_d (__a, __b);
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_lane_u64 (v2u64 __a, const int __b)
-{
-  return (v2u64)__msa_splat_d ((v2i64) __a, __b);
-}
-
-__extension__ extern __inline v16i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_s8 (int8_t __a)
-{
-  return (v16i8)__msa_fill_b ((int32_t) __a);
-}
-
-__extension__ extern __inline v8i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_s16 (int16_t __a)
-{
-  return (v8i16)__msa_fill_h ((int32_t) __a);
-}
-
-__extension__ extern __inline v4i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_s32 (int32_t __a)
-{
-  return (v4i32)__msa_fill_w ((int32_t) __a);
-}
-
-__extension__ extern __inline v16u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_u8 (uint8_t __a)
-{
-  return (v16u8)__msa_fill_b ((int32_t) __a);
-}
-
-__extension__ extern __inline v8u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_u16 (uint16_t __a)
-{
-  return (v8u16)__msa_fill_h ((int32_t) __a);
-}
-
-__extension__ extern __inline v4u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_u32 (uint32_t __a)
-{
-  return (v4u32)__msa_fill_w ((int32_t) __a);
-}
-
-__extension__ extern __inline v2i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_s64 (int64_t __a)
-{
-  return (v2i64)__msa_fill_d ((int64_t) __a);
-}
-
-__extension__ extern __inline v2u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_u64 (uint64_t __a)
-{
-  return (v2u64)__msa_fill_d ((int64_t) __a);
-}
-
-__extension__ extern __inline v4f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_f32 (float __a)
-{
-  return (v4f32) {__a, __a, __a, __a};
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_dupq_n_f64 (double __a)
-{
-  return (v2f64) {__a, __a};
-}
-
-/* store */
+/* store vector elments to memory address */
 __extension__ extern __inline void
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_st1_s8 (int8_t * __a, v8i8 __b)
@@ -443,33 +159,10 @@ msa_st1_f64 (double *__a, v1f64 __b)
   *__a = __b[0];
 }
 
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_s8 (int8_t * __a, v16i8 __b)
-{
-  __msa_st_b (__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_s16 (int16_t * __a, v8i16 __b)
-{
-  __msa_st_h (__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_s32 (int32_t * __a, v4i32 __b)
-{
-  __msa_st_w (__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_s64 (int64_t * __a, v2i64 __b)
-{
-  __msa_st_d (__b, __a, 0);
-}
+#define msa_st1q_s8(__a, __b) (__msa_st_b (__b, __a, 0))
+#define msa_st1q_s16(__a, __b) (__msa_st_h (__b, __a, 0))
+#define msa_st1q_s32(__a, __b) (__msa_st_w (__b, __a, 0))
+#define msa_st1q_s64(__a, __b) (__msa_st_d (__b, __a, 0))
 
 __extension__ extern __inline void
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
@@ -871,76 +564,17 @@ msa_movl_u32 (v2u32 __a)
   return (v2u64) {(uint64_t)__a[0],(uint64_t)__a[1]};
 }
 
-/* create */
-__extension__ extern __inline v8i8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_s8 (uint64_t __a)
-{
-  return (v8i8)__a;
-}
-
-__extension__ extern __inline v4i16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_s16 (uint64_t __a)
-{
-  return (v4i16)__a;
-}
-
-__extension__ extern __inline v2i32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_s32 (uint64_t __a)
-{
-  return (v2i32)__a;
-}
-
-__extension__ extern __inline v1i64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_s64 (uint64_t __a)
-{
-  return (v1i64)__a;
-}
-
-__extension__ extern __inline v2f32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_f32 (uint64_t __a)
-{
-  return (v2f32)__a;
-}
-
-__extension__ extern __inline v1f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_f64 (uint64_t __a)
-{
-  return (v1f64) __a;
-}
-
-__extension__ extern __inline v8u8
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_u8 (uint64_t __a)
-{
-  return (v8u8)__a;
-}
-
-__extension__ extern __inline v4u16
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_u16 (uint64_t __a)
-{
-  return (v4u16)__a;
-}
-
-__extension__ extern __inline v2u32
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_u32 (uint64_t __a)
-{
-  return (v2u32)__a;
-}
-
-__extension__ extern __inline v1u64
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_create_u64 (uint64_t __a)
-{
-  return (v1u64)__a;
-}
+/* create a vector */
+#define msa_create_s8(__a) ((v8i8)((uint64_t)__a))
+#define msa_create_s16(__a) ((v4i16)((uint64_t)__a))
+#define msa_create_s32(__a) ((v2i32)((uint64_t)__a))
+#define msa_create_s64(__a) ((v1i64)((uint64_t)__a))
+#define msa_create_f32(__a) ((v2f32)((uint64_t)__a))
+#define msa_create_f64(__a) ((v1f64) ((uint64_t)__a))
+#define msa_create_u8(__a) ((v8u8)((uint64_t)__a))
+#define msa_create_u16(__a) ((v4u16)((uint64_t)__a))
+#define msa_create_u32(__a) ((v2u32)((uint64_t)__a))
+#define msa_create_u64(__a) ((v1u64)((uint64_t)__a))
 
 /* qrshrn */
 __extension__ extern __inline v8i8
@@ -1218,121 +852,27 @@ msa_rshrn_n_u64 (v2u64 __a, const int __b)
                  (uint32_t)__msa_copy_u_d(vq,1)};
 }
 
-/* min */
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_f32 (v4f32 __a, v4f32 __b)
-{
-  return __msa_fmin_w (__a, __b);
-}
+/* Vector and vector minimum.*/
+#define msa_minq_f32(__a, __b) (__msa_fmin_w (__a, __b))
+#define msa_minq_f64(__a, __b) (__msa_fmin_d (__a, __b))
+#define msa_minq_s8(__a, __b) (__msa_min_s_b(__a, __b))
+#define msa_minq_s16(__a, __b) (__msa_min_s_h (__a, __b))
+#define msa_minq_s32(__a, __b) (__msa_min_s_w (__a, __b))
+#define msa_minq_u8(__a, __b) ((v16u8) __msa_min_u_b (__a, __b))
+#define msa_minq_u16(__a, __b) ((v8u16) __msa_min_u_h (__a, __b))
+#define msa_minq_u32(__a, __b) ((v4u32) __msa_min_u_w (__a, __b))
 
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_f64 (v2f64 __a, v2f64 __b)
-{
-  return __msa_fmin_d (__a, __b);
-}
+/* Vector and vector maximum.*/
+#define msa_maxq_f32(__a, __b) (__msa_fmax_w (__a, __b))
+#define msa_maxq_f64(__a, __b) (__msa_fmax_d (__a, __b))
+#define msa_maxq_s8(__a, __b) (__msa_max_s_b (__a, __b))
+#define msa_maxq_s16(__a, __b) (__msa_max_s_h (__a, __b))
+#define msa_maxq_s32(__a, __b) (__msa_max_s_w (__a, __b))
+#define msa_maxq_u8(__a, __b) ((v16u8) __msa_max_u_b (__a, __b))
+#define msa_maxq_u16(__a, __b) ((v8u16) __msa_max_u_h (__a, __b))
+#define msa_maxq_u32(__a, __b) ((v4u32) __msa_max_u_w (__a, __b))
 
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_s8 (v16i8 __a, v16i8 __b)
-{
-  return __msa_min_s_b(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_s16 (v8i16 __a, v8i16 __b)
-{
-  return __msa_min_s_h (__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_s32 (v4i32 __a, v4i32 __b)
-{
-  return __msa_min_s_w (__a, __b);
-}
-
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_u8 (v16u8 __a, v16u8 __b)
-{
-  return (v16u8) __msa_min_u_b (__a, __b);
-}
-
-__extension__ extern __inline v8u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_u16 (v8u16 __a, v8u16 __b)
-{
-  return (v8u16) __msa_min_u_h (__a, __b);
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_minq_u32 (v4u32 __a, v4u32 __b)
-{
-  return (v4u32) __msa_min_u_w (__a, __b);
-}
-
-/* max */
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_f32 (v4f32 __a, v4f32 __b)
-{
-  return __msa_fmax_w (__a, __b);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_f64 (v2f64 __a, v2f64 __b)
-{
-  return __msa_fmax_d (__a, __b);
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_s8 (v16i8 __a, v16i8 __b)
-{
-  return __msa_max_s_b (__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_s16 (v8i16 __a, v8i16 __b)
-{
-  return __msa_max_s_h (__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_s32 (v4i32 __a, v4i32 __b)
-{
-  return __msa_max_s_w (__a, __b);
-}
-
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_u8 (v16u8 __a, v16u8 __b)
-{
-  return (v16u8) __msa_max_u_b (__a, __b);
-}
-
-__extension__ extern __inline v8u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_u16 (v8u16 __a, v8u16 __b)
-{
-  return (v8u16) __msa_max_u_h (__a, __b);
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_maxq_u32 (v4u32 __a, v4u32 __b)
-{
-  return (v4u32) __msa_max_u_w (__a, __b);
-}
-
-/* pmin  */
+/* pair min  */
 __extension__ extern __inline v8i8
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_pmin_s8 (v8i8 a, v8i8 b)
@@ -1419,7 +959,7 @@ msa_pmin_f32 (v2f32 a, v2f32 b)
   };
 }
 
-/* pmax */
+/* pair max */
 __extension__ extern __inline v8i8
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_pmax_s8 (v8i8 a, v8i8 b)
