@@ -1545,7 +1545,7 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 
 /* combine */
 #define __COMBINE_64_64(__TYPE, a, b) ((__TYPE)((v2u64){((v1u64)a)[0], ((v1u64)b)[0]}))
-  
+
 /* v16i8 msa_combine_s8 (v8i8 __a, v8i8 __b) */
 #define msa_combine_s8(__a, __b)  __COMBINE_64_64(v16i8, __a, __b)
 
@@ -1578,7 +1578,7 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 
 /* get_low, get_high */
 #define __GET_LOW(__TYPE, a)   ((__TYPE)((v1u64)(__builtin_msa_copy_u_d((v2i64)a, 0))))
-  
+
 #define __GET_HIGH(__TYPE, a)  ((__TYPE)((v1u64)(__builtin_msa_copy_u_d((v2i64)a, 1))))
 
 /* v8i8 msa_get_low_s8(v16i8 __a) */
@@ -1692,11 +1692,20 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 /* v8u16 msa_paddlq_u8(v16u8 __a) */
 #define msa_paddlq_u8(__a)  (__builtin_msa_hadd_u_h(__a, __a))
 
+/* v8i16 msa_paddlq_s8(v16i8 __a) */
+#define msa_paddlq_s8(__a)  (__builtin_msa_hadd_s_h(__a, __a))
+
 /* v4u32 msa_paddlq_u16 (v8u16 __a)*/
 #define msa_paddlq_u16(__a)  (__builtin_msa_hadd_u_w(__a, __a))
 
+/* v4i32 msa_paddlq_s16 (v8i16 __a)*/
+#define msa_paddlq_s16(__a)  (__builtin_msa_hadd_s_w(__a, __a))
+
 /* v2u64 msa_paddlq_u32(v4u32 __a) */
 #define msa_paddlq_u32(__a)  (__builtin_msa_hadd_u_d(__a, __a))
+
+/* v2i64 msa_paddlq_s32(v4i32 __a) */
+#define msa_paddlq_s32(__a)  (__builtin_msa_hadd_s_d(__a, __a))
 
 #define V8U8_2_V8U16(x)   {(uint16_t)x[0], (uint16_t)x[1], (uint16_t)x[2], (uint16_t)x[3], \
                             (uint16_t)x[4], (uint16_t)x[5], (uint16_t)x[6], (uint16_t)x[7]}
@@ -1905,11 +1914,13 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_subq_s64          __builtin_msa_subv_d
 #define msa_subq_f64          __builtin_msa_fsub_d
 #define msa_mulq_u8(a, b)     ((v16u8)__builtin_msa_mulv_b((v16i8)a, (v16i8)b))
-#define msa_mulq_s8           __builtin_msa_mulv_b
+#define msa_mulq_s8(a, b)     ((v16i8)__builtin_msa_mulv_b((v16i8)a, (v16i8)b))
 #define msa_mulq_u16(a, b)    ((v8u16)__builtin_msa_mulv_h((v8i16)a, (v8i16)b))
-#define msa_mulq_s16          __builtin_msa_mulv_h
+#define msa_mulq_s16(a, b)    ((v8i16)__builtin_msa_mulv_h((v8i16)a, (v8i16)b))
 #define msa_mulq_u32(a, b)    ((v4u32)__builtin_msa_mulv_w((v4i32)a, (v4i32)b))
-#define msa_mulq_s32          __builtin_msa_mulv_w
+#define msa_mulq_s32(a, b)    ((v4i32)__builtin_msa_mulv_w((v4i32)a, (v4i32)b))
+#define msa_mulq_u64(a, b)    ((v2u64)__builtin_msa_mulv_d((v2i64)a, (v2i64)b))
+#define msa_mulq_s64(a, b)    ((v2i64)__builtin_msa_mulv_d((v2i64)a, (v2i64)b))
 #define msa_mulq_f32          __builtin_msa_fmul_w
 #define msa_mulq_f64          __builtin_msa_fmul_d
 #define msa_divq_f32          __builtin_msa_fdiv_w
@@ -1926,6 +1937,36 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_dpadd_u_h         __builtin_msa_dpadd_u_h
 #define msa_dpadd_u_w         __builtin_msa_dpadd_u_w
 #define msa_dpadd_u_d         __builtin_msa_dpadd_u_d
+
+#define ILVRL_B2(RTYPE, in0, in1, low, hi) do {       \
+      low = (RTYPE)__msa_ilvr_b((v16i8)in0, (v16i8)in1);  \
+      hi  = (RTYPE)__msa_ilvl_b((v16i8)in0, (v16i8)in1);  \
+    } while (0)
+#define ILVRL_B2_UB(...) ILVRL_B2(v16u8, __VA_ARGS__)
+#define ILVRL_B2_SB(...) ILVRL_B2(v16i8, __VA_ARGS__)
+#define ILVRL_B2_UH(...) ILVRL_B2(v8u16, __VA_ARGS__)
+#define ILVRL_B2_SH(...) ILVRL_B2(v8i16, __VA_ARGS__)
+#define ILVRL_B2_SW(...) ILVRL_B2(v4i32, __VA_ARGS__)
+
+#define ILVRL_H2(RTYPE, in0, in1, low, hi) do {       \
+      low = (RTYPE)__msa_ilvr_h((v8i16)in0, (v8i16)in1);  \
+      hi  = (RTYPE)__msa_ilvl_h((v8i16)in0, (v8i16)in1);  \
+    } while (0)
+#define ILVRL_H2_UB(...) ILVRL_H2(v16u8, __VA_ARGS__)
+#define ILVRL_H2_SB(...) ILVRL_H2(v16i8, __VA_ARGS__)
+#define ILVRL_H2_UH(...) ILVRL_H2(v8u16, __VA_ARGS__)
+#define ILVRL_H2_SH(...) ILVRL_H2(v8i16, __VA_ARGS__)
+#define ILVRL_H2_SW(...) ILVRL_H2(v4i32, __VA_ARGS__)
+#define ILVRL_H2_UW(...) ILVRL_H2(v4u32, __VA_ARGS__)
+
+#define ILVRL_W2(RTYPE, in0, in1, low, hi) do {       \
+      low = (RTYPE)__msa_ilvr_w((v4i32)in0, (v4i32)in1);  \
+      hi  = (RTYPE)__msa_ilvl_w((v4i32)in0, (v4i32)in1);  \
+    } while (0)
+#define ILVRL_W2_UB(...) ILVRL_W2(v16u8, __VA_ARGS__)
+#define ILVRL_W2_SH(...) ILVRL_W2(v8i16, __VA_ARGS__)
+#define ILVRL_W2_SW(...) ILVRL_W2(v4i32, __VA_ARGS__)
+#define ILVRL_W2_UW(...) ILVRL_W2(v4u32, __VA_ARGS__)
 
 /* absq, qabsq (r = |a|;) */
 #define msa_absq_s8(a)        __builtin_msa_add_a_b(a, __builtin_msa_fill_b(0))

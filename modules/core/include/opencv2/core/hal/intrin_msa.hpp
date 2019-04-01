@@ -456,50 +456,88 @@ OPENCV_HAL_IMPL_MSA_MUL_SAT(v_uint16x8, v_uint32x4)
 inline void v_mul_expand(const v_int8x16& a, const v_int8x16& b,
                          v_int16x8& c, v_int16x8& d)
 {
-    c.val = msa_mull_s8(msa_get_low_s8(a.val), msa_get_low_s8(b.val));
-    d.val = msa_mull_s8(msa_get_high_s8(a.val), msa_get_high_s8(b.val));
+    v16i8 aLow, aHi;
+    v16i8 bLow, bHi;
+
+    ILVRL_B2_SB(a.val, __msa_fill_b(0), aLow, aHi);
+    ILVRL_B2_SB(b.val, __msa_fill_b(0), bLow, bHi);
+    c.val = msa_mulq_s16(msa_paddlq_s8(aLow), msa_paddlq_s8(bLow));
+    d.val = msa_mulq_s16(msa_paddlq_s8(aHi), msa_paddlq_s8(bHi));
 }
 
 inline void v_mul_expand(const v_uint8x16& a, const v_uint8x16& b,
                          v_uint16x8& c, v_uint16x8& d)
 {
-    c.val = msa_mull_u8(msa_get_low_u8(a.val), msa_get_low_u8(b.val));
-    d.val = msa_mull_u8(msa_get_high_u8(a.val), msa_get_high_u8(b.val));
+    v16u8 aLow, aHi;
+    v16u8 bLow, bHi;
+
+    ILVRL_B2_UB(a.val, __msa_fill_b(0), aLow, aHi);
+    ILVRL_B2_UB(b.val, __msa_fill_b(0), bLow, bHi);
+    c.val = msa_mulq_u16(msa_paddlq_u8(aLow), msa_paddlq_u8(bLow));
+    d.val = msa_mulq_u16(msa_paddlq_u8(aHi), msa_paddlq_u8(bHi));
 }
 
 inline void v_mul_expand(const v_int16x8& a, const v_int16x8& b,
                          v_int32x4& c, v_int32x4& d)
 {
-    c.val = msa_mull_s16(msa_get_low_s16(a.val), msa_get_low_s16(b.val));
-    d.val = msa_mull_s16(msa_get_high_s16(a.val), msa_get_high_s16(b.val));
+    v8i16 aLow, aHi;
+    v8i16 bLow, bHi;
+
+    ILVRL_H2_SH(a.val, __msa_fill_h(0), aLow, aHi);
+    ILVRL_H2_SH(b.val, __msa_fill_h(0), bLow, bHi);
+    c.val = msa_mulq_s32(msa_paddlq_s16(aLow), msa_paddlq_s16(bLow));
+    d.val = msa_mulq_s32(msa_paddlq_s16(aHi), msa_paddlq_s16(bHi));
 }
 
 inline void v_mul_expand(const v_uint16x8& a, const v_uint16x8& b,
                          v_uint32x4& c, v_uint32x4& d)
 {
-    c.val = msa_mull_u16(msa_get_low_u16(a.val), msa_get_low_u16(b.val));
-    d.val = msa_mull_u16(msa_get_high_u16(a.val), msa_get_high_u16(b.val));
+    v8u16 aLow, aHi;
+    v8u16 bLow, bHi;
+
+    ILVRL_H2_UH(a.val, __msa_fill_h(0), aLow, aHi);
+    ILVRL_H2_UH(b.val, __msa_fill_h(0), bLow, bHi);
+    c.val = msa_mulq_u32(msa_paddlq_u16(aLow), msa_paddlq_u16(bLow));
+    d.val = msa_mulq_u32(msa_paddlq_u16(aHi), msa_paddlq_u16(bHi));
 }
 
 inline void v_mul_expand(const v_uint32x4& a, const v_uint32x4& b,
                          v_uint64x2& c, v_uint64x2& d)
 {
-    c.val = msa_mull_u32(msa_get_low_u32(a.val), msa_get_low_u32(b.val));
-    d.val = msa_mull_u32(msa_get_high_u32(a.val), msa_get_high_u32(b.val));
+    v4u32 aLow, aHi;
+    v4u32 bLow, bHi;
+
+    ILVRL_W2_UW(a.val, __msa_fill_w(0), aLow, aHi);
+    ILVRL_W2_UW(b.val, __msa_fill_w(0), bLow, bHi);
+    c.val = msa_mulq_u64(msa_paddlq_u32(aLow), msa_paddlq_u32(bLow));
+    d.val = msa_mulq_u64(msa_paddlq_u32(aHi), msa_paddlq_u32(bHi));
 }
 
 inline v_int16x8 v_mul_hi(const v_int16x8& a, const v_int16x8& b)
 {
-    return v_int16x8(msa_combine_s16(
-                                  msa_shrn_n_s32(msa_mull_s16( msa_get_low_s16(a.val),  msa_get_low_s16(b.val)), 16),
-                                  msa_shrn_n_s32(msa_mull_s16(msa_get_high_s16(a.val), msa_get_high_s16(b.val)), 16)
-                                 ));
+  v8i16 aLow, aHi;
+  v8i16 bLow, bHi;
+
+  ILVRL_H2_SH(a.val, __msa_fill_h(0), aLow, aHi);
+  ILVRL_H2_SH(b.val, __msa_fill_h(0), bLow, bHi);
+
+  return v_int16x8(msa_combine_s16(
+                                msa_shrn_n_s32(msa_mulq_s32(msa_paddlq_s16(aLow), msa_paddlq_s16(bLow)), 16),
+                                msa_shrn_n_s32(msa_mulq_s32(msa_paddlq_s16(aHi), msa_paddlq_s16(bHi)), 16)
+                               ));
 }
+
 inline v_uint16x8 v_mul_hi(const v_uint16x8& a, const v_uint16x8& b)
 {
+    v8u16 aLow, aHi;
+    v8u16 bLow, bHi;
+
+    ILVRL_H2_UH(a.val, __msa_fill_h(0), aLow, aHi);
+    ILVRL_H2_UH(b.val, __msa_fill_h(0), bLow, bHi);
+
     return v_uint16x8(msa_combine_u16(
-                                   msa_shrn_n_u32(msa_mull_u16( msa_get_low_u16(a.val),  msa_get_low_u16(b.val)), 16),
-                                   msa_shrn_n_u32(msa_mull_u16(msa_get_high_u16(a.val), msa_get_high_u16(b.val)), 16)
+                                   msa_shrn_n_u32(msa_mulq_u32(msa_paddlq_u16(aLow), msa_paddlq_u16(bLow)), 16),
+                                   msa_shrn_n_u32(msa_mulq_u32(msa_paddlq_u16(aHi), msa_paddlq_u16(bHi)), 16)
                                   ));
 }
 
