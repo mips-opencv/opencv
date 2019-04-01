@@ -1920,571 +1920,179 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_dotp_u_h          __builtin_msa_dotp_u_h
 #define msa_dotp_u_w          __builtin_msa_dotp_u_w
 #define msa_dotp_u_d          __builtin_msa_dotp_u_d
+#define msa_dpadd_s_h         __builtin_msa_dpadd_s_h
+#define msa_dpadd_s_w         __builtin_msa_dpadd_s_w
+#define msa_dpadd_s_d         __builtin_msa_dpadd_s_d
+#define msa_dpadd_u_h         __builtin_msa_dpadd_u_h
+#define msa_dpadd_u_w         __builtin_msa_dpadd_u_w
+#define msa_dpadd_u_d         __builtin_msa_dpadd_u_d
 
 /* absq, qabsq (r = |a|;) */
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_s8(v16i8 __a)
-{
-  return __msa_add_a_b(__a, __msa_fill_b(0));
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_s16(v8i16 __a)
-{
-  return __msa_add_a_h(__a, __msa_fill_h(0));
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_s32(v4i32 __a)
-{
-  return __msa_add_a_w(__a, __msa_fill_w(0));
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_s64(v2i64 __a)
-{
-  return __msa_add_a_d(__a, __msa_fill_d(0));
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_f32(v4f32 __a)
-{
-  return (v4f32)(__msa_bclri_w((v4u32)__a, 31));
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_absq_f64(v2f64 __a)
-{
-  return (v2f64)(__msa_bclri_d((v2u64)__a, 63));
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabsq_s8(v16i8 __a)
-{
-  return __msa_adds_a_b(__a, __msa_fill_b(0));
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabsq_s16(v8i16 __a)
-{
-  return __msa_adds_a_h(__a, __msa_fill_h(0));
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabsq_s32(v4i32 __a)
-{
-  return __msa_adds_a_w(__a, __msa_fill_w(0));
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabsq_s64(v2i64 __a)
-{
-  return __msa_adds_a_d(__a, __msa_fill_d(0));
-}
+#define msa_absq_s8(a)        __builtin_msa_add_a_b(a, __builtin_msa_fill_b(0))
+#define msa_absq_s16(a)       __builtin_msa_add_a_h(a, __builtin_msa_fill_h(0))
+#define msa_absq_s32(a)       __builtin_msa_add_a_w(a, __builtin_msa_fill_w(0))
+#define msa_absq_s64(a)       __builtin_msa_add_a_d(a, __builtin_msa_fill_d(0))
+#define msa_absq_f32(a)       ((v4f32)__builtin_msa_bclri_w((v4u32)a, 31))
+#define msa_absq_f64(a)       ((v2f64)__builtin_msa_bclri_d((v2u64)a, 63))
+#define msa_qabsq_s8(a)       __builtin_msa_adds_a_b(a, __builtin_msa_fill_b(0))
+#define msa_qabsq_s16(a)      __builtin_msa_adds_a_h(a, __builtin_msa_fill_h(0))
+#define msa_qabsq_s32(a)      __builtin_msa_adds_a_w(a, __builtin_msa_fill_w(0))
+#define msa_qabsq_s64(a)      __builtin_msa_adds_a_d(a, __builtin_msa_fill_d(0))
 
 /* abdq, qabdq (r = |a - b|;) */
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_u8(v16u8 __a, v16u8 __b)
-{
-  return __msa_asub_u_b(__a, __b);
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_s8(v16i8 __a, v16i8 __b)
-{
-  return __msa_asub_s_b(__a, __b);
-}
-
-__extension__ extern __inline v8u16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_u16(v8u16 __a, v8u16 __b)
-{
-  return __msa_asub_u_h(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_s16(v8i16 __a, v8i16 __b)
-{
-  return __msa_asub_s_h(__a, __b);
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_u32(v4u32 __a, v4u32 __b)
-{
-  return __msa_asub_u_w(__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_s32(v4i32 __a, v4i32 __b)
-{
-  return __msa_asub_s_w(__a, __b);
-}
-
-__extension__ extern __inline v2u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_u64(v2u64 __a, v2u64 __b)
-{
-  return __msa_asub_u_d(__a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_s64(v2i64 __a, v2i64 __b)
-{
-  return __msa_asub_s_d(__a, __b);
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_f32(v4f32 __a, v4f32 __b)
-{
-  return msa_absq_f32(__msa_fsub_w(__a, __b));
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_abdq_f64(v2f64 __a, v2f64 __b)
-{
-  return msa_absq_f64(__msa_fsub_d(__a, __b));
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabdq_s8(v16i8 __a, v16i8 __b)
-{
-  return msa_qabsq_s8(__msa_subs_s_b(__a, __b));
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabdq_s16(v8i16 __a, v8i16 __b)
-{
-  return msa_qabsq_s16(__msa_subs_s_h(__a, __b));
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabdq_s32(v4i32 __a, v4i32 __b)
-{
-  return msa_qabsq_s32(__msa_subs_s_w(__a, __b));
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_qabdq_s64(v2i64 __a, v2i64 __b)
-{
-  return msa_qabsq_s64(__msa_subs_s_d(__a, __b));
-}
+#define msa_abdq_u8           __builtin_msa_asub_u_b
+#define msa_abdq_s8           __builtin_msa_asub_s_b
+#define msa_abdq_u16          __builtin_msa_asub_u_h
+#define msa_abdq_s16          __builtin_msa_asub_s_h
+#define msa_abdq_u32          __builtin_msa_asub_u_w
+#define msa_abdq_s32          __builtin_msa_asub_s_w
+#define msa_abdq_u64          __builtin_msa_asub_u_d
+#define msa_abdq_s64          __builtin_msa_asub_s_d
+#define msa_abdq_f32(a, b)    msa_absq_f32(__builtin_msa_fsub_w(a, b))
+#define msa_abdq_f64(a, b)    msa_absq_f64(__builtin_msa_fsub_d(a, b))
+#define msa_qabdq_s8(a, b)    msa_qabsq_s8(__builtin_msa_subs_s_b(a, b))
+#define msa_qabdq_s16(a, b)   msa_qabsq_s16(__builtin_msa_subs_s_h(a, b))
+#define msa_qabdq_s32(a, b)   msa_qabsq_s32(__builtin_msa_subs_s_w(a, b))
+#define msa_qabdq_s64(a, b)   msa_qabsq_s64(__builtin_msa_subs_s_d(a, b))
 
 /* sqrtq, rsqrtq */
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_sqrtq_f32(v4f32 __a)
-{
-  return __msa_fsqrt_w(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_sqrtq_f64(v2f64 __a)
-{
-  return __msa_fsqrt_d(__a);
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_rsqrtq_f32(v4f32 __a)
-{
-  return __msa_frsqrt_w(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_rsqrtq_f64(v2f64 __a)
-{
-  return __msa_frsqrt_d(__a);
-}
+#define msa_sqrtq_f32         __builtin_msa_fsqrt_w
+#define msa_sqrtq_f64         __builtin_msa_fsqrt_d
+#define msa_rsqrtq_f32        __builtin_msa_frsqrt_w
+#define msa_rsqrtq_f64        __builtin_msa_frsqrt_d
 
 /* mlaq (r = a * b + c;(gcc) --> r = a + b * c;(asm)) */
+#if 0
+#define msa_mlaq_s32          __builtin_msa_maddv_w
+#define msa_mlaq_s64          __builtin_msa_maddv_d
+#define msa_mlaq_f32          __builtin_msa_fmadd_w
+#define msa_mlaq_f64          __builtin_msa_fmadd_d
+#else
 __extension__ extern __inline v4i32
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_s32(v4i32 __a, v4i32 __b, v4i32 __c)
 {
-#if 0
-  return __msa_maddv_w(__a, __b, __c);
-#else
   asm volatile("maddv.w %w[__a], %w[__b], %w[__c]\n"
                // Outputs
                : [__a] "+f"(__a)
                // Inputs
                : [__b] "f"(__b), [__c] "f"(__c));
   return __a;
-#endif
 }
 
 __extension__ extern __inline v2i64
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_s64(v2i64 __a, v2i64 __b, v2i64 __c)
 {
-#if 0
-  return __msa_maddv_d(__a, __b, __c);
-#else
   asm volatile("maddv.d %w[__a], %w[__b], %w[__c]\n"
                // Outputs
                : [__a] "+f"(__a)
                // Inputs
                : [__b] "f"(__b), [__c] "f"(__c));
   return __a;
-#endif
 }
 
 __extension__ extern __inline v4f32
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_f32(v4f32 __a, v4f32 __b, v4f32 __c)
 {
-#if 0
-  return __msa_fmadd_w(__a, __b, __c);
-#else
   asm volatile("fmadd.w %w[__a], %w[__b], %w[__c]\n"
                // Outputs
                : [__a] "+f"(__a)
                // Inputs
                : [__b] "f"(__b), [__c] "f"(__c));
   return __a;
-#endif
 }
 
 __extension__ extern __inline v2f64
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
 {
-#if 0
-  return __msa_fmadd_d(__a, __b, __c);
-#else
   asm volatile("fmadd.d %w[__a], %w[__b], %w[__c]\n"
                // Outputs
                : [__a] "+f"(__a)
                // Inputs
                : [__b] "f"(__b), [__c] "f"(__c));
   return __a;
-#endif
 }
+#endif
 
 /* cntq */
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cntq_s8(v16i8 __a)
-{
-  return __msa_pcnt_b(__a);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cntq_s16(v8i16 __a)
-{
-  return __msa_pcnt_h(__a);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cntq_s32(v4i32 __a)
-{
-  return __msa_pcnt_w(__a);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cntq_s64(v2i64 __a)
-{
-  return __msa_pcnt_d(__a);
-}
+#define msa_cntq_s8           __builtin_msa_pcnt_b
+#define msa_cntq_s16          __builtin_msa_pcnt_h
+#define msa_cntq_s32          __builtin_msa_pcnt_w
+#define msa_cntq_s64          __builtin_msa_pcnt_d
 
 /* bslq (a: mask; r = b(if a == 0); r = c(if a == 1);) */
-__extension__ extern __inline v16u8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_bslq_u8(v16u8 __a, v16u8 __b, v16u8 __c)
-{
-  return __msa_bsel_v(__a, __b, __c);
-}
+#define msa_bslq_u8           __builtin_msa_bsel_v
 
 /* ilvrq, ilvlq (For EL only, ilvrq: b0, a0, b1, a1; ilvlq: b2, a2, b3, a3;) */
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvrq_s8(v16i8 __a, v16i8 __b)
-{
-  return __msa_ilvr_b(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvrq_s16(v8i16 __a, v8i16 __b)
-{
-  return __msa_ilvr_h(__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvrq_s32(v4i32 __a, v4i32 __b)
-{
-  return __msa_ilvr_w(__a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvrq_s64(v2i64 __a, v2i64 __b)
-{
-  return __msa_ilvr_d(__a, __b);
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvlq_s8(v16i8 __a, v16i8 __b)
-{
-  return __msa_ilvl_b(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvlq_s16(v8i16 __a, v8i16 __b)
-{
-  return __msa_ilvl_h(__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvlq_s32(v4i32 __a, v4i32 __b)
-{
-  return __msa_ilvl_w(__a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvlq_s64(v2i64 __a, v2i64 __b)
-{
-  return __msa_ilvl_d(__a, __b);
-}
+#define msa_ilvrq_s8          __builtin_msa_ilvr_b
+#define msa_ilvrq_s16         __builtin_msa_ilvr_h
+#define msa_ilvrq_s32         __builtin_msa_ilvr_w
+#define msa_ilvrq_s64         __builtin_msa_ilvr_d
+#define msa_ilvlq_s8          __builtin_msa_ilvl_b
+#define msa_ilvlq_s16         __builtin_msa_ilvl_h
+#define msa_ilvlq_s32         __builtin_msa_ilvl_w
+#define msa_ilvlq_s64         __builtin_msa_ilvl_d
 
 /* ilvevq, ilvodq (ilvevq: b0, a0, b2, a2; ilvodq: b1, a1, b3, a3; ) */
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvevq_s8(v16i8 __a, v16i8 __b)
-{
-  return __msa_ilvev_b(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvevq_s16(v8i16 __a, v8i16 __b)
-{
-  return __msa_ilvev_h(__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvevq_s32(v4i32 __a, v4i32 __b)
-{
-  return __msa_ilvev_w(__a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvevq_s64(v2i64 __a, v2i64 __b)
-{
-  return __msa_ilvev_d(__a, __b);
-}
-
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvodq_s8(v16i8 __a, v16i8 __b)
-{
-  return __msa_ilvod_b(__a, __b);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvodq_s16(v8i16 __a, v8i16 __b)
-{
-  return __msa_ilvod_h(__a, __b);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvodq_s32(v4i32 __a, v4i32 __b)
-{
-  return __msa_ilvod_w(__a, __b);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_ilvodq_s64(v2i64 __a, v2i64 __b)
-{
-  return __msa_ilvod_d(__a, __b);
-}
+#define msa_ilvevq_s8         __builtin_msa_ilvev_b
+#define msa_ilvevq_s16        __builtin_msa_ilvev_h
+#define msa_ilvevq_s32        __builtin_msa_ilvev_w
+#define msa_ilvevq_s64        __builtin_msa_ilvev_d
+#define msa_ilvodq_s8         __builtin_msa_ilvod_b
+#define msa_ilvodq_s16        __builtin_msa_ilvod_h
+#define msa_ilvodq_s32        __builtin_msa_ilvod_w
+#define msa_ilvodq_s64        __builtin_msa_ilvod_d
 
 /* extq (r = (a || b); a concatenation b and get elements from index c) */
-__extension__ extern __inline v16i8
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_extq_s8(v16i8 __a, v16i8 __b, const int __c)
-{
-  return __msa_vshf_b((v16i8){__c, __c+1, __c+2, __c+3, __c+4, __c+5, __c+6, __c+7, __c+8, __c+9, __c+10, __c+11, __c+12, __c+13, __c+14, __c+15}, __b, __a);
-}
-
-__extension__ extern __inline v8i16
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_extq_s16(v8i16 __a, v8i16 __b, const int __c)
-{
-  return __msa_vshf_h((v8i16){__c, __c+1, __c+2, __c+3, __c+4, __c+5, __c+6, __c+7}, __b, __a);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_extq_s32(v4i32 __a, v4i32 __b, const int __c)
-{
-  return __msa_vshf_w((v4i32){__c, __c+1, __c+2, __c+3}, __b, __a);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_extq_s64(v2i64 __a, v2i64 __b, const int __c)
-{
-  return __msa_vshf_d((v2i64){__c, __c+1}, __b, __a);
-}
+#if 0
+#ifdef _MIPSEB
+#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b((v16i8){16-c, 17-c, 18-c, 19-c, 20-c, 21-c, 22-c, 23-c, 24-c, 25-c, 26-c, 27-c, 28-c, 29-c, 30-c, 31-c}, a, b)
+#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h((v8i16){8-c, 9-c, 10-c, 11-c, 12-c, 13-c, 14-c, 15-c}, a, b)
+#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w((v4i32){4-c, 5-c, 6-c, 7-c}, a, b)
+#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d((v2i64){2-c, 3-c}, a, b)
+#else
+#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b((v16i8){c, c+1, c+2, c+3, c+4, c+5, c+6, c+7, c+8, c+9, c+10, c+11, c+12, c+13, c+14, c+15}, b, a)
+#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h((v8i16){c, c+1, c+2, c+3, c+4, c+5, c+6, c+7}, b, a)
+#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w((v4i32){c, c+1, c+2, c+3}, b, a)
+#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d((v2i64){c, c+1}, b, a)
+#endif /* _MIPSEB */
+#else
+#ifdef _MIPSEB
+#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b(__builtin_msa_subv_b((v16i8)((v2i64){0x1716151413121110, 0x1F1E1D1C1B1A1918}), __builtin_msa_fill_b(c)), a, b)
+#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h(__builtin_msa_subv_h((v8i16)((v2i64){0x000B000A00090008, 0x000F000E000D000C}), __builtin_msa_fill_h(c)), a, b)
+#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w(__builtin_msa_subv_w((v4i32)((v2i64){0x0000000500000004, 0x0000000700000006}), __builtin_msa_fill_w(c)), a, b)
+#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d(__builtin_msa_subv_d((v2i64){0x0000000000000002, 0x0000000000000003}, __builtin_msa_fill_d(c)), a, b)
+#else
+#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b(__builtin_msa_addv_b((v16i8)((v2i64){0x0706050403020100, 0x0F0E0D0C0B0A0908}), __builtin_msa_fill_b(c)), b, a)
+#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h(__builtin_msa_addv_h((v8i16)((v2i64){0x0003000200010000, 0x0007000600050004}), __builtin_msa_fill_h(c)), b, a)
+#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w(__builtin_msa_addv_w((v4i32)((v2i64){0x0000000100000000, 0x0000000300000002}), __builtin_msa_fill_w(c)), b, a)
+#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d(__builtin_msa_addv_d((v2i64){0x0000000000000000, 0x0000000000000001}, __builtin_msa_fill_d(c)), b, a)
+#endif /* _MIPSEB */
+#endif
 
 /* cvttruncq, cvttintq, cvtrintq */
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttruncq_u32_f32 (v4f32 __a)
-{
-  return __msa_ftrunc_u_w(__a);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttruncq_s32_f32 (v4f32 __a)
-{
-  return __msa_ftrunc_s_w(__a);
-}
-
-__extension__ extern __inline v2u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttruncq_u64_f64 (v2f64 __a)
-{
-  return __msa_ftrunc_u_d(__a);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttruncq_s64_f64 (v2f64 __a)
-{
-  return __msa_ftrunc_s_d(__a);
-}
-
-__extension__ extern __inline v4u32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttintq_u32_f32 (v4f32 __a)
-{
-  return __msa_ftint_u_w(__a);
-}
-
-__extension__ extern __inline v4i32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttintq_s32_f32 (v4f32 __a)
-{
-  return __msa_ftint_s_w(__a);
-}
-
-__extension__ extern __inline v2u64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttintq_u64_f64 (v2f64 __a)
-{
-  return __msa_ftint_u_d(__a);
-}
-
-__extension__ extern __inline v2i64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvttintq_s64_f64 (v2f64 __a)
-{
-  return __msa_ftint_s_d(__a);
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtrintq_f32 (v4f32 __a)
-{
-  return __msa_frint_w(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtrintq_f64 (v2f64 __a)
-{
-  return __msa_frint_d(__a);
-}
+#define msa_cvttruncq_u32_f32 __builtin_msa_ftrunc_u_w
+#define msa_cvttruncq_s32_f32 __builtin_msa_ftrunc_s_w
+#define msa_cvttruncq_u64_f64 __builtin_msa_ftrunc_u_d
+#define msa_cvttruncq_s64_f64 __builtin_msa_ftrunc_s_d
+#define msa_cvttintq_u32_f32  __builtin_msa_ftint_u_w
+#define msa_cvttintq_s32_f32  __builtin_msa_ftint_s_w
+#define msa_cvttintq_u64_f64  __builtin_msa_ftint_u_d
+#define msa_cvttintq_s64_f64  __builtin_msa_ftint_s_d
+#define msa_cvtrintq_f32      __builtin_msa_frint_w
+#define msa_cvtrintq_f64      __builtin_msa_frint_d
 
 /* cvtfintq, cvtfq */
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfintq_f32_u32 (v4u32 __a)
-{
-  return __msa_ffint_u_w(__a);
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfintq_f32_s32 (v4i32 __a)
-{
-  return __msa_ffint_s_w(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfintq_f64_u64 (v2u64 __a)
-{
-  return __msa_ffint_u_d(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfintq_f64_s64 (v2i64 __a)
-{
-  return __msa_ffint_s_d(__a);
-}
-
-__extension__ extern __inline v4f32
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfq_f32_f64 (v2f64 __a, v2f64 __b)
-{
-  return __msa_fexdo_w(__a, __b);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtflq_f64_f32 (v4f32 __a)
-{
-  return __msa_fexupr_d(__a);
-}
-
-__extension__ extern __inline v2f64
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_cvtfhq_f64_f32 (v4f32 __a)
-{
-  return __msa_fexupl_d(__a);
-}
+#define msa_cvtfintq_f32_u32  __builtin_msa_ffint_u_w
+#define msa_cvtfintq_f32_s32  __builtin_msa_ffint_s_w
+#define msa_cvtfintq_f64_u64  __builtin_msa_ffint_u_d
+#define msa_cvtfintq_f64_s64  __builtin_msa_ffint_s_d
+#define msa_cvtfq_f32_f64     __builtin_msa_fexdo_w
+#define msa_cvtflq_f64_f32    __builtin_msa_fexupr_d
+#define msa_cvtfhq_f64_f32    __builtin_msa_fexupl_d
 
 #ifdef __cplusplus
 } // extern "C"
