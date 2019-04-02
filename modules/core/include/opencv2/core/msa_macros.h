@@ -34,7 +34,7 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_ld1_u64(__a) ((v1u64) {*((uint64_t*)__a)})
 
 /* ld1q: load values from the memory and return a quadword vector */
-#define msa_ld1q_f32(__a) ((v4f32) ((v2f64){((double*)__a)[0],((double*)__a)[1]}))
+#define msa_ld1q_f32(__a) ((v4f32){((float*)__a)[0],((float*)__a)[1],((float*)__a)[2],((float*)__a)[3]})
 #define msa_ld1q_f64(__a) ((v2f64){((double*)__a)[0], ((double*)__a)[1]})
 #define msa_ld1q_s8(__a) ((v16i8) __msa_ld_b(__a,0))
 #define msa_ld1q_s16(__a) ((v8i16) __msa_ld_h(__a,0))
