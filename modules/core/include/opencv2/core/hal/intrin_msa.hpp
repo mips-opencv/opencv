@@ -1401,82 +1401,15 @@ inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec&
     msa_st1q_##suffix( ptr+3*nlanes, (_Tpv)__msa_ilvl_##df(v3,v2));\
 }
 
-#define OPENCV_HAL_IMPL_MSA_INTERLEAVED_FLOAT(_Tpvec, _Tp, suffix) \
-inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b) \
-{ \
-    int i, i2; \
-    for( i = i2 = 0; i < v_##_Tpvec::nlanes; i++, i2 += 2 ) \
-    { \
-        a.val[i] = ptr[i2]; \
-        b.val[i] = ptr[i2+1]; \
-    } \
-} \
-inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, v_##_Tpvec& c) \
-{ \
-    int i, i3; \
-    for( i = i3 = 0; i < v_##_Tpvec::nlanes; i++, i3 += 3 ) \
-    { \
-        a.val[i] = ptr[i3]; \
-        b.val[i] = ptr[i3+1]; \
-        c.val[i] = ptr[i3+2]; \
-    } \
-} \
-inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, \
-                                v_##_Tpvec& c, v_##_Tpvec& d) \
-{ \
-    int i, i4; \
-    for( i = i4 = 0; i < v_##_Tpvec::nlanes; i++, i4 += 4 ) \
-    { \
-        a.val[i] = ptr[i4]; \
-        b.val[i] = ptr[i4+1]; \
-        c.val[i] = ptr[i4+2]; \
-        d.val[i] = ptr[i4+3]; \
-    } \
-} \
-inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
-                                hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
-{ \
-    int i, i2; \
-    for( i = i2 = 0; i < v_##_Tpvec::nlanes; i++, i2 += 2 ) \
-    { \
-        ptr[i2] = a.val[i]; \
-        ptr[i2+1] = b.val[i]; \
-    } \
-} \
-inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
-                                const v_##_Tpvec& c, hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
-{ \
-    int i, i3; \
-    for( i = i3 = 0; i < v_##_Tpvec::nlanes; i++, i3 += 3 ) \
-    { \
-        ptr[i3] = a.val[i]; \
-        ptr[i3+1] = b.val[i]; \
-        ptr[i3+2] = c.val[i]; \
-    } \
-} \
-inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
-                                const v_##_Tpvec& c, const v_##_Tpvec& d, \
-                                hal::StoreMode /*mode*/=hal::STORE_UNALIGNED ) \
-{ \
-    int i, i4; \
-    for( i = i4 = 0; i < v_##_Tpvec::nlanes; i++, i4 += 4 ) \
-    { \
-        ptr[i4] = a.val[i]; \
-        ptr[i4+1] = b.val[i]; \
-        ptr[i4+2] = c.val[i]; \
-        ptr[i4+3] = d.val[i]; \
-    } \
-}
-
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint8x16, uchar, v16u8, v16i8, u8, b)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(int8x16, schar, v16i8, v16i8, s8, b)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint16x8, ushort, v8u16, v8i16, u16, h)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(int16x8, short, v8i16, v8i16, s16, h)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint32x4, unsigned, v4u32, v4i32, u32, w)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(int32x4, int, v4i32, v4i32, s32, w)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED_FLOAT(float32x4, float, f32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float32x4, float, v4f32, v4i32, f32, w)
 #if CV_SIMD128_64F
-OPENCV_HAL_IMPL_MSA_INTERLEAVED_FLOAT(float64x2, double, f64)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float64x2, double, v2f64, v2i64, f64, d)
 #endif
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(int64x2, int64, v2i64, v2i64, s64, d)
 OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint64x2, uint64, v2u64, v2i64, u64, d)

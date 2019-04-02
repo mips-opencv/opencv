@@ -22,20 +22,20 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 
 
 /* ld1: load values from the memory and return a doubleword vector */
-#define msa_ld1_f32(__a) ((v2f32) ((v1f64){*(double*)__a}))
-#define msa_ld1_f64(__a) ((v1f64) {*__a})
-#define msa_ld1_s8(__a) ((v8i8) ((v1i64){*(int64_t*)__a}))
-#define msa_ld1_s16(__a) ((v4i16) ((v1i64){*(int64_t*)__a}))
-#define msa_ld1_s32(__a) ((v2i32) ((v1i64){*(int64_t*)__a}))
-#define msa_ld1_s64(__a) ((v1i64) {*__a})
-#define msa_ld1_u8(__a) ((v8u8) ((v1u64){*(uint64_t*)__a}))
-#define msa_ld1_u16(__a) ((v4u16) ((v1u64){*(uint64_t*)__a}))
-#define msa_ld1_u32(__a) ((v2u32) ((v1u64){*(uint64_t*)__a}))
-#define msa_ld1_u64(__a) ((v1u64) {*__a})
+#define msa_ld1_f32(__a) ((v2f32) ((v1f64){*((double*)__a)}))
+#define msa_ld1_f64(__a) ((v1f64) {*((double*)__a)})
+#define msa_ld1_s8(__a) ((v8i8) ((v1i64){*((int64_t*)__a)}))
+#define msa_ld1_s16(__a) ((v4i16) ((v1i64){*((int64_t*)__a)}))
+#define msa_ld1_s32(__a) ((v2i32) ((v1i64){*((int64_t*)__a)}))
+#define msa_ld1_s64(__a) ((v1i64) {*((int64_t*)__a)})
+#define msa_ld1_u8(__a) ((v8u8) ((v1u64){*((uint64_t*)__a)}))
+#define msa_ld1_u16(__a) ((v4u16) ((v1u64){*((uint64_t*)__a)}))
+#define msa_ld1_u32(__a) ((v2u32) ((v1u64){*((uint64_t*)__a)}))
+#define msa_ld1_u64(__a) ((v1u64) {*((uint64_t*)__a)})
 
 /* ld1q: load values from the memory and return a quadword vector */
 #define msa_ld1q_f32(__a) ((v4f32) ((v2f64){((double*)__a)[0],((double*)__a)[1]}))
-#define msa_ld1q_f64(__a) ((v2f64){__a[0], __a[1]})
+#define msa_ld1q_f64(__a) ((v2f64){((double*)__a)[0], ((double*)__a)[1]})
 #define msa_ld1q_s8(__a) ((v16i8) __msa_ld_b(__a,0))
 #define msa_ld1q_s16(__a) ((v8i16) __msa_ld_h(__a,0))
 #define msa_ld1q_s32(__a) ((v4i32) __msa_ld_w(__a,0))
