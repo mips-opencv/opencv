@@ -99,6 +99,8 @@ elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)64le")
   set(PPC64LE 1)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)64")
   set(PPC64 1)
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(mips.*|MIPS.*)")
+  set(MIPS 1)
 endif()
 
 # Workaround for 32-bit operating systems on 64-bit x86_64 processor

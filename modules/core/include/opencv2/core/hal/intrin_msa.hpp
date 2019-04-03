@@ -1565,8 +1565,7 @@ inline void v_cleanup() {}
 //! @brief Check CPU capability of SIMD operation
 static inline bool hasSIMD128()
 {
-    //return (CV_CPU_HAS_SUPPORT_MSA) ? true : false;
-    return true; /*for test*/
+    return (CV_CPU_HAS_SUPPORT_MSA) ? true : false;
 }
 
 //! @}
