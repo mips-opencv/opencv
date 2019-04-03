@@ -34,8 +34,8 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_ld1_u64(__a) ((v1u64) {*((uint64_t*)__a)})
 
 /* ld1q: load values from the memory and return a quadword vector */
-#define msa_ld1q_f32(__a) ((v4f32){((float*)__a)[0],((float*)__a)[1],((float*)__a)[2],((float*)__a)[3]})
-#define msa_ld1q_f64(__a) ((v2f64){((double*)__a)[0], ((double*)__a)[1]})
+#define msa_ld1q_f32(__a) ((v4f32) __msa_ld_w(__a,0))
+#define msa_ld1q_f64(__a) ((v2f64) __msa_ld_d(__a,0))
 #define msa_ld1q_s8(__a) ((v16i8) __msa_ld_b(__a,0))
 #define msa_ld1q_s16(__a) ((v8i16) __msa_ld_h(__a,0))
 #define msa_ld1q_s32(__a) ((v4i32) __msa_ld_w(__a,0))
@@ -159,184 +159,37 @@ msa_st1_f64 (double *__a, v1f64 __b)
   *__a = __b[0];
 }
 
-#define msa_st1q_s8(__a, __b) (__msa_st_b (__b, __a, 0))
-#define msa_st1q_s16(__a, __b) (__msa_st_h (__b, __a, 0))
-#define msa_st1q_s32(__a, __b) (__msa_st_w (__b, __a, 0))
-#define msa_st1q_s64(__a, __b) (__msa_st_d (__b, __a, 0))
+/* store an element value from vector to memory */
+#define msa_st1q_s8(__a, __b) (__msa_st_b ((v16i8)__b, __a, 0))
+#define msa_st1q_s16(__a, __b) (__msa_st_h ((v8i16)__b, __a, 0))
+#define msa_st1q_s32(__a, __b) (__msa_st_w ((v4i32)__b, __a, 0))
+#define msa_st1q_s64(__a, __b) (__msa_st_d ((v2i64)__b, __a, 0))
+#define msa_st1q_f32(__a, __b) (__msa_st_w ((v4i32)__b, __a, 0))
+#define msa_st1q_u8(__a, __b) (__msa_st_b ((v16i8)__b, __a, 0))
+#define msa_st1q_u16(__a, __b) (__msa_st_h ((v8i16)__b, __a, 0))
+#define msa_st1q_u32(__a, __b) (__msa_st_w ((v4i32)__b, __a, 0))
+#define msa_st1q_u64(__a, __b) (__msa_st_d ((v2i64)__b, __a, 0))
+#define msa_st1q_f64(__a, __b) (__msa_st_d ((v2i64)__b, __a, 0))
+#define msa_st1_lane_s8(__a, __b, __c) (*((int8_t *)__a) = __b[__c])
+#define msa_st1_lane_s16(__a, __b, __c) (*((int16_t)__a) = __b[__c])
+#define msa_st1_lane_s32(__a, __b, __c) (*((int32_t)__a) = __b[__c])
+#define msa_st1_lane_f32(__a, __b, __c) (*((float*)__a) = __b[__c])
+#define msa_st1_lane_u8(__a, __b, __c) (*((uint8_t *)__a) = __b[__c])
+#define msa_st1_lane_u16(__a, __b, __c) (*((uint16_t *)__a) = __b[__c])
+#define msa_st1_lane_u32(__a, __b, __c) (*((uint32_t *)__a) = __b[__c])
+#define msa_st1_lane_s64(__a, __b, __c) (*((int64_t *)__a) = __b[__c])
+#define msa_st1_lane_u64(__a, __b, __c) (*((uint64_t *)__a) = __b[__c])
+#define msa_st1q_lane_s8(__a, __b, __c) (*((int8_t *)__a) = __msa_copy_s_b(__b,__c))
+#define msa_st1q_lane_s16(__a, __b, __c)(*((int16_t *)__a) = __msa_copy_s_h(__b,__c))
+#define msa_st1q_lane_s32(__a, __b, __c)(*((int32_t *)__a) = __msa_copy_s_w(__b,__c))
+#define msa_st1q_lane_f32(__a, __b, __c) (*((float *)__a) = (float)__msa_copy_s_w((v4i32)__b,__c))
+#define msa_st1q_lane_u8(__a, __b, __c) (*((uint8_t)__a) = __msa_copy_u_b(__b,__c))
+#define msa_st1q_lane_u16(__a, __b, __c) (*((uint16_t *)__a) = __msa_copy_u_h(__b,__c))
+#define msa_st1q_lane_u32 (__a, __b, __c) (*((uint32_t *)__a) = __msa_copy_u_w(__b,__c))
+#define msa_st1q_lane_s64 (__a, __b, __c) (*((int64_t *)__a) = __msa_copy_s_d(__b,__c))
+#define msa_st1q_lane_u64 (__a, __b, __c)(*((uint64_t *)__a) = __msa_copy_u_d(__b,__c))
 
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_f32 (float * __a, v4f32 __b)
-{
-  uint8_t i = 0;
-  for(i=0; i<4; i++)
-    __a[i] = __b[i];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_u8 (uint8_t * __a, v16u8 __b)
-{
-  __msa_st_b ((v16i8)__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_u16 (uint16_t * __a, v8u16 __b)
-{
-  __msa_st_h ((v8i16)__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_u32 (uint32_t * __a, v4u32 __b)
-{
-  __msa_st_w ((v4i32)__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_u64 (uint64_t * __a, v2u64 __b)
-{
-  __msa_st_d ((v2i64)__b, __a, 0);
-}
-
-__extension__ extern __inline void
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_f64 (double *a, v2f64 b)
-{
-  a[0] = b[0];
-  a[1] = b[1];
-}
-
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_s8 (int8_t * __a, v8i8 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_s16 (int16_t * __a, v4i16 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_s32 (int32_t * __a, v2i32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_f32 (float * __a, v2f32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_u8 (uint8_t * __a, v8i8 __b, const int __c)
-{
- *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_u16 (uint16_t * __a, v4u16 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_u32 (uint32_t * __a, v2u32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_s64 (int64_t * __a, v1i64 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1_lane_u64 (uint64_t * __a, v1u64 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_s8 (int8_t * __a, v16i8 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_s16 (int16_t * __a, v8i16 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_s32 (int32_t * __a, v4i32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_f32 (float * __a, v4f32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_u8 (uint8_t * __a, v16u8 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_u16 (uint16_t * __a, v8u16 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_u32 (uint32_t * __a, v4u32 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_s64 (int64_t * __a, v2i64 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-__extension__ extern __inline void
-__attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
-msa_st1q_lane_u64 (uint64_t * __a, v2u64 __b, const int __c)
-{
-  *__a = __b[__c];
-}
-
-/* move */
+/* copies the least significant half of each element of a quadword vector into the corresponding elements of a doubleword vector. */
 __extension__ extern __inline v8i8
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_movn_s16 (v8i16 __a)
