@@ -115,13 +115,13 @@
 #  define CV_VSX 1
 #endif
 
+#ifdef CV_CPU_COMPILE_VSX3
+#  define CV_VSX3 1
+#endif
+
 #ifdef __mips_msa
 #  include "msa_macros.h"
 #  define CV_MSA 1
-#endif
-
-#ifdef CV_CPU_COMPILE_VSX3
-#  define CV_VSX3 1
 #endif
 
 #endif // CV_ENABLE_INTRINSICS && !CV_DISABLE_OPTIMIZATION && !__CUDACC__
@@ -249,4 +249,8 @@ struct VZeroUpperGuard {
 
 #ifndef CV_VSX3
 #  define CV_VSX3 0
+#endif
+
+#ifndef CV_MSA
+#  define CV_MSA 0
 #endif
