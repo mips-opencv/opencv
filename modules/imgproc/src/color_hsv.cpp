@@ -634,6 +634,10 @@ struct RGB2HLS_b
         v_scale_inv = vdupq_n_f32(1.f/255.f);
         v_scale = vdupq_n_f32(255.f);
         v_alpha = vdup_n_u8(ColorChannel<uchar>::max());
+        #elif CV_MSA
+        v_scale_inv = msa_dupq_n_f32(1.f/255.f);
+        v_scale = msa_dupq_n_f32(255.f);
+        v_alpha = msa_dup_n_u8(ColorChannel<uchar>::max());
         #elif CV_SSE2
         v_scale_inv = _mm_set1_ps(1.f/255.f);
         v_zero = _mm_setzero_si128();
@@ -709,6 +713,30 @@ struct RGB2HLS_b
                 v_dst.val[2] = vmulq_f32(vcvtq_f32_u32(vmovl_u16(vget_high_u16(v_t2))), v_scale_inv);
                 vst3q_f32(buf + j + 12, v_dst);
             }
+            #elif CV_MSA
+            for ( ; j <= (dn - 8) * 3; j += 24, src += 8 * scn)
+            {
+                v8u8 v_src0, v_src1, v_src2, v_src3;
+
+                if (scn == 3)
+                    msa_ld3_u8(src, &v_src0, &v_src1, &v_src2);
+                else
+                    msa_ld4_u8(src, &v_src0, &v_src1, &v_src2, &v_src3);
+
+                v8u16 v_t0 = msa_movl_u8(v_src0);
+                v8u16 v_t1 = msa_movl_u8(v_src1);
+                v8u16 v_t2 = msa_movl_u8(v_src2);
+
+                v4f32 v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t0))), v_scale_inv);
+                v4f32 v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t1))), v_scale_inv);
+                v4f32 v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t2))), v_scale_inv);
+                msa_st3q_f32(buf + j, v_dst0, v_dst1, v_dst2);
+
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t0))), v_scale_inv);
+                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t1))), v_scale_inv);
+                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t2))), v_scale_inv);
+                msa_st3q_f32(buf + j + 12, v_dst0, v_dst1, v_dst2);
+            }
             #elif CV_SSE2
             if (scn == 3 && haveSIMD)
             {
@@ -773,6 +801,21 @@ struct RGB2HLS_b
                                                        vqmovn_u32(cv_vrndq_u32_f32(vmulq_f32(v_src1.val[2], v_scale)))));
                 vst3_u8(dst + j, v_dst);
             }
+            #elif CV_MSA
+            for ( ; j <= (dn - 8) * 3; j += 24)
+            {
+                v4f32 v_src00, v_src01, v_src02, v_src10, v_src11, v_src12;
+                msa_ld3q_f32(buf + j, &v_src00, &v_src01, &v_src02);
+                msa_ld3q_f32(buf + j + 12, &v_src10, &v_src11, &v_src12);
+
+                v8u8 v_dst0 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(v_src00)),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(v_src10))));
+                v8u8 v_dst1 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src01, v_scale))),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src11, v_scale)))));
+                v8u8 v_dst2 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src02, v_scale))),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src12, v_scale)))));
+                msa_st3_u8(dst + j, v_dst0, v_dst1, v_dst2);
+            }
             #elif CV_SSE2
             if (haveSIMD)
             {
@@ -803,6 +846,9 @@ struct RGB2HLS_b
     #if CV_NEON
     float32x4_t v_scale, v_scale_inv;
     uint8x8_t v_alpha;
+    #elif CV_MSA
+    v4f32 v_scale, v_scale_inv;
+    v8u8 v_alpha;
     #elif CV_SSE2
     __m128 v_scale_inv;
     __m128i v_zero;
@@ -986,6 +1032,10 @@ struct HLS2RGB_b
         v_scale_inv = vdupq_n_f32(1.f/255.f);
         v_scale = vdupq_n_f32(255.f);
         v_alpha = vdup_n_u8(ColorChannel<uchar>::max());
+        #elif CV_MSA
+        v_scale_inv = msa_dupq_n_f32(1.f/255.f);
+        v_scale = msa_dupq_n_f32(255.f);
+        v_alpha = msa_dup_n_u8(ColorChannel<uchar>::max());
         #elif CV_SSE2
         v_scale = _mm_set1_ps(255.f);
         v_alpha = _mm_set1_ps(ColorChannel<uchar>::max());
@@ -1064,6 +1114,25 @@ struct HLS2RGB_b
                 v_dst.val[2] = vmulq_f32(vcvtq_f32_u32(vmovl_u16(vget_high_u16(v_t2))), v_scale_inv);
                 vst3q_f32(buf + j + 12, v_dst);
             }
+            #elif CV_MSA
+            for ( ; j <= (dn - 8) * 3; j += 24)
+            {
+                v8u8 v_src0, v_src1, v_src2;
+                msa_ld3_u8(src + j, &v_src0, &v_src1, &v_src2);
+                v8u16 v_t0 = msa_movl_u8(v_src0),
+                      v_t1 = msa_movl_u8(v_src1),
+                      v_t2 = msa_movl_u8(v_src2);
+
+                v4f32 v_dst0 = msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t0)));
+                v4f32 v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t1))), v_scale_inv);
+                v4f32 v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t2))), v_scale_inv);
+                msa_st3q_f32(buf + j, v_dst0, v_dst1, v_dst2);
+
+                v_dst0 = msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t0)));
+                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t1))), v_scale_inv);
+                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t2))), v_scale_inv);
+                msa_st3q_f32(buf + j + 12, v_dst0, v_dst1, v_dst2);
+            }
             #elif CV_SSE2
             if (haveSIMD)
             {
@@ -1117,6 +1186,24 @@ struct HLS2RGB_b
                     v_dst.val[2] = v_dst2;
                     vst3_u8(dst, v_dst);
                 }
+            }
+            #elif CV_MSA
+            for ( ; j <= (dn - 8) * 3; j += 24, dst += dcn * 8)
+            {
+                v4f32 v_src00, v_src01, v_src02, v_src10, v_src11, v_src12;
+                msa_ld3q_f32(buf + j, &v_src00, &v_src01, &v_src02);
+                msa_ld3q_f32(buf + j + 12, &v_src10, &v_src11, &v_src12);
+                v8u8 v_dst0 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src00, v_scale))),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src10, v_scale)))));
+                v8u8 v_dst1 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src01, v_scale))),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src11, v_scale)))));
+                v8u8 v_dst2 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src02, v_scale))),
+                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src12, v_scale)))));
+
+                if (dcn == 4)
+                    msa_st4_u8(dst, v_dst0, v_dst1, v_dst2, v_alpha);
+                else
+                    msa_st3_u8(dst, v_dst0, v_dst1, v_dst2);
             }
             #elif CV_SSE2
             if (dcn == 3 && haveSIMD)
@@ -1184,6 +1271,9 @@ struct HLS2RGB_b
     #if CV_NEON
     float32x4_t v_scale, v_scale_inv;
     uint8x8_t v_alpha;
+    #elif CV_MSA
+    v4f32 v_scale, v_scale_inv;
+    v8u8 v_alpha;
     #elif CV_SSE2
     __m128 v_scale;
     __m128 v_alpha;

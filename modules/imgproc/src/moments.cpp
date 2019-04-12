@@ -333,6 +333,67 @@ struct MomentsInTile_SIMD<uchar, int, int>
     uint16x4_t qx_init, v_step;
 };
 
+#elif CV_MSA
+
+template <>
+struct MomentsInTile_SIMD<uchar, int, int>
+{
+    MomentsInTile_SIMD()
+    {
+        qx_init = (v8u16){0, 1, 2, 3, 4, 5, 6, 7};
+        v_step = msa_dupq_n_u16(8);
+    }
+
+    int operator() (const uchar * ptr, int len, int & x0, int & x1, int & x2, int & x3)
+    {
+        int x = 0;
+
+        v4u32 v_z = msa_dupq_n_u32(0), v_x0 = v_z, v_x1 = v_z, v_x2 = v_z, v_x3 = v_z;
+        v8u16 qx = qx_init;
+
+        for( ; x <= len - 8; x += 8 )
+        {
+            v8u16 aLow, aHi, bLow, bHi;
+            v8u16 v_src = msa_movl_u8(msa_ld1_u8(ptr + x));
+            ILVRL_H2_UH(qx, msa_dupq_n_u16(0), aLow, aHi);
+            ILVRL_H2_UH(v_src, msa_dupq_n_u16(0), bLow, bHi);
+
+            // first part
+            v4u32 v_qx = msa_paddlq_u16(aLow);
+            v4u32 v_p = msa_paddlq_u16(bLow);
+            v4u32 v_px = msa_mulq_u32(v_qx, v_p);
+
+            v_x0 = msa_addq_u32(v_x0, v_p);
+            v_x1 = msa_addq_u32(v_x1, v_px);
+            v_px = msa_mulq_u32(v_px, v_qx);
+            v_x2 = msa_addq_u32(v_x2, v_px);
+            v_x3 = msa_addq_u32(v_x3, msa_mulq_u32(v_px, v_qx));
+
+            // second part
+            v_qx = msa_paddlq_u16(aHi);
+            v_p = msa_paddlq_u16(bHi);
+            v_px = msa_mulq_u32(v_qx, v_p);
+
+            v_x0 = msa_addq_u32(v_x0, v_p);
+            v_x1 = msa_addq_u32(v_x1, v_px);
+            v_px = msa_mulq_u32(v_px, v_qx);
+            v_x2 = msa_addq_u32(v_x2, v_px);
+            v_x3 = msa_addq_u32(v_x3, msa_mulq_u32(v_px, v_qx));
+
+            qx = msa_addq_u16(qx, v_step);
+        }
+
+        x0 = (int)msa_sum_u32(v_x0);
+        x1 = (int)msa_sum_u32(v_x1);
+        x2 = (int)msa_sum_u32(v_x2);
+        x3 = (int)msa_sum_u32(v_x3);
+
+        return x;
+    }
+
+    v8u16 qx_init, v_step;
+};
+
 #endif
 
 #if CV_SSE4_1

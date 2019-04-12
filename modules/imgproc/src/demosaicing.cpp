@@ -538,10 +538,175 @@ public:
         return 0;
     }
 };
+#elif CV_MSA
+class SIMDBayerInterpolator_8u
+{
+public:
+    SIMDBayerInterpolator_8u()
+    {
+    }
+
+    int bayer2Gray(const uchar* bayer, int bayer_step, uchar* dst,
+                   int width, int bcoeff, int gcoeff, int rcoeff) const
+    {
+        /*
+         B G B G | B G B G | B G B G | B G B G
+         G R G R | G R G R | G R G R | G R G R
+         B G B G | B G B G | B G B G | B G B G
+         */
+        v8u16 masklo = msa_dupq_n_u16(255);
+        const uchar* bayer_end = bayer + width;
+
+        for( ; bayer <= bayer_end - 18; bayer += 14, dst += 14 )
+        {
+            v8u16 r0 = msa_ld1q_u16((const ushort*)bayer);
+            v8u16 r1 = msa_ld1q_u16((const ushort*)(bayer + bayer_step));
+            v8u16 r2 = msa_ld1q_u16((const ushort*)(bayer + bayer_step * 2));
+
+            v8u16 b1_ = msa_addq_u16(msa_andq_u16(r0, masklo), msa_andq_u16(r2, masklo));
+            v8u16 b1 = (v8u16)msa_extq_s16((v8i16)b1_, (v8i16)b1_, 1);
+            v8u16 b0 = msa_addq_u16(b1_, b1);
+            // b0 = b0 b2 b4 ...
+            // b1 = b1 b3 b5 ...
+
+            v8u16 g0 = msa_addq_u16(msa_shrq_n_u16(r0, 8), msa_shrq_n_u16(r2, 8));
+            v8u16 g1 = msa_andq_u16(r1, masklo);
+            g0 = msa_addq_u16(g0, msa_addq_u16(g1, (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1)));
+            v8u16 rot = (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1);
+            g1 = msa_shlq_n_u16(rot, 2);
+            // g0 = b0 b2 b4 ...
+            // g1 = b1 b3 b5 ...
+
+            r0 = msa_shrq_n_u16(r1, 8);
+            r1 = msa_addq_u16(r0, (v8u16)msa_extq_s16((v8i16)r0, (v8i16)r0, 1));
+            r0 = msa_shlq_n_u16(r0, 2);
+            // r0 = r0 r2 r4 ...
+            // r1 = r1 r3 r5 ...
+
+            b0 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(b0), (short)(rcoeff * 2)));
+            b1 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(b1), (short)(rcoeff * 4)));
+
+            g0 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(g0), (short)(gcoeff * 2)));
+            g1 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(g1), (short)(gcoeff * 2)));
+
+            r0 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(r0), (short)(bcoeff * 2)));
+            r1 = (v8u16)(msa_qdmulhq_n_s16((v8i16)(r1), (short)(bcoeff * 4)));
+
+            g0 = msa_addq_u16(msa_addq_u16(g0, b0), r0);
+            g1 = msa_addq_u16(msa_addq_u16(g1, b1), r1);
+
+            v8u8 p0, p1;
+            msa_zip_u8(msa_rshrn_n_u16(g0, 2), msa_rshrn_n_u16(g1, 2), &p0, &p1);
+            msa_st1_u8(dst, p0);
+            msa_st1_u8(dst + 8, p1);
+        }
+
+        return (int)(bayer - (bayer_end - width));
+    }
+
+    int bayer2RGB(const uchar* bayer, int bayer_step, uchar* dst, int width, int blue) const
+    {
+        /*
+         B G B G | B G B G | B G B G | B G B G
+         G R G R | G R G R | G R G R | G R G R
+         B G B G | B G B G | B G B G | B G B G
+         */
+        v8u16 masklo = msa_dupq_n_u16(255);
+        v16u8 pix[3];
+        const uchar* bayer_end = bayer + width;
+
+        for( ; bayer <= bayer_end - 18; bayer += 14, dst += 42 )
+        {
+            v8u16 r0 = msa_ld1q_u16((const ushort*)bayer);
+            v8u16 r1 = msa_ld1q_u16((const ushort*)(bayer + bayer_step));
+            v8u16 r2 = msa_ld1q_u16((const ushort*)(bayer + bayer_step * 2));
+
+            v8u16 b1 = msa_addq_u16(msa_andq_u16(r0, masklo), msa_andq_u16(r2, masklo));
+            v8u16 nextb1 = (v8u16)msa_extq_s16((v8i16)b1, (v8i16)b1, 1);
+            v8u16 b0 = msa_addq_u16(b1, nextb1);
+            // b0 b1 b2 ...
+            v8u8 bb0, bb1;
+            msa_zip_u8(msa_rshrn_n_u16(b0, 2), msa_rshrn_n_u16(nextb1, 1), &bb0, &bb1);
+            pix[1-blue] = msa_combine_u8(bb0, bb1);
+
+            v8u16 g0 = msa_addq_u16(msa_shrq_n_u16(r0, 8), msa_shrq_n_u16(r2, 8));
+            v8u16 g1 = msa_andq_u16(r1, masklo);
+            g0 = msa_addq_u16(g0, msa_addq_u16(g1, (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1)));
+            g1 = (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1);
+            // g0 g1 g2 ...
+            v8u8 gg0, gg1;
+            msa_zip_u8(msa_rshrn_n_u16(g0, 2), msa_movn_u16(g1), &gg0, &gg1);
+            pix[1] = msa_combine_u8(gg0, gg1);
+
+            r0 = msa_shrq_n_u16(r1, 8);
+            r1 = msa_addq_u16(r0, (v8u16)msa_extq_s16((v8i16)r0, (v8i16)r0, 1));
+            // r0 r1 r2 ...
+            v8u8 rr0, rr1;
+            msa_zip_u8(msa_movn_u16(r0), msa_rshrn_n_u16(r1, 1), &rr0, &rr1);
+            pix[1+blue] = msa_combine_u8(rr0, rr1);
+
+            msa_st3q_u8(dst - 1, pix[0], pix[1], pix[2]);
+        }
+
+        return (int)(bayer - (bayer_end - width));
+    }
+
+    int bayer2RGBA(const uchar* bayer, int bayer_step, uchar* dst, int width, int blue) const
+    {
+        /*
+         B G B G | B G B G | B G B G | B G B G
+         G R G R | G R G R | G R G R | G R G R
+         B G B G | B G B G | B G B G | B G B G
+         */
+        v8u16 masklo = msa_dupq_n_u16(255);
+        v16u8 pix[4];
+        const uchar* bayer_end = bayer + width;
+        pix[3] = msa_dupq_n_u8(255);
+
+        for( ; bayer <= bayer_end - 18; bayer += 14, dst += 56 )
+        {
+            v8u16 r0 = msa_ld1q_u16((const ushort*)bayer);
+            v8u16 r1 = msa_ld1q_u16((const ushort*)(bayer + bayer_step));
+            v8u16 r2 = msa_ld1q_u16((const ushort*)(bayer + bayer_step * 2));
+
+            v8u16 b1 = msa_addq_u16(msa_andq_u16(r0, masklo), msa_andq_u16(r2, masklo));
+            v8u16 nextb1 = (v8u16)msa_extq_s16((v8i16)b1, (v8i16)b1, 1);
+            v8u16 b0 = msa_addq_u16(b1, nextb1);
+            // b0 b1 b2 ...
+            v8u8 bb0, bb1;
+            msa_zip_u8(msa_rshrn_n_u16(b0, 2), msa_rshrn_n_u16(nextb1, 1), &bb0, &bb1);
+            pix[1-blue] = msa_combine_u8(bb0, bb1);
+
+            v8u16 g0 = msa_addq_u16(msa_shrq_n_u16(r0, 8), msa_shrq_n_u16(r2, 8));
+            v8u16 g1 = msa_andq_u16(r1, masklo);
+            g0 = msa_addq_u16(g0, msa_addq_u16(g1, (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1)));
+            g1 = (v8u16)msa_extq_s16((v8i16)g1, (v8i16)g1, 1);
+            // g0 g1 g2 ...
+            v8u8 gg0, gg1;
+            msa_zip_u8(msa_rshrn_n_u16(g0, 2), msa_movn_u16(g1), &gg0, &gg1);
+            pix[1] = msa_combine_u8(gg0, gg1);
+
+            r0 = msa_shrq_n_u16(r1, 8);
+            r1 = msa_addq_u16(r0, (v8u16)msa_extq_s16((v8i16)r0, (v8i16)r0, 1));
+            // r0 r1 r2 ...
+            v8u8 rr0, rr1;
+            msa_zip_u8(msa_movn_u16(r0), msa_rshrn_n_u16(r1, 1), &rr0, &rr1);
+            pix[1+blue] = msa_combine_u8(rr0, rr1);
+
+            msa_st4q_u8(dst - 1, pix[0], pix[1], pix[2], pix[3]);
+        }
+
+        return (int)(bayer - (bayer_end - width));
+    }
+
+    int bayer2RGB_EA(const uchar*, int, uchar*, int, int) const
+    {
+        return 0;
+    }
+};
 #else
 typedef SIMDBayerStubInterpolator_<uchar> SIMDBayerInterpolator_8u;
 #endif
-
 
 template<typename T, class SIMDInterpolator>
 class Bayer2Gray_Invoker :
