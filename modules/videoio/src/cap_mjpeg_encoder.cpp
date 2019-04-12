@@ -51,6 +51,10 @@
 #define WITH_NEON
 #endif
 
+#if CV_MSA
+#define WITH_MSA
+#endif
+
 namespace cv
 {
 
@@ -697,6 +701,152 @@ static const char jpegHeader[] =
 "\x00\x01\x00\x01" // 2 2-bytes values: x density & y density
 "\x00\x00"; // width & height of thumbnail: ( 0x0 means no thumbnail)
 
+
+#ifdef WITH_MSA
+/* Description : Interleave right half of halfword elements from vectors
+   Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7
+                 Outputs - out0, out1, out2, out3
+                 Return Type - as per RTYPE
+   Details     : Right half of halfword elements of in0 and right half of
+                 halfword elements of in1 are interleaved and copied to out0.
+                 Right half of halfword elements of in2 and right half of
+                 halfword elements of in3 are interleaved and copied to out1.
+                 Similar for other pairs
+*/
+#define ILVR_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+{                                                           \
+    out0 = (RTYPE) __msa_ilvr_h((v8i16) in0, (v8i16) in1);  \
+    out1 = (RTYPE) __msa_ilvr_h((v8i16) in2, (v8i16) in3);  \
+}
+#define ILVR_H2_SH(...) ILVR_H2(v8i16, __VA_ARGS__)
+
+/* Description : Interleave left half of halfword elements from vectors
+   Arguments   : Inputs  - in0, in1, in2, in3
+                 Outputs - out0, out1
+                 Return Type - as per RTYPE
+   Details     : Left half of halfword elements of in0 and left half of halfword
+                 elements of in1 are interleaved and copied to out0.
+                 Left half of halfword elements of in2 and left half of halfword
+                 elements of in3 are interleaved and copied to out1.
+*/
+#define ILVL_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+{                                                           \
+    out0 = (RTYPE) __msa_ilvl_h((v8i16) in0, (v8i16) in1);  \
+    out1 = (RTYPE) __msa_ilvl_h((v8i16) in2, (v8i16) in3);  \
+}
+#define ILVL_H2_SH(...) ILVL_H2(v8i16, __VA_ARGS__)
+
+/* Description : Interleave left half of halfword elements from vectors
+   Arguments   : Inputs  - in0, in1, in2, in3
+                 Outputs - out0, out1
+                 Return Type - as per RTYPE
+   Details     : Left half of halfword elements of in0 and left half of halfword
+                 elements of in1 are interleaved and copied to out0.
+                 Left half of halfword elements of in2 and left half of halfword
+                 elements of in3 are interleaved and copied to out1.
+*/
+#define ILVL_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+{                                                           \
+    out0 = (RTYPE) __msa_ilvl_h((v8i16) in0, (v8i16) in1);  \
+    out1 = (RTYPE) __msa_ilvl_h((v8i16) in2, (v8i16) in3);  \
+}
+#define ILVL_H2_SH(...) ILVL_H2(v8i16, __VA_ARGS__)
+
+/* Description : Pack even double word elements of vector pairs
+   Arguments   : Inputs  - in0, in1, in2, in3
+                 Outputs - out0, out1
+                 Return Type - as per RTYPE
+   Details     : Even double elements of in0 are copied to the left half of
+                 out0 & even double elements of in1 are copied to the right
+                 half of out0.
+                 Even double elements of in2 are copied to the left half of
+                 out1 & even double elements of in3 are copied to the right
+                 half of out1.
+*/
+#define PCKEV_D2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+{                                                            \
+    out0 = (RTYPE) __msa_pckev_d((v2i64) in0, (v2i64) in1);  \
+    out1 = (RTYPE) __msa_pckev_d((v2i64) in2, (v2i64) in3);  \
+}
+
+#define PCKEV_D4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7,  \
+                 out0, out1, out2, out3)                         \
+{                                                                \
+    PCKEV_D2(RTYPE, in0, in1, in2, in3, out0, out1);             \
+    PCKEV_D2(RTYPE, in4, in5, in6, in7, out2, out3);             \
+}
+
+/* Description : Transposes 8x8 block with half word elements in vectors
+   Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7
+                 Outputs - out0, out1, out2, out3, out4, out5, out6, out7
+                 Return Type - as per RTYPE
+*/
+#define TRANSPOSE8x8_H(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7,   \
+                       out0, out1, out2, out3, out4, out5, out6, out7)  \
+{                                                                       \
+    v8i16 s0_m, s1_m;                                                   \
+    v8i16 tmp0_m, tmp1_m, tmp2_m, tmp3_m;                               \
+    v8i16 tmp4_m, tmp5_m, tmp6_m, tmp7_m;                               \
+                                                                        \
+    ILVR_H2_SH(in6, in4, in7, in5, s0_m, s1_m);                         \
+    ILVRL_H2_SH(s1_m, s0_m, tmp0_m, tmp1_m);                            \
+    ILVL_H2_SH(in6, in4, in7, in5, s0_m, s1_m);                         \
+    ILVRL_H2_SH(s1_m, s0_m, tmp2_m, tmp3_m);                            \
+    ILVR_H2_SH(in2, in0, in3, in1, s0_m, s1_m);                         \
+    ILVRL_H2_SH(s1_m, s0_m, tmp4_m, tmp5_m);                            \
+    ILVL_H2_SH(in2, in0, in3, in1, s0_m, s1_m);                         \
+    ILVRL_H2_SH(s1_m, s0_m, tmp6_m, tmp7_m);                            \
+    PCKEV_D4(RTYPE, tmp0_m, tmp4_m, tmp1_m, tmp5_m, tmp2_m, tmp6_m,     \
+             tmp3_m, tmp7_m, out0, out2, out4, out6);                   \
+    out1 = (RTYPE) __msa_pckod_d((v2i64) tmp0_m, (v2i64) tmp4_m);       \
+    out3 = (RTYPE) __msa_pckod_d((v2i64) tmp1_m, (v2i64) tmp5_m);       \
+    out5 = (RTYPE) __msa_pckod_d((v2i64) tmp2_m, (v2i64) tmp6_m);       \
+    out7 = (RTYPE) __msa_pckod_d((v2i64) tmp3_m, (v2i64) tmp7_m);       \
+}
+
+#define TRANSPOSE8x8_SH_SH(...) TRANSPOSE8x8_H(v8i16, __VA_ARGS__)
+
+inline v4i32 MSA_DCT_DESCALE_SW(v4i32 x, int n)
+{
+  v4i32 a = msa_shlq_n_s32(__msa_fill_w(1), (n-1));
+  v4i32 b = msa_addq_s32(x, a);
+  v4i32 c = msa_shrq_n_s32(b, n);
+
+  return c;
+}
+
+inline v8i16 MSA_COMBINE_DCT_DESCALE(v4i32 low, v4i32 high, int n)
+{
+  v4i32 lw = MSA_DCT_DESCALE_SW(low, n);
+  v4i32 hw = MSA_DCT_DESCALE_SW(high, n);
+
+  return msa_combine_s16(msa_qmovn_s32(lw), msa_qmovn_s32(hw));
+}
+
+inline v4i32 MSA_MUL_LOW_SH_SW(v8i16 a, v8i16 b)
+{
+  v4i32 la = msa_movl_s16(msa_get_low_s16(a));
+  v4i32 lb = msa_movl_s16(msa_get_low_s16(b));
+
+  return msa_mulq_s32(la, lb);
+}
+
+inline v4i32 MSA_MUL_HIGH_SH_SW(v8i16 a, v8i16 b)
+{
+  v4i32 ha = msa_movl_s16(msa_get_high_s16(a));
+  v4i32 hb = msa_movl_s16(msa_get_high_s16(b));
+
+  return msa_mulq_s32(ha, hb);
+}
+
+#define MSA_DCT_DESCALE_OP_MUL(v1,v2,n) \
+MSA_COMBINE_DCT_DESCALE(MSA_MUL_LOW_SH_SW((v8i16)v1, (v8i16)v2), MSA_MUL_HIGH_SH_SW((v8i16)v1, (v8i16)v2), n)
+
+#define MSA_DCT_DESCALE_OP_MADD(v1,v2,add_l,add_h,n) \
+MSA_COMBINE_DCT_DESCALE(msa_addq_s32(MSA_MUL_LOW_SH_SW((v8i16)v1, (v8i16)v2), (v4i32)add_l), msa_addq_s32(MSA_MUL_HIGH_SH_SW((v8i16)v1, (v8i16)v2), (v4i32)add_h), n)
+
+#endif
+
 #ifdef WITH_NEON
 // FDCT with postscaling
 static void aan_fdct8x8( const short *src, short *dst,
@@ -899,7 +1049,202 @@ vst1q_s16((addr), reg);
     STORE_DESCALED(dst + 7*8, x4,postscale + 7*8);
     STORE_DESCALED(dst + 3*8, x3,postscale + 3*8);
 }
+#elif defined(WITH_MSA)
+// FDCT with postscaling
+static void aan_fdct8x8( const short *src, short *dst,
+                        int step, const short *postscale )
+{
+    // Pass 1: process rows
+    v8i16 tmp[8];
+    v8i16 res[8];
+    v8i16 op1, op2;
+    int i = 0;
 
+    /* Load from src memory address */
+    for(i = 0; i < 8; i++)
+        tmp[i] = msa_ld1q_s16((src+step*i));
+
+    /* Transpose the source data matrix */
+    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
+                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
+
+    v8i16 x0 = res[0];    v8i16 x1 = res[7];
+    v8i16 x2 = res[3];    v8i16 x3 = res[4];
+
+    v8i16 x4 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
+
+    tmp[7] = x0; tmp[1] = x2;
+
+    x2 = msa_addq_s16(x4, x1);    x4 = msa_subq_s16(x4, x1);
+
+    x0 = res[1];    x3 = res[6];
+
+    x1 = msa_addq_s16(x0, x3);    x0 = msa_subq_s16(x0, x3);
+    tmp[5] = x0;
+
+    x0 = res[2];    x3 = res[5];
+
+    tmp[3] = msa_subq_s16(x0, x3);
+    x0 = msa_addq_s16(x0, x3);
+
+    x3 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
+
+    tmp[0] = x1;
+    tmp[4] = x2;
+
+    op1 = msa_subq_s16(x0, x4);
+    op2 = __msa_fill_h(C0_707);
+    x0 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+
+    x1 = msa_addq_s16(x4, x0);    x4 = msa_subq_s16(x4, x0);
+
+    tmp[2] = x4;
+    tmp[6] = x1;
+
+    x0 = tmp[1];    x1 = tmp[3];
+    x2 = tmp[5];    x3 = tmp[7];
+    x0 = msa_addq_s16(x0, x1);    x1 = msa_addq_s16(x1, x2);    x2 = msa_addq_s16(x2, x3);
+
+    op1 = x1;
+    op2 = __msa_fill_h(C0_707);
+    x1 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+
+    x4 = msa_addq_s16(x1, x3);
+    x3 = msa_subq_s16(x3, x1);
+
+    op1 = msa_subq_s16(x0, x2);
+    op2 = __msa_fill_h(C0_382);
+    v4i32 x1_l = MSA_MUL_LOW_SH_SW(op1, op2);
+    v4i32 x1_h = MSA_MUL_HIGH_SH_SW(op1, op2);
+
+    op1 = x0;
+    op2 = __msa_fill_h(C0_541);
+    x0 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+
+    op1 = x2;
+    op2 = __msa_fill_h(C1_306);
+    x2 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+
+    x1 = msa_addq_s16(x0, x3);
+    x3 = msa_subq_s16(x3, x0);
+    x0 = msa_addq_s16(x4, x2);
+    x4 = msa_subq_s16(x4, x2);
+
+    tmp[1] = x0;
+    tmp[3] = x3;
+    tmp[5] = x1;
+    tmp[7] = x4;
+
+    //transpose a matrix
+    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
+                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
+
+    // pass 2: process columns
+    /* Load postscale data to vector */
+    for(i = 0; i <  8; i++)
+        tmp[i] = msa_ld1q_s16((postscale+8*i));
+
+    v8i16 ps[8];
+    /* Transpose the postscale matrix */
+    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
+                        ps[0], ps[1], ps[2], ps[3], ps[4], ps[5], ps[6], ps[7]);
+
+    x0 = res[0]; x1 = res[7];
+    x2 = res[3]; x3 = res[4];
+
+    x4 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
+
+    res[7] = x0; res[0] = x2;
+
+    x2 = msa_addq_s16(x4, x1); x4 = msa_subq_s16(x4, x1);
+
+    x0 = res[1]; x3 = res[6];
+
+    x1 = msa_addq_s16(x0, x3); x0 = msa_subq_s16(x0, x3);
+    res[4] = x0;
+
+    x0 = res[2]; x3 = res[5];
+
+    res[3] = msa_subq_s16(x0, x3); x0 = msa_addq_s16(x0, x3);
+
+    x3 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
+
+    op1 = x1;
+    op2 = ps[0];
+    tmp[0] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = x2;
+    op2 = ps[4];
+    tmp[4] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = msa_subq_s16(x0, x4);
+    op2 = __msa_fill_h(C0_707);
+    x0 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+
+    x1 = msa_addq_s16(x4, x0); x4 = msa_subq_s16(x4, x0);
+
+    op1 = x4;
+    op2 = ps[2];
+    tmp[2] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = x1;
+    op2 = ps[6];
+    tmp[6] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    x0 = res[0]; x1 = res[3];
+    x2 = res[4]; x3 = res[7];
+
+    x0 = msa_addq_s16(x0, x1); x1 = msa_addq_s16(x1, x2); x2 = msa_addq_s16(x2, x3);
+
+    op1 = x1;
+    op2 = __msa_fill_h(C0_707);
+    x1 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+
+    x4 = msa_addq_s16(x1, x3); x3 = msa_subq_s16(x3, x1);
+
+    op1 = msa_subq_s16(x0, x2);
+    op2 = __msa_fill_h(C0_382);
+    x1_l = MSA_MUL_LOW_SH_SW(op1, op2);
+    x1_h = MSA_MUL_HIGH_SH_SW(op1, op2);
+
+    op1 = x0;
+    op2 = __msa_fill_h(C0_541);
+    x0 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+
+    op1 = x2;
+    op2 = __msa_fill_h(C1_306);
+    x2 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+
+    x1 = msa_addq_s16(x0, x3); x3 = msa_subq_s16(x3, x0);
+    x0 = msa_addq_s16(x4, x2); x4 = msa_subq_s16(x4, x2);
+
+    op1 = x1;
+    op2 = ps[5];
+    tmp[5] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = x0;
+    op2 = ps[1];
+    tmp[1] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = x4;
+    op2 = ps[7];
+    tmp[7] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    op1 = x3;
+    op2 = ps[3];
+    tmp[3] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+
+    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
+                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
+
+    /* Store the vector to destination memory address */
+    for(i = 0; i < 8; i++)
+        msa_st1q_s16((dst+8*i),res[i]);
+}
 #else
 // FDCT with postscaling
 static void aan_fdct8x8( const short *src, short *dst,
@@ -1057,6 +1402,42 @@ inline void convertToYUV(int colorspace, int channels, int input_channels, short
                     lane = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(pix_data + step + 8)));
                     lane = vsubq_s16(lane, delta);
                     vst1q_s16(Y_data+Y_step + 8, lane);
+                }
+#elif defined(WITH_MSA)
+                {
+                    v8u16 masklo = msa_dupq_n_u16(255);
+                    v8u16 lane = msa_ld1q_u16((unsigned short*)(pix_data+v_plane_ofs));
+                    v8u16 t1 = msa_addq_u16(msa_shrq_n_u16(lane, 8), msa_andq_u16(lane, masklo));
+                    lane = msa_ld1q_u16((unsigned short*)(pix_data + v_plane_ofs + step));
+                    v8u16 t2 = msa_addq_u16(msa_shrq_n_u16(lane, 8), msa_andq_u16(lane, masklo));
+                    t1 = msa_addq_u16(t1, t2);
+                    msa_st1q_s16(UV_data, msa_subq_s16(MSA_TPV_REINTERPRET(v8i16, t1), msa_dupq_n_s16(128*4)));
+
+                    lane = msa_ld1q_u16((unsigned short*)(pix_data+u_plane_ofs));
+                    t1 = msa_addq_u16(msa_shrq_n_u16(lane, 8), msa_andq_u16(lane, masklo));
+                    lane = msa_ld1q_u16((unsigned short*)(pix_data + u_plane_ofs + step));
+                    t2 = msa_addq_u16(msa_shrq_n_u16(lane, 8), msa_andq_u16(lane, masklo));
+                    t1 = msa_addq_u16(t1, t2);
+                    msa_st1q_s16(UV_data + 8, msa_subq_s16(MSA_TPV_REINTERPRET(v8i16, t1), msa_dupq_n_s16(128*4)));
+                }
+
+                {
+                    v8i16 lane = MSA_TPV_REINTERPRET(v8i16, msa_movl_u8(msa_ld1_u8(pix_data)));
+                    v8i16 delta = msa_dupq_n_s16(128);
+                    lane = msa_subq_s16(lane, delta);
+                    msa_st1q_s16(Y_data, lane);
+
+                    lane = MSA_TPV_REINTERPRET(v8i16, msa_movl_u8(msa_ld1_u8(pix_data+8)));
+                    lane = msa_subq_s16(lane, delta);
+                    msa_st1q_s16(Y_data + 8, lane);
+
+                    lane = MSA_TPV_REINTERPRET(v8i16, msa_movl_u8(msa_ld1_u8(pix_data+step)));
+                    lane = msa_subq_s16(lane, delta);
+                    msa_st1q_s16(Y_data+Y_step, lane);
+
+                    lane = MSA_TPV_REINTERPRET(v8i16, msa_movl_u8(msa_ld1_u8(pix_data + step + 8)));
+                    lane = msa_subq_s16(lane, delta);
+                    msa_st1q_s16(Y_data+Y_step + 8, lane);
                 }
 #else
                 for( j = 0; j < x_limit; j += 2, pix_data += 2 )
