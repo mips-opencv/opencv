@@ -233,6 +233,15 @@ inline float32x4_t vsetq_f32(float f0, float f1, float f2, float f3)
     a = vsetq_lane_f32(f3, a, 3);
     return a;
 }
+#elif CV_MSA
+inline v4f32 msa_setq_f32(float f0, float f1, float f2, float f3)
+{
+    v4f32 a = msa_dupq_n_f32(f0);
+    a[1] = f1;
+    a[2] = f2;
+    a[3] = f3;
+    return a;
+}
 #endif
 void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, InputOutputArray _qangle,
     Size paddingTL, Size paddingBR) const
@@ -292,6 +301,21 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
             vst1q_f32(_data + i, vcvtq_f32_u32(idx));
             idx = vaddq_u32 (idx, ifour);
         }
+#elif CV_MSA
+    const int indices[] = { 0, 1, 2, 3 };
+    v4u32 idx = *(v4u32*)indices;
+    v4u32 ifour = msa_dupq_n_u32(4);
+
+    float* const _data = &_lut(0, 0);
+    if( gammaCorrection )
+        for( i = 0; i < 256; i++ )
+            _lut(0,i) = std::sqrt((float)i);
+    else
+        for( i = 0; i < 256; i += 4 )
+        {
+            msa_st1q_f32(_data + i, msa_cvtfintq_f32_u32(idx));
+            idx = msa_addq_u32 (idx, ifour);
+        }
 #else
     if( gammaCorrection )
         for( i = 0; i < 256; i++ )
@@ -338,6 +362,10 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
         int32x4_t ithree = vdupq_n_s32(3);
         for ( ; x <= end - 4; x += 4)
             vst1q_s32(xmap + x, vmulq_s32(ithree, vld1q_s32(xmap + x)));
+#elif CV_MSA
+        v4i32 ithree = msa_dupq_n_s32(3);
+        for ( ; x <= end - 4; x += 4)
+            msa_st1q_s32(xmap + x, msa_mulq_s32(ithree, msa_ld1q_s32(xmap + x)));
 #endif
         for ( ; x < end; ++x)
             xmap[x] *= 3;
@@ -445,6 +473,45 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
 
                 vst1q_f32(dbuf + x, _dx2);
                 vst1q_f32(dbuf + x + width, _dy2);
+            }
+#elif CV_MSA
+            for( ; x <= width - 4; x += 4 )
+            {
+                int x0 = xmap[x], x1 = xmap[x+1], x2 = xmap[x+2], x3 = xmap[x+3];
+                typedef const uchar* const T;
+                T p02 = imgPtr + xmap[x+1], p00 = imgPtr + xmap[x-1];
+                T p12 = imgPtr + xmap[x+2], p10 = imgPtr + xmap[x];
+                T p22 = imgPtr + xmap[x+3], p20 = p02;
+                T p32 = imgPtr + xmap[x+4], p30 = p12;
+
+                v4f32 _dx0 = msa_subq_f32(msa_setq_f32(lut[p02[0]], lut[p12[0]], lut[p22[0]], lut[p32[0]]),
+                                             msa_setq_f32(lut[p00[0]], lut[p10[0]], lut[p20[0]], lut[p30[0]]));
+                v4f32 _dx1 = msa_subq_f32(msa_setq_f32(lut[p02[1]], lut[p12[1]], lut[p22[1]], lut[p32[1]]),
+                                             msa_setq_f32(lut[p00[1]], lut[p10[1]], lut[p20[1]], lut[p30[1]]));
+                v4f32 _dx2 = msa_subq_f32(msa_setq_f32(lut[p02[2]], lut[p12[2]], lut[p22[2]], lut[p32[2]]),
+                                             msa_setq_f32(lut[p00[2]], lut[p10[2]], lut[p20[2]], lut[p30[2]]));
+
+                v4f32 _dy0 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0]], lut[nextPtr[x1]], lut[nextPtr[x2]], lut[nextPtr[x3]]),
+                                             msa_setq_f32(lut[prevPtr[x0]], lut[prevPtr[x1]], lut[prevPtr[x2]], lut[prevPtr[x3]]));
+                v4f32 _dy1 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0+1]], lut[nextPtr[x1+1]], lut[nextPtr[x2+1]], lut[nextPtr[x3+1]]),
+                                             msa_setq_f32(lut[prevPtr[x0+1]], lut[prevPtr[x1+1]], lut[prevPtr[x2+1]], lut[prevPtr[x3+1]]));
+                v4f32 _dy2 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0+2]], lut[nextPtr[x1+2]], lut[nextPtr[x2+2]], lut[nextPtr[x3+2]]),
+                                             msa_setq_f32(lut[prevPtr[x0+2]], lut[prevPtr[x1+2]], lut[prevPtr[x2+2]], lut[prevPtr[x3+2]]));
+
+                v4f32 _mag0 = msa_addq_f32(msa_mulq_f32(_dx0, _dx0), msa_mulq_f32(_dy0, _dy0));
+                v4f32 _mag1 = msa_addq_f32(msa_mulq_f32(_dx1, _dx1), msa_mulq_f32(_dy1, _dy1));
+                v4f32 _mag2 = msa_addq_f32(msa_mulq_f32(_dx2, _dx2), msa_mulq_f32(_dy2, _dy2));
+
+                v4u32 mask = msa_cgtq_f32(_mag2, _mag1);
+                _dx2 = (v4f32)msa_bslq_u8((v16u8)mask, (v16u8)_dx1, (v16u8)_dx2);
+                _dy2 = (v4f32)msa_bslq_u8((v16u8)mask, (v16u8)_dy1, (v16u8)_dy2);
+
+                mask = msa_cgtq_f32(msa_maxq_f32(_mag2, _mag1), _mag0);
+                _dx2 = (v4f32)msa_bslq_u8((v16u8)mask, (v16u8)_dx0, (v16u8)_dx2);
+                _dy2 = (v4f32)msa_bslq_u8((v16u8)mask, (v16u8)_dy0, (v16u8)_dy2);
+
+                msa_st1q_f32(dbuf + x, _dx2);
+                msa_st1q_f32(dbuf + x + width, _dy2);
             }
 #endif
             for( ; x < width; x++ )
@@ -691,6 +758,19 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
             idx = vaddq_s32(idx, ifour);
             vst1q_f32(_di + i, t);
         }
+    #elif CV_MSA
+        const int a[] = { 0, 1, 2, 3 };
+        v4i32 idx = msa_ld1q_s32(a);
+        v4f32 _bw = msa_dupq_n_f32(bw), _bh = msa_dupq_n_f32(bh);
+        v4i32 ifour = msa_dupq_n_s32(4);
+
+        for (; i <= blockSize.height - 4; i += 4)
+        {
+            v4f32 t = msa_subq_f32(msa_cvtfintq_f32_s32(idx), _bh);
+            t = msa_mulq_f32(t, t);
+            idx = msa_addq_s32(idx, ifour);
+            msa_st1q_f32(_di + i, t);
+        }
     #endif
         for ( ; i < blockSize.height; ++i)
         {
@@ -716,6 +796,15 @@ void HOGCache::init(const HOGDescriptor* _descriptor,
             t = vmulq_f32(t, t);
             idx = vaddq_s32(idx, ifour);
             vst1q_f32(_dj + j, t);
+        }
+    #elif CV_MSA
+        idx = msa_ld1q_s32(a);
+        for (; j <= blockSize.width - 4; j += 4)
+        {
+            v4f32 t = msa_subq_f32(msa_cvtfintq_f32_s32(idx), _bw);
+            t = msa_mulq_f32(t, t);
+            idx = msa_addq_s32(idx, ifour);
+            msa_st1q_f32(_dj + j, t);
         }
     #endif
         for ( ; j < blockSize.width; ++j)
@@ -964,6 +1053,31 @@ const float* HOGCache::getBlock(Point pt, float* buf)
         (blockHist + pk.histOfs[0])[h1] = hist1[0];
         (blockHist + pk.histOfs[1])[h1] = hist1[1];
     }
+#elif CV_MSA
+    float hist0[4], hist1[4];
+    for( ; k < C2; k++ )
+    {
+        const PixData& pk = _pixData[k];
+        const float* const a = gradPtr + pk.gradOfs;
+        const uchar* const h = qanglePtr + pk.qangleOfs;
+        int h0 = h[0], h1 = h[1];
+
+        v4f32 _a0 = msa_dupq_n_f32(a[0]), _a1 = msa_dupq_n_f32(a[1]);
+        v4f32 _w = msa_mulq_f32(msa_dupq_n_f32(pk.gradWeight), msa_ld1q_f32(pk.histWeights));
+
+        v4f32 _h0 = msa_setq_f32((blockHist + pk.histOfs[0])[h0], (blockHist + pk.histOfs[1])[h0], 0,  0);
+        v4f32 _h1 = msa_setq_f32((blockHist + pk.histOfs[0])[h1], (blockHist + pk.histOfs[1])[h1], 0,  0);
+
+        v4f32 _t0 = msa_mlaq_f32(_h0, _a0, _w), _t1 = msa_mlaq_f32(_h1, _a1, _w);
+        msa_st1q_f32(hist0, _t0);
+        msa_st1q_f32(hist1, _t1);
+
+        (blockHist + pk.histOfs[0])[h0] = hist0[0];
+        (blockHist + pk.histOfs[1])[h0] = hist0[1];
+
+        (blockHist + pk.histOfs[0])[h1] = hist1[0];
+        (blockHist + pk.histOfs[1])[h1] = hist1[1];
+    }
 #else
     for( ; k < C2; k++ )
     {
@@ -1078,6 +1192,41 @@ const float* HOGCache::getBlock(Point pt, float* buf)
         (blockHist + pk.histOfs[2])[h1] = hist1[2];
         (blockHist + pk.histOfs[3])[h1] = hist1[3];
     }
+#elif CV_MSA
+    for( ; k < C4; k++ )
+    {
+        const PixData& pk = _pixData[k];
+        const float* const a = gradPtr + pk.gradOfs;
+        const uchar* const h = qanglePtr + pk.qangleOfs;
+        int h0 = h[0], h1 = h[1];
+
+        v4f32 _a0 = msa_dupq_n_f32(a[0]), _a1 = msa_dupq_n_f32(a[1]);
+        v4f32 _w = msa_mulq_f32(msa_dupq_n_f32(pk.gradWeight), msa_ld1q_f32(pk.histWeights));
+
+        v4f32 _h0 = msa_setq_f32((blockHist + pk.histOfs[0])[h0],
+                                    (blockHist + pk.histOfs[1])[h0],
+                                    (blockHist + pk.histOfs[2])[h0],
+                                    (blockHist + pk.histOfs[3])[h0]);
+        v4f32 _h1 = msa_setq_f32((blockHist + pk.histOfs[0])[h1],
+                                    (blockHist + pk.histOfs[1])[h1],
+                                    (blockHist + pk.histOfs[2])[h1],
+                                    (blockHist + pk.histOfs[3])[h1]);
+
+
+        v4f32 _t0 = msa_mlaq_f32(_h0, _a0, _w), _t1 = msa_mlaq_f32(_h1, _a1, _w);
+        msa_st1q_f32(hist0, _t0);
+        msa_st1q_f32(hist1, _t1);
+
+        (blockHist + pk.histOfs[0])[h0] = hist0[0];
+        (blockHist + pk.histOfs[1])[h0] = hist0[1];
+        (blockHist + pk.histOfs[2])[h0] = hist0[2];
+        (blockHist + pk.histOfs[3])[h0] = hist0[3];
+
+        (blockHist + pk.histOfs[0])[h1] = hist1[0];
+        (blockHist + pk.histOfs[1])[h1] = hist1[1];
+        (blockHist + pk.histOfs[2])[h1] = hist1[2];
+        (blockHist + pk.histOfs[3])[h1] = hist1[3];
+    }
 #else
     for( ; k < C4; k++ )
     {
@@ -1143,6 +1292,16 @@ void HOGCache::normalizeBlockHistogram(float* _hist) const
         s = vaddq_f32(s, vmulq_f32(p0, p0));
     }
     vst1q_f32(partSum, s);
+#elif CV_MSA
+    v4f32 p0 = msa_ld1q_f32(hist);
+    v4f32 s = msa_mulq_f32(p0, p0);
+
+    for (i = 4; i <= sz - 4; i += 4)
+    {
+        p0 = msa_ld1q_f32(hist + i);
+        s = msa_addq_f32(s, msa_mulq_f32(p0, p0));
+    }
+    msa_st1q_f32(partSum, s);
 #else
     partSum[0] = 0.0f;
     partSum[1] = 0.0f;
@@ -1203,6 +1362,25 @@ void HOGCache::normalizeBlockHistogram(float* _hist) const
     }
 
     vst1q_f32(partSum, s);
+#elif CV_MSA
+    v4f32 _scale = msa_dupq_n_f32(scale);
+    static v4f32 _threshold = msa_dupq_n_f32(thresh);
+
+    v4f32 p = msa_mulq_f32(_scale, msa_ld1q_f32(hist));
+    p = msa_minq_f32(p, _threshold);
+    s = msa_mulq_f32(p, p);
+    msa_st1q_f32(hist, p);
+
+    for(i = 4 ; i <= sz - 4; i += 4)
+    {
+        p = msa_ld1q_f32(hist + i);
+        p = msa_mulq_f32(p, _scale);
+        p = msa_minq_f32(p, _threshold);
+        s = msa_addq_f32(s, msa_mulq_f32(p, p));
+        msa_st1q_f32(hist + i, p);
+    }
+
+    msa_st1q_f32(partSum, s);
 #else
     partSum[0] = 0.0f;
     partSum[1] = 0.0f;
@@ -1243,6 +1421,13 @@ void HOGCache::normalizeBlockHistogram(float* _hist) const
     {
         float32x4_t t = vmulq_f32(_scale2, vld1q_f32(hist + i));
         vst1q_f32(hist + i, t);
+    }
+#elif CV_MSA
+    v4f32 _scale2 = msa_dupq_n_f32(scale);
+    for ( ; i <= sz - 4; i += 4)
+    {
+        v4f32 t = msa_mulq_f32(_scale2, msa_ld1q_f32(hist + i));
+        msa_st1q_f32(hist + i, t);
     }
 #endif
     for ( ; i < sz; ++i)
@@ -1690,7 +1875,7 @@ void HOGDescriptor::detect(InputArray _img,
     double rho = svmDetector.size() > dsize ? svmDetector[dsize] : 0;
     std::vector<float> blockHist(blockHistogramSize);
 
-#if CV_SSE2 || CV_NEON
+#if CV_SSE2 || CV_NEON || CV_MSA
     float partSum[4];
 #endif
 
@@ -1750,6 +1935,23 @@ void HOGDescriptor::detect(InputArray _img,
             }
 
             vst1q_f32(partSum, sum);
+            double t0 = partSum[0] + partSum[1];
+            double t1 = partSum[2] + partSum[3];
+            s += t0 + t1;
+#elif CV_MSA
+            v4f32 _vec = msa_ld1q_f32(vec);
+            v4f32 _svmVec = msa_ld1q_f32(svmVec);
+            v4f32 sum = msa_mulq_f32(_svmVec, _vec);
+
+            for( k = 4; k <= blockHistogramSize - 4; k += 4 )
+            {
+                _vec = msa_ld1q_f32(vec + k);
+                _svmVec = msa_ld1q_f32(svmVec + k);
+
+                sum = msa_addq_f32(sum, msa_mulq_f32(_vec, _svmVec));
+            }
+
+            msa_st1q_f32(partSum, sum);
             double t0 = partSum[0] + partSum[1];
             double t1 = partSum[2] + partSum[3];
             s += t0 + t1;
@@ -3530,7 +3732,7 @@ void HOGDescriptor::detectROI(InputArray _img, const std::vector<cv::Point> &loc
     double rho = svmDetector.size() > dsize ? svmDetector[dsize] : 0;
     std::vector<float> blockHist(blockHistogramSize);
 
-#if CV_SSE2 || CV_NEON
+#if CV_SSE2 || CV_NEON || CV_MSA
     float partSum[4];
 #endif
 
@@ -3588,6 +3790,23 @@ void HOGDescriptor::detectROI(InputArray _img, const std::vector<cv::Point> &loc
             }
 
             vst1q_f32(partSum, sum);
+            double t0 = partSum[0] + partSum[1];
+            double t1 = partSum[2] + partSum[3];
+            s += t0 + t1;
+#elif CV_MSA
+            v4f32 _vec = msa_ld1q_f32(vec);
+            v4f32 _svmVec = msa_ld1q_f32(svmVec);
+            v4f32 sum = msa_mulq_f32(_svmVec, _vec);
+
+            for( k = 4; k <= blockHistogramSize - 4; k += 4 )
+            {
+                _vec = msa_ld1q_f32(vec + k);
+                _svmVec = msa_ld1q_f32(svmVec + k);
+
+                sum = msa_addq_f32(sum, msa_mulq_f32(_vec, _svmVec));
+            }
+
+            msa_st1q_f32(partSum, sum);
             double t0 = partSum[0] + partSum[1];
             double t1 = partSum[2] + partSum[3];
             s += t0 + t1;
