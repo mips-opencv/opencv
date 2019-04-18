@@ -1331,6 +1331,9 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_dpadd_u_w         __builtin_msa_dpadd_u_w
 #define msa_dpadd_u_d         __builtin_msa_dpadd_u_d
 
+/*Vector saturating rounding shift left, qrshl -> ri = ai << bi;*/
+#define msa_qrshrq_s32(a, b)    ((v4i32)__msa_srar_w((v4i32)a, (v4i32)b))
+
 #define ILVRL_B2(RTYPE, in0, in1, low, hi) do {       \
       low = (RTYPE)__msa_ilvr_b((v16i8)in0, (v16i8)in1);  \
       hi  = (RTYPE)__msa_ilvl_b((v16i8)in0, (v16i8)in1);  \
@@ -1621,7 +1624,7 @@ __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld2_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b) \
 { \
   int i, i2; \
-  for(i = i2 = 0; i < nlanes; i++, i2 += 3) \
+  for(i = i2 = 0; i < nlanes; i++, i2 += 2) \
   { \
     *((_Tp*)a + i) = ptr[i2]; \
     *((_Tp*)b + i) = ptr[i2 + 1]; \
