@@ -337,21 +337,25 @@ struct RGB2XYZ_f<float>
         if (scn == 3)
             for ( ; i <= n - 12; i += 12, src += 12)
             {
-                v4f32 v_src0, v_src1, v_src2;
-                msa_ld3q_f32(src, &v_src0, &v_src1, &v_src2);
-                v4f32 v_dst0 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c0), v_src1, v_c1), v_src2, v_c2);
-                v4f32 v_dst1 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c3), v_src1, v_c4), v_src2, v_c5);
-                v4f32 v_dst2 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c6), v_src1, v_c7), v_src2, v_c8);
+                v4f32 v_src[3];
+
+                msa_ld3q_f32(src, &v_src[0], &v_src[1], &v_src[2]);
+                v4f32 v_dst0 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c0), v_src[1], v_c1), v_src[2], v_c2);
+                v4f32 v_dst1 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c3), v_src[1], v_c4), v_src[2], v_c5);
+                v4f32 v_dst2 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c6), v_src[1], v_c7), v_src[2], v_c8);
+
                 msa_st3q_f32(dst + i, v_dst0, v_dst1, v_dst2);
             }
         else
             for ( ; i <= n - 12; i += 12, src += 16)
             {
-                v4f32 v_src0, v_src1, v_src2, v_src3;
-                msa_ld4q_f32(src, &v_src0, &v_src1, &v_src2, &v_src3);
-                v4f32 v_dst0 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c0), v_src1, v_c1), v_src2, v_c2);
-                v4f32 v_dst1 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c3), v_src1, v_c4), v_src2, v_c5);
-                v4f32 v_dst2 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src0, v_c6), v_src1, v_c7), v_src2, v_c8);
+                v4f32 v_src[4];
+
+                msa_ld4q_f32(src, &v_src[0], &v_src[1], &v_src[2], &v_src[3]);
+                v4f32 v_dst0 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c0), v_src[1], v_c1), v_src[2], v_c2);
+                v4f32 v_dst1 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c3), v_src[1], v_c4), v_src[2], v_c5);
+                v4f32 v_dst2 = msa_mlaq_f32(msa_mlaq_f32(msa_mulq_f32(v_src[0], v_c6), v_src[1], v_c7), v_src[2], v_c8);
+
                 msa_st3q_f32(dst + i, v_dst0, v_dst1, v_dst2);
             }
 
@@ -767,16 +771,16 @@ struct RGB2XYZ_i<uchar>
             std::swap(coeffs[6], coeffs[8]);
         }
 
-        v_c0 = msa_dup_n_u16(coeffs[0]);
-        v_c1 = msa_dup_n_u16(coeffs[1]);
-        v_c2 = msa_dup_n_u16(coeffs[2]);
-        v_c3 = msa_dup_n_u16(coeffs[3]);
-        v_c4 = msa_dup_n_u16(coeffs[4]);
-        v_c5 = msa_dup_n_u16(coeffs[5]);
-        v_c6 = msa_dup_n_u16(coeffs[6]);
-        v_c7 = msa_dup_n_u16(coeffs[7]);
-        v_c8 = msa_dup_n_u16(coeffs[8]);
-        v_delta = msa_dupq_n_u32(1 << (xyz_shift - 1));
+        v_c0 = msa_dupq_n_s32(coeffs[0]);
+        v_c1 = msa_dupq_n_s32(coeffs[1]);
+        v_c2 = msa_dupq_n_s32(coeffs[2]);
+        v_c3 = msa_dupq_n_s32(coeffs[3]);
+        v_c4 = msa_dupq_n_s32(coeffs[4]);
+        v_c5 = msa_dupq_n_s32(coeffs[5]);
+        v_c6 = msa_dupq_n_s32(coeffs[6]);
+        v_c7 = msa_dupq_n_s32(coeffs[7]);
+        v_c8 = msa_dupq_n_s32(coeffs[8]);
+        v_delta = msa_dupq_n_s32(1 << (xyz_shift - 1));
     }
     void operator()(const uchar * src, uchar * dst, int n) const
     {
@@ -786,46 +790,81 @@ struct RGB2XYZ_i<uchar>
             C6 = coeffs[6], C7 = coeffs[7], C8 = coeffs[8];
         n *= 3;
 
-        for ( ; i <= n - 24; i += 24, src += scn * 8)
+        for ( ; i <= n - 48; i += 48, src += scn * 16)
         {
-            v8u8 v_src0, v_src1, v_src2, v_src3;
+            v16u8 v_data[4], Low0, Hi0, Low1, Hi1, Low2, Hi2;
+            v8u16 aLow0, aHi0, aLow1, aHi1, aLow2, aHi2;
 
             if (scn == 3)
-                msa_ld3_u8(src, &v_src0, &v_src1, &v_src2);
+                msa_ld3q_u8(src, &v_data[0], &v_data[1], &v_data[2]);
             else
-                msa_ld4_u8(src, &v_src0, &v_src1, &v_src2, &v_src3);
+                msa_ld4q_u8(src, &v_data[0], &v_data[1], &v_data[2], &v_data[3]);
 
-            v8u16 v_src160 = msa_movl_u8(v_src0);
-            v8u16 v_src161 = msa_movl_u8(v_src1);
-            v8u16 v_src162 = msa_movl_u8(v_src2);
+            ILVRL_B2_UB(v_data[0], msa_dupq_n_u8(0), Low0, Hi0);
+            ILVRL_B2_UB(v_data[1], msa_dupq_n_u8(0), Low1, Hi1);
+            ILVRL_B2_UB(v_data[2], msa_dupq_n_u8(0), Low2, Hi2);
 
-            v4u16 v_s0 = msa_get_low_u16(v_src160),
-                  v_s1 = msa_get_low_u16(v_src161),
-                  v_s2 = msa_get_low_u16(v_src162);
+            v8u16 v_zip = msa_paddlq_u8(Low0);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+            v_zip = msa_paddlq_u8(Low1);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+            v_zip = msa_paddlq_u8(Low2);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
 
-            v4u32 v_X0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4u32 v_Y0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4u32 v_Z0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X0 = msa_shrq_n_u32(msa_addq_u32(v_X0, v_delta), xyz_shift);
-            v_Y0 = msa_shrq_n_u32(msa_addq_u32(v_Y0, v_delta), xyz_shift);
-            v_Z0 = msa_shrq_n_u32(msa_addq_u32(v_Z0, v_delta), xyz_shift);
+            v4i32 v_srcLow0 = (v4i32)msa_paddlq_u16(aLow0);
+            v4i32 v_srcLow1 = (v4i32)msa_paddlq_u16(aLow1);
+            v4i32 v_srcLow2 = (v4i32)msa_paddlq_u16(aLow2);
+            v4i32 v_srcHi0 = (v4i32)msa_paddlq_u16(aHi0);
+            v4i32 v_srcHi1 = (v4i32)msa_paddlq_u16(aHi1);
+            v4i32 v_srcHi2 = (v4i32)msa_paddlq_u16(aHi2);
 
-            v_s0 = msa_get_high_u16(v_src160);
-            v_s1 = msa_get_high_u16(v_src161);
-            v_s2 = msa_get_high_u16(v_src162);
+            v4i32 v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c0), v_srcLow1, v_c1), v_srcLow2, v_c2);
+            v4i32 v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c3), v_srcLow1, v_c4), v_srcLow2, v_c5);
+            v4i32 v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c6), v_srcLow1, v_c7), v_srcLow2, v_c8);
+            v4i32 v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c0), v_srcHi1, v_c1), v_srcHi2, v_c2);
+            v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c3), v_srcHi1, v_c4), v_srcHi2, v_c5);
+            v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c6), v_srcHi1, v_c7), v_srcHi2, v_c8);
 
-            v4u32 v_X1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4u32 v_Y1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4u32 v_Z1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X1 = msa_shrq_n_u32(msa_addq_u32(v_X1, v_delta), xyz_shift);
-            v_Y1 = msa_shrq_n_u32(msa_addq_u32(v_Y1, v_delta), xyz_shift);
-            v_Z1 = msa_shrq_n_u32(msa_addq_u32(v_Z1, v_delta), xyz_shift);
+            v8i16 v_dstLow0 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
+            v8i16 v_dstLow1 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
+            v8i16 v_dstLow2 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
 
-            v8u8 v_dst0 = msa_qmovn_u16(msa_combine_u16(msa_movn_u32(v_X0), msa_movn_u32(v_X1)));
-            v8u8 v_dst1 = msa_qmovn_u16(msa_combine_u16(msa_movn_u32(v_Y0), msa_movn_u32(v_Y1)));
-            v8u8 v_dst2 = msa_qmovn_u16(msa_combine_u16(msa_movn_u32(v_Z0), msa_movn_u32(v_Z1)));
+            v_zip = msa_paddlq_u8(Hi0);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+            v_zip = msa_paddlq_u8(Hi1);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+            v_zip = msa_paddlq_u8(Hi2);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
 
-            msa_st3_u8(dst + i, v_dst0, v_dst1, v_dst2);
+            v_srcLow0 = (v4i32)msa_paddlq_u16(aLow0);
+            v_srcLow1 = (v4i32)msa_paddlq_u16(aLow1);
+            v_srcLow2 = (v4i32)msa_paddlq_u16(aLow2);
+            v_srcHi0 = (v4i32)msa_paddlq_u16(aHi0);
+            v_srcHi1 = (v4i32)msa_paddlq_u16(aHi1);
+            v_srcHi2 = (v4i32)msa_paddlq_u16(aHi2);
+
+            v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c0), v_srcLow1, v_c1), v_srcLow2, v_c2);
+            v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c3), v_srcLow1, v_c4), v_srcLow2, v_c5);
+            v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c6), v_srcLow1, v_c7), v_srcLow2, v_c8);
+            v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c0), v_srcHi1, v_c1), v_srcHi2, v_c2);
+            v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c3), v_srcHi1, v_c4), v_srcHi2, v_c5);
+            v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c6), v_srcHi1, v_c7), v_srcHi2, v_c8);
+
+            v8i16 v_dstHi0 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
+            v8i16 v_dstHi1 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
+            v8i16 v_dstHi2 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+
+            v_data[0] = msa_combine_u8(msa_qmovun_s16(v_dstLow0), msa_qmovun_s16(v_dstHi0));
+            v_data[1] = msa_combine_u8(msa_qmovun_s16(v_dstLow1), msa_qmovun_s16(v_dstHi1));
+            v_data[2] = msa_combine_u8(msa_qmovun_s16(v_dstLow2), msa_qmovun_s16(v_dstHi2));
+
+            msa_st3q_u8(dst + i, v_data[0], v_data[1], v_data[2]);
         }
 
         for ( ; i < n; i += 3, src += scn)
@@ -840,8 +879,7 @@ struct RGB2XYZ_i<uchar>
     }
 
     int srccn, coeffs[9];
-    v4u16 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8;
-    v4u32 v_delta;
+    v4i32 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8, v_delta;
 };
 
 template <>
@@ -860,16 +898,16 @@ struct RGB2XYZ_i<ushort>
             std::swap(coeffs[6], coeffs[8]);
         }
 
-        v_c0 = msa_dup_n_u16(coeffs[0]);
-        v_c1 = msa_dup_n_u16(coeffs[1]);
-        v_c2 = msa_dup_n_u16(coeffs[2]);
-        v_c3 = msa_dup_n_u16(coeffs[3]);
-        v_c4 = msa_dup_n_u16(coeffs[4]);
-        v_c5 = msa_dup_n_u16(coeffs[5]);
-        v_c6 = msa_dup_n_u16(coeffs[6]);
-        v_c7 = msa_dup_n_u16(coeffs[7]);
-        v_c8 = msa_dup_n_u16(coeffs[8]);
-        v_delta = msa_dupq_n_u32(1 << (xyz_shift - 1));
+        v_c0 = msa_dupq_n_s32(coeffs[0]);
+        v_c1 = msa_dupq_n_s32(coeffs[1]);
+        v_c2 = msa_dupq_n_s32(coeffs[2]);
+        v_c3 = msa_dupq_n_s32(coeffs[3]);
+        v_c4 = msa_dupq_n_s32(coeffs[4]);
+        v_c5 = msa_dupq_n_s32(coeffs[5]);
+        v_c6 = msa_dupq_n_s32(coeffs[6]);
+        v_c7 = msa_dupq_n_s32(coeffs[7]);
+        v_c8 = msa_dupq_n_s32(coeffs[8]);
+        v_delta = msa_dupq_n_s32(1 << (xyz_shift - 1));
     }
 
     void operator()(const ushort * src, ushort * dst, int n) const
@@ -882,60 +920,44 @@ struct RGB2XYZ_i<ushort>
 
         for ( ; i <= n - 24; i += 24, src += scn * 8)
         {
-            v8u16 v_src0, v_src1, v_src2, v_src3;
+            v8u16 v_data[4], Low0, Hi0, Low1, Hi1, Low2, Hi2;
 
             if (scn == 3)
-                msa_ld3q_u16(src, &v_src0, &v_src1, &v_src2);
+                msa_ld3q_u16(src, &v_data[0], &v_data[1], &v_data[2]);
             else
-                msa_ld4q_u16(src, &v_src0, &v_src1, &v_src2, &v_src3);
+                msa_ld4q_u16(src, &v_data[0], &v_data[1], &v_data[2], &v_data[3]);
 
-            v4u16 v_s0 = msa_get_low_u16(v_src0),
-                  v_s1 = msa_get_low_u16(v_src1),
-                  v_s2 = msa_get_low_u16(v_src2);
+            ILVRL_H2_UH(v_data[0], msa_dupq_n_u16(0), Low0, Hi0);
+            ILVRL_H2_UH(v_data[1], msa_dupq_n_u16(0), Low1, Hi1);
+            ILVRL_H2_UH(v_data[2], msa_dupq_n_u16(0), Low2, Hi2);
 
-            v4u32 v_X0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4u32 v_Y0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4u32 v_Z0 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X0 = msa_shrq_n_u32(msa_addq_u32(v_X0, v_delta), xyz_shift);
-            v_Y0 = msa_shrq_n_u32(msa_addq_u32(v_Y0, v_delta), xyz_shift);
-            v_Z0 = msa_shrq_n_u32(msa_addq_u32(v_Z0, v_delta), xyz_shift);
+            v4i32 v_s0 = (v4i32)msa_paddlq_u16(Low0);
+            v4i32 v_s1 = (v4i32)msa_paddlq_u16(Low1);
+            v4i32 v_s2 = (v4i32)msa_paddlq_u16(Low2);
 
-            v_s0 = msa_get_high_u16(v_src0);
-            v_s1 = msa_get_high_u16(v_src1);
-            v_s2 = msa_get_high_u16(v_src2);
+            v4i32 v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
+            v4i32 v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
+            v4i32 v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
+            v_X0 = msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift);
+            v_Y0 = msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift);
+            v_Z0 = msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift);
 
-            v4u32 v_X1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4u32 v_Y1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4u32 v_Z1 = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X1 = msa_shrq_n_u32(msa_addq_u32(v_X1, v_delta), xyz_shift);
-            v_Y1 = msa_shrq_n_u32(msa_addq_u32(v_Y1, v_delta), xyz_shift);
-            v_Z1 = msa_shrq_n_u32(msa_addq_u32(v_Z1, v_delta), xyz_shift);
+            v_s0 = (v4i32)msa_paddlq_u16(Hi0);
+            v_s1 = (v4i32)msa_paddlq_u16(Hi1);
+            v_s2 = (v4i32)msa_paddlq_u16(Hi2);
 
-            v8u16 v_dst0 = msa_combine_u16(msa_qmovn_u32(v_X0), msa_qmovn_u32(v_X1));
-            v8u16 v_dst1 = msa_combine_u16(msa_qmovn_u32(v_Y0), msa_qmovn_u32(v_Y1));
-            v8u16 v_dst2 = msa_combine_u16(msa_qmovn_u32(v_Z0), msa_qmovn_u32(v_Z1));
+            v4i32 v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
+            v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
+            v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
+            v_X1 = msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift);
+            v_Y1 = msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift);
+            v_Z1 = msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift);
 
-            msa_st3q_u16(dst + i, v_dst0, v_dst1, v_dst2);
-        }
+            v_data[0] = msa_combine_u16(msa_qmovun_s32(v_X0), msa_qmovun_s32(v_X1));
+            v_data[1] = msa_combine_u16(msa_qmovun_s32(v_Y0), msa_qmovun_s32(v_Y1));
+            v_data[2] = msa_combine_u16(msa_qmovun_s32(v_Z0), msa_qmovun_s32(v_Z1));
 
-        for ( ; i <= n - 12; i += 12, src += scn * 4)
-        {
-            v4u16 v_s0, v_s1, v_s2, v_s3;
-
-            if (scn == 3)
-                msa_ld3_u16(src, &v_s0, &v_s1, &v_s2);
-            else
-                msa_ld4_u16(src, &v_s0, &v_s1, &v_s2, &v_s3);
-
-            v4u32 v_X = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4u32 v_Y = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4u32 v_Z = msa_mlal_u16(msa_mlal_u16(msa_mull_u16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-
-            v4u16 v_dst0 = msa_qmovn_u32(msa_shrq_n_u32(msa_addq_u32(v_X, v_delta), xyz_shift));
-            v4u16 v_dst1 = msa_qmovn_u32(msa_shrq_n_u32(msa_addq_u32(v_Y, v_delta), xyz_shift));
-            v4u16 v_dst2 = msa_qmovn_u32(msa_shrq_n_u32(msa_addq_u32(v_Z, v_delta), xyz_shift));
-
-            msa_st3_u16(dst + i, v_dst0, v_dst1, v_dst2);
+            msa_st3q_u16(dst + i, v_data[0], v_data[1], v_data[2]);
         }
 
         for ( ; i < n; i += 3, src += scn)
@@ -950,8 +972,7 @@ struct RGB2XYZ_i<ushort>
     }
 
     int srccn, coeffs[9];
-    v4u16 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8;
-    v4u32 v_delta;
+    v4i32 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8, v_delta;
 };
 
 #endif
@@ -1440,17 +1461,17 @@ struct XYZ2RGB_i<uchar>
             std::swap(coeffs[2], coeffs[8]);
         }
 
-        v_c0 = msa_dup_n_s16(coeffs[0]);
-        v_c1 = msa_dup_n_s16(coeffs[1]);
-        v_c2 = msa_dup_n_s16(coeffs[2]);
-        v_c3 = msa_dup_n_s16(coeffs[3]);
-        v_c4 = msa_dup_n_s16(coeffs[4]);
-        v_c5 = msa_dup_n_s16(coeffs[5]);
-        v_c6 = msa_dup_n_s16(coeffs[6]);
-        v_c7 = msa_dup_n_s16(coeffs[7]);
-        v_c8 = msa_dup_n_s16(coeffs[8]);
+        v_c0 = msa_dupq_n_s32(coeffs[0]);
+        v_c1 = msa_dupq_n_s32(coeffs[1]);
+        v_c2 = msa_dupq_n_s32(coeffs[2]);
+        v_c3 = msa_dupq_n_s32(coeffs[3]);
+        v_c4 = msa_dupq_n_s32(coeffs[4]);
+        v_c5 = msa_dupq_n_s32(coeffs[5]);
+        v_c6 = msa_dupq_n_s32(coeffs[6]);
+        v_c7 = msa_dupq_n_s32(coeffs[7]);
+        v_c8 = msa_dupq_n_s32(coeffs[8]);
         v_delta = msa_dupq_n_s32(1 << (xyz_shift - 1));
-        v_alpha = msa_movn_u16(msa_dupq_n_u16(ColorChannel<uchar>::max()));
+        v_alpha = msa_dupq_n_u8(ColorChannel<uchar>::max());
     }
 
     void operator()(const uchar* src, uchar* dst, int n) const
@@ -1462,44 +1483,80 @@ struct XYZ2RGB_i<uchar>
             C6 = coeffs[6], C7 = coeffs[7], C8 = coeffs[8];
         n *= 3;
 
-        for ( ; i <= n - 24; i += 24, dst += dcn * 8)
+        for ( ; i <= n - 48; i += 48, dst += dcn * 16)
         {
-            v8u8 v_src0, v_src1, v_src2;
-            msa_ld3_u8(src + i, &v_src0, &v_src1, &v_src2);
-            v8i16 v_src160 = (v8i16)(msa_movl_u8(v_src0));
-            v8i16 v_src161 = (v8i16)(msa_movl_u8(v_src1));
-            v8i16 v_src162 = (v8i16)(msa_movl_u8(v_src2));
+            v16u8 v_data[3], Low0, Hi0, Low1, Hi1, Low2, Hi2;
+            v8u16 aLow0, aHi0, aLow1, aHi1, aLow2, aHi2;
 
-            v4i16 v_s0 = msa_get_low_s16(v_src160),
-                  v_s1 = msa_get_low_s16(v_src161),
-                  v_s2 = msa_get_low_s16(v_src162);
+            msa_ld3q_u8(src + i, &v_data[0], &v_data[1], &v_data[2]);
+            ILVRL_B2_UB(v_data[0], msa_dupq_n_u8(0), Low0, Hi0);
+            ILVRL_B2_UB(v_data[1], msa_dupq_n_u8(0), Low1, Hi1);
+            ILVRL_B2_UB(v_data[2], msa_dupq_n_u8(0), Low2, Hi2);
 
-            v4i32 v_X0 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4i32 v_Y0 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4i32 v_Z0 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X0 = msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift);
-            v_Y0 = msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift);
-            v_Z0 = msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift);
+            v8u16 v_zip = msa_paddlq_u8(Low0);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+            v_zip = msa_paddlq_u8(Low1);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+            v_zip = msa_paddlq_u8(Low2);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
 
-            v_s0 = msa_get_high_s16(v_src160);
-            v_s1 = msa_get_high_s16(v_src161);
-            v_s2 = msa_get_high_s16(v_src162);
+            v4i32 v_srcLow0 = (v4i32)msa_paddlq_u16(aLow0);
+            v4i32 v_srcLow1 = (v4i32)msa_paddlq_u16(aLow1);
+            v4i32 v_srcLow2 = (v4i32)msa_paddlq_u16(aLow2);
+            v4i32 v_srcHi0 = (v4i32)msa_paddlq_u16(aHi0);
+            v4i32 v_srcHi1 = (v4i32)msa_paddlq_u16(aHi1);
+            v4i32 v_srcHi2 = (v4i32)msa_paddlq_u16(aHi2);
 
-            v4i32 v_X1 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4i32 v_Y1 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4i32 v_Z1 = msa_mlal_s16(msa_mlal_s16(msa_mull_s16(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X1 = msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift);
-            v_Y1 = msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift);
-            v_Z1 = msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift);
+            v4i32 v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c0), v_srcLow1, v_c1), v_srcLow2, v_c2);
+            v4i32 v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c3), v_srcLow1, v_c4), v_srcLow2, v_c5);
+            v4i32 v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c6), v_srcLow1, v_c7), v_srcLow2, v_c8);
+            v4i32 v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c0), v_srcHi1, v_c1), v_srcHi2, v_c2);
+            v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c3), v_srcHi1, v_c4), v_srcHi2, v_c5);
+            v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c6), v_srcHi1, v_c7), v_srcHi2, v_c8);
 
-            v8u8 v_b = msa_qmovun_s16(msa_combine_s16(msa_qmovn_s32(v_X0), msa_qmovn_s32(v_X1)));
-            v8u8 v_g = msa_qmovun_s16(msa_combine_s16(msa_qmovn_s32(v_Y0), msa_qmovn_s32(v_Y1)));
-            v8u8 v_r = msa_qmovun_s16(msa_combine_s16(msa_qmovn_s32(v_Z0), msa_qmovn_s32(v_Z1)));
+            v8i16 v_dstLow0 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
+            v8i16 v_dstLow1 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
+            v8i16 v_dstLow2 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
+                                              msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+
+            v_zip = msa_paddlq_u8(Hi0);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+            v_zip = msa_paddlq_u8(Hi1);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+            v_zip = msa_paddlq_u8(Hi2);
+            ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
+
+            v_srcLow0 = (v4i32)msa_paddlq_u16(aLow0);
+            v_srcLow1 = (v4i32)msa_paddlq_u16(aLow1);
+            v_srcLow2 = (v4i32)msa_paddlq_u16(aLow2);
+            v_srcHi0 = (v4i32)msa_paddlq_u16(aHi0);
+            v_srcHi1 = (v4i32)msa_paddlq_u16(aHi1);
+            v_srcHi2 = (v4i32)msa_paddlq_u16(aHi2);
+
+            v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c0), v_srcLow1, v_c1), v_srcLow2, v_c2);
+            v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c3), v_srcLow1, v_c4), v_srcLow2, v_c5);
+            v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcLow0, v_c6), v_srcLow1, v_c7), v_srcLow2, v_c8);
+            v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c0), v_srcHi1, v_c1), v_srcHi2, v_c2);
+            v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c3), v_srcHi1, v_c4), v_srcHi2, v_c5);
+            v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_srcHi0, v_c6), v_srcHi1, v_c7), v_srcHi2, v_c8);
+
+            v8i16 v_dstHi0 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
+            v8i16 v_dstHi1 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
+            v8i16 v_dstHi2 = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
+                                             msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+
+            v_data[0] = msa_combine_u8(msa_qmovun_s16(v_dstLow0), msa_qmovun_s16(v_dstHi0));
+            v_data[1] = msa_combine_u8(msa_qmovun_s16(v_dstLow1), msa_qmovun_s16(v_dstHi1));
+            v_data[2] = msa_combine_u8(msa_qmovun_s16(v_dstLow2), msa_qmovun_s16(v_dstHi2));
 
             if (dcn == 3)
-                msa_st3_u8(dst, v_b, v_g, v_r);
+                msa_st3q_u8(dst, v_data[0], v_data[1], v_data[2]);
             else
-                msa_st4_u8(dst, v_b, v_g, v_r, v_alpha);
+                msa_st4q_u8(dst, v_data[0], v_data[1], v_data[2], v_alpha);
         }
 
         for ( ; i < n; i += 3, dst += dcn)
@@ -1517,9 +1574,8 @@ struct XYZ2RGB_i<uchar>
     int dstcn, blueIdx;
     int coeffs[9];
 
-    v4i16 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8;
-    v8u8 v_alpha;
-    v4i32 v_delta;
+    v4i32 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8, v_delta;
+    v16u8 v_alpha;
 };
 
 template <>
@@ -1551,7 +1607,6 @@ struct XYZ2RGB_i<ushort>
         v_c8 = msa_dupq_n_s32(coeffs[8]);
         v_delta = msa_dupq_n_s32(1 << (xyz_shift - 1));
         v_alpha = msa_dupq_n_u16(ColorChannel<ushort>::max());
-        v_alpha2 = msa_get_low_u16(v_alpha);
     }
 
     void operator()(const ushort* src, ushort* dst, int n) const
@@ -1565,12 +1620,16 @@ struct XYZ2RGB_i<ushort>
 
         for ( ; i <= n - 24; i += 24, dst += dcn * 8)
         {
-            v8u16 v_src0, v_src1, v_src2;
-            msa_ld3q_u16(src + i, &v_src0, &v_src1, &v_src2);
-            v4i32 v_s0 = (v4i32)(msa_movl_u16(msa_get_low_u16(v_src0))),
-                  v_s1 = (v4i32)(msa_movl_u16(msa_get_low_u16(v_src1))),
-                  v_s2 = (v4i32)(msa_movl_u16(msa_get_low_u16(v_src2)));
+            v8u16 v_data[3], Low0, Hi0, Low1, Hi1, Low2, Hi2;
 
+            msa_ld3q_u16(src + i, &v_data[0], &v_data[1], &v_data[2]);
+            ILVRL_H2_UH(v_data[0], msa_dupq_n_u16(0), Low0, Hi0);
+            ILVRL_H2_UH(v_data[1], msa_dupq_n_u16(0), Low1, Hi1);
+            ILVRL_H2_UH(v_data[2], msa_dupq_n_u16(0), Low2, Hi2);
+
+            v4i32 v_s0 = (v4i32)msa_paddlq_u16(Low0);
+            v4i32 v_s1 = (v4i32)msa_paddlq_u16(Low1);
+            v4i32 v_s2 = (v4i32)msa_paddlq_u16(Low2);
             v4i32 v_X0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
             v4i32 v_Y0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
             v4i32 v_Z0 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
@@ -1578,10 +1637,9 @@ struct XYZ2RGB_i<ushort>
             v_Y0 = msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift);
             v_Z0 = msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift);
 
-            v_s0 = (v4i32)(msa_movl_u16(msa_get_high_u16(v_src0)));
-            v_s1 = (v4i32)(msa_movl_u16(msa_get_high_u16(v_src1)));
-            v_s2 = (v4i32)(msa_movl_u16(msa_get_high_u16(v_src2)));
-
+            v_s0 = (v4i32)msa_paddlq_u16(Hi0);
+            v_s1 = (v4i32)msa_paddlq_u16(Hi1);
+            v_s2 = (v4i32)msa_paddlq_u16(Hi2);
             v4i32 v_X1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
             v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
             v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
@@ -1589,39 +1647,14 @@ struct XYZ2RGB_i<ushort>
             v_Y1 = msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift);
             v_Z1 = msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift);
 
-            v8u16 v_b = msa_combine_u16(msa_qmovun_s32(v_X0), msa_qmovun_s32(v_X1));
-            v8u16 v_g = msa_combine_u16(msa_qmovun_s32(v_Y0), msa_qmovun_s32(v_Y1));
-            v8u16 v_r = msa_combine_u16(msa_qmovun_s32(v_Z0), msa_qmovun_s32(v_Z1));
+            v_data[0] = msa_combine_u16(msa_qmovun_s32(v_X0), msa_qmovun_s32(v_X1));
+            v_data[1] = msa_combine_u16(msa_qmovun_s32(v_Y0), msa_qmovun_s32(v_Y1));
+            v_data[2] = msa_combine_u16(msa_qmovun_s32(v_Z0), msa_qmovun_s32(v_Z1));
 
             if (dcn == 3)
-                msa_st3q_u16(dst, v_b, v_g, v_r);
+                msa_st3q_u16(dst, v_data[0], v_data[1], v_data[2]);
             else
-                msa_st4q_u16(dst, v_b, v_g, v_r, v_alpha);
-        }
-
-        for ( ; i <= n - 12; i += 12, dst += dcn * 4)
-        {
-            v4u16 v_src0, v_src1, v_src2;
-            msa_ld3_u16(src + i, &v_src0, &v_src1, &v_src2);
-            v4i32 v_s0 = (v4i32)(msa_movl_u16(v_src0)),
-                  v_s1 = (v4i32)(msa_movl_u16(v_src1)),
-                  v_s2 = (v4i32)(msa_movl_u16(v_src2));
-
-            v4i32 v_X = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c0), v_s1, v_c1), v_s2, v_c2);
-            v4i32 v_Y = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c3), v_s1, v_c4), v_s2, v_c5);
-            v4i32 v_Z = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(v_s0, v_c6), v_s1, v_c7), v_s2, v_c8);
-            v_X = msa_shrq_n_s32(msa_addq_s32(v_X, v_delta), xyz_shift);
-            v_Y = msa_shrq_n_s32(msa_addq_s32(v_Y, v_delta), xyz_shift);
-            v_Z = msa_shrq_n_s32(msa_addq_s32(v_Z, v_delta), xyz_shift);
-
-            v4u16 v_b = msa_qmovun_s32(v_X);
-            v4u16 v_g = msa_qmovun_s32(v_Y);
-            v4u16 v_r = msa_qmovun_s32(v_Z);
-
-            if (dcn == 3)
-                msa_st3_u16(dst, v_b, v_g, v_r);
-            else
-                msa_st4_u16(dst, v_b, v_g, v_r, v_alpha2);
+                msa_st4q_u16(dst, v_data[0], v_data[1], v_data[2], v_alpha);
         }
 
         for ( ; i < n; i += 3, dst += dcn)
@@ -1640,7 +1673,6 @@ struct XYZ2RGB_i<ushort>
     int coeffs[9];
 
     v4i32 v_c0, v_c1, v_c2, v_c3, v_c4, v_c5, v_c6, v_c7, v_c8, v_delta;
-    v4u16 v_alpha2;
     v8u16 v_alpha;
 };
 
@@ -3117,7 +3149,7 @@ struct Lab2RGB_b
         #elif CV_MSA
         v_scale_inv = msa_dupq_n_f32(100.f/255.f);
         v_scale = msa_dupq_n_f32(255.f);
-        v_alpha = msa_dup_n_u8(ColorChannel<uchar>::max());
+        v_alpha = msa_dupq_n_u8(ColorChannel<uchar>::max());
         v_128 = msa_dupq_n_f32(128.0f);
         #elif CV_SSE2
         v_scale = _mm_set1_ps(255.f);
@@ -3210,23 +3242,49 @@ struct Lab2RGB_b
                 vst3q_f32(buf + j + 12, v_dst);
             }
             #elif CV_MSA
-            for ( ; j <= (dn - 8) * 3; j += 24)
+            for ( ; j <= (dn - 16) * 3; j += 48)
             {
-                v8u8 v_src0, v_src1, v_src2;
-                msa_ld3_u8(src + j, &v_src0, &v_src1, &v_src2);
-                v8u16 v_t0 = msa_movl_u8(v_src0),
-                      v_t1 = msa_movl_u8(v_src1),
-                      v_t2 = msa_movl_u8(v_src2);
+                v16u8 v_src[3], Low0, Hi0, Low1, Hi1, Low2, Hi2;
+                v8u16 aLow0, aHi0, aLow1, aHi1, aLow2, aHi2;
 
-                v4f32 v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t0))), v_scale_inv);
-                v4f32 v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t1))), v_128);
-                v4f32 v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t2))), v_128);
+                msa_ld3q_u8(src + j, &v_src[0], &v_src[1], &v_src[2]);
+                ILVRL_B2_UB(v_src[0], msa_dupq_n_u8(0), Low0, Hi0);
+                ILVRL_B2_UB(v_src[1], msa_dupq_n_u8(0), Low1, Hi1);
+                ILVRL_B2_UB(v_src[2], msa_dupq_n_u8(0), Low2, Hi2);
+
+                v8u16 v_zip = msa_paddlq_u8(Low0);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+                v_zip = msa_paddlq_u8(Low1);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+                v_zip = msa_paddlq_u8(Low2);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
+
+                v4f32 v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow0)), v_scale_inv);
+                v4f32 v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow1)), v_128);
+                v4f32 v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow2)), v_128);
                 msa_st3q_f32(buf + j, v_dst0, v_dst1, v_dst2);
 
-                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t0))), v_scale_inv);
-                v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t1))), v_128);
-                v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t2))), v_128);
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi0)), v_scale_inv);
+                v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi1)), v_128);
+                v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi2)), v_128);
                 msa_st3q_f32(buf + j + 12, v_dst0, v_dst1, v_dst2);
+
+                v_zip = msa_paddlq_u8(Hi0);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+                v_zip = msa_paddlq_u8(Hi1);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+                v_zip = msa_paddlq_u8(Hi2);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
+
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow0)), v_scale_inv);
+                v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow1)), v_128);
+                v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow2)), v_128);
+                msa_st3q_f32(buf + j + 24, v_dst0, v_dst1, v_dst2);
+
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi0)), v_scale_inv);
+                v_dst1 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi1)), v_128);
+                v_dst2 = msa_subq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi2)), v_128);
+                msa_st3q_f32(buf + j + 36, v_dst0, v_dst1, v_dst2);
             }
             #elif CV_SSE2
             if (haveSIMD)
@@ -3284,22 +3342,32 @@ struct Lab2RGB_b
                 }
             }
             #elif CV_MSA
-            for ( ; j <= (dn - 8) * 3; j += 24, dst += dcn * 8)
+            for ( ; j <= (dn - 16) * 3; j += 48, dst += dcn * 16)
             {
-                v4f32 v_src00, v_src01, v_src02, v_src10, v_src11, v_src12;
-                msa_ld3q_f32(buf + j, &v_src00, &v_src01, &v_src02);
-                msa_ld3q_f32(buf + j + 12, &v_src10, &v_src11, &v_src12);
-                v8u8 v_dst0 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src00, v_scale))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src10, v_scale)))));
-                v8u8 v_dst1 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src01, v_scale))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src11, v_scale)))));
-                v8u8 v_dst2 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src02, v_scale))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src12, v_scale)))));
+                v4f32 v_src0[3], v_src1[3], v_src2[3], v_src3[3];
+
+                msa_ld3q_f32(buf + j, &v_src0[0], &v_src0[1], &v_src0[2]);
+                msa_ld3q_f32(buf + j + 12, &v_src1[0], &v_src1[1], &v_src1[2]);
+                msa_ld3q_f32(buf + j + 24, &v_src2[0], &v_src2[1], &v_src2[2]);
+                msa_ld3q_f32(buf + j + 36, &v_src3[0], &v_src3[1], &v_src3[2]);
+
+                v16u8 v_dst0 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale))))));
+                v16u8 v_dst1 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[1], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[1], v_scale))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[1], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[1], v_scale))))));
+                v16u8 v_dst2 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[2], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[2], v_scale))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[2], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[2], v_scale))))));
 
                 if (dcn == 4)
-                    msa_st4_u8(dst, v_dst0, v_dst1, v_dst2, v_alpha);
+                    msa_st4q_u8(dst, v_dst0, v_dst1, v_dst2, v_alpha);
                 else
-                    msa_st3_u8(dst, v_dst0, v_dst1, v_dst2);
+                    msa_st3q_u8(dst, v_dst0, v_dst1, v_dst2);
             }
             #elif CV_SSE2
             if (dcn == 3 && haveSIMD)
@@ -3369,7 +3437,7 @@ struct Lab2RGB_b
     uint8x8_t v_alpha;
     #elif CV_MSA
     v4f32 v_scale, v_scale_inv, v_128;
-    v8u8 v_alpha;
+    v16u8 v_alpha;
     #elif CV_SSE2
     __m128 v_scale;
     __m128 v_alpha;
@@ -3610,30 +3678,30 @@ struct RGB2Luvfloat
         {
             for ( ; i <= n - 12; i += 12, src += scn * 4)
             {
-                v4f32 v_src0, v_src1, v_src2;
-                msa_ld3q_f32(src, &v_src0, &v_src1, &v_src2);
+                v4f32 v_data[3];
+                msa_ld3q_f32(src, &v_data[0], &v_data[1], &v_data[2]);
 
-                v_src0 = msa_maxq_f32(v_src0, msa_dupq_n_f32(0));
-                v_src1 = msa_maxq_f32(v_src1, msa_dupq_n_f32(0));
-                v_src2 = msa_maxq_f32(v_src2, msa_dupq_n_f32(0));
+                v_data[0] = msa_maxq_f32(v_data[0], msa_dupq_n_f32(0));
+                v_data[1] = msa_maxq_f32(v_data[1], msa_dupq_n_f32(0));
+                v_data[2] = msa_maxq_f32(v_data[2], msa_dupq_n_f32(0));
 
-                v_src0 = msa_minq_f32(v_src0, msa_dupq_n_f32(1));
-                v_src1 = msa_minq_f32(v_src1, msa_dupq_n_f32(1));
-                v_src2 = msa_minq_f32(v_src2, msa_dupq_n_f32(1));
+                v_data[0] = msa_minq_f32(v_data[0], msa_dupq_n_f32(1));
+                v_data[1] = msa_minq_f32(v_data[1], msa_dupq_n_f32(1));
+                v_data[2] = msa_minq_f32(v_data[2], msa_dupq_n_f32(1));
 
                 if (gammaTab)
                 {
-                    v_src0 = msa_mulq_f32(v_src0, msa_dupq_n_f32(gscale));
-                    v_src1 = msa_mulq_f32(v_src1, msa_dupq_n_f32(gscale));
-                    v_src2 = msa_mulq_f32(v_src2, msa_dupq_n_f32(gscale));
-                    splineInterpolate(v_src0, gammaTab, GAMMA_TAB_SIZE);
-                    splineInterpolate(v_src1, gammaTab, GAMMA_TAB_SIZE);
-                    splineInterpolate(v_src2, gammaTab, GAMMA_TAB_SIZE);
+                    v_data[0] = msa_mulq_f32(v_data[0], msa_dupq_n_f32(gscale));
+                    v_data[1] = msa_mulq_f32(v_data[1], msa_dupq_n_f32(gscale));
+                    v_data[2] = msa_mulq_f32(v_data[2], msa_dupq_n_f32(gscale));
+                    splineInterpolate(v_data[0], gammaTab, GAMMA_TAB_SIZE);
+                    splineInterpolate(v_data[1], gammaTab, GAMMA_TAB_SIZE);
+                    splineInterpolate(v_data[2], gammaTab, GAMMA_TAB_SIZE);
                 }
 
-                process(v_src0, v_src1, v_src2);
+                process(v_data[0], v_data[1], v_data[2]);
 
-                msa_st3q_f32(dst + i, v_src0, v_src1, v_src2);
+                msa_st3q_f32(dst + i, v_data[0], v_data[1], v_data[2]);
             }
         }
         else
@@ -4182,7 +4250,6 @@ struct RGB2Luv_b
         v_coeff2 = msa_dupq_n_f32(-uLow*f255/uRange);
         v_coeff3 = msa_dupq_n_f32(f255/vRange);
         v_coeff4 = msa_dupq_n_f32(-vLow*f255/vRange);
-        v_alpha = msa_dup_n_u8(ColorChannel<uchar>::max());
         #elif CV_SSE2
         v_zero = _mm_setzero_si128();
         v_scale_inv = _mm_set1_ps(softfloat::one()/f255);
@@ -4269,28 +4336,53 @@ struct RGB2Luv_b
                 vst3q_f32(buf + j + 12, v_dst);
             }
             #elif CV_MSA
-            for ( ; j <= (dn - 8) * 3; j += 24, src += 8 * scn)
+            for ( ; j <= (dn - 16) * 3; j += 48, src += 16 * scn)
             {
-                v8u8 v_src0, v_src1, v_src2, v_src3;
+                v16u8 v_src[4], Low0, Hi0, Low1, Hi1, Low2, Hi2;
+                v8u16 aLow0, aHi0, aLow1, aHi1, aLow2, aHi2;
 
                 if (scn == 3)
-                    msa_ld3_u8(src, &v_src0, &v_src1, &v_src2);
+                    msa_ld3q_u8(src, &v_src[0], &v_src[1], &v_src[2]);
                 else
-                    msa_ld4_u8(src, &v_src0, &v_src1, &v_src2, &v_src3);
+                    msa_ld4q_u8(src, &v_src[0], &v_src[1], &v_src[2], &v_src[3]);
 
-                v8u16 v_t0 = msa_movl_u8(v_src0);
-                v8u16 v_t1 = msa_movl_u8(v_src1);
-                v8u16 v_t2 = msa_movl_u8(v_src2);
+                ILVRL_B2_UB(v_src[0], msa_dupq_n_u8(0), Low0, Hi0);
+                ILVRL_B2_UB(v_src[1], msa_dupq_n_u8(0), Low1, Hi1);
+                ILVRL_B2_UB(v_src[2], msa_dupq_n_u8(0), Low2, Hi2);
 
-                v4f32 v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t0))), v_scale_inv);
-                v4f32 v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t1))), v_scale_inv);
-                v4f32 v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_low_u16(v_t2))), v_scale_inv);
+                v8u16 v_zip = msa_paddlq_u8(Low0);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+                v_zip = msa_paddlq_u8(Low1);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+                v_zip = msa_paddlq_u8(Low2);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
+
+                v4f32 v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow0)), v_scale_inv);
+                v4f32 v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow1)), v_scale_inv);
+                v4f32 v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow2)), v_scale_inv);
                 msa_st3q_f32(buf + j, v_dst0, v_dst1, v_dst2);
 
-                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t0))), v_scale_inv);
-                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t1))), v_scale_inv);
-                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_movl_u16(msa_get_high_u16(v_t2))), v_scale_inv);
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi0)), v_scale_inv);
+                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi1)), v_scale_inv);
+                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi2)), v_scale_inv);
                 msa_st3q_f32(buf + j + 12, v_dst0, v_dst1, v_dst2);
+
+                v_zip = msa_paddlq_u8(Hi0);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow0, aHi0);
+                v_zip = msa_paddlq_u8(Hi1);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow1, aHi1);
+                v_zip = msa_paddlq_u8(Hi2);
+                ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), aLow2, aHi2);
+
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow0)), v_scale_inv);
+                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow1)), v_scale_inv);
+                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aLow2)), v_scale_inv);
+                msa_st3q_f32(buf + j + 24, v_dst0, v_dst1, v_dst2);
+
+                v_dst0 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi0)), v_scale_inv);
+                v_dst1 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi1)), v_scale_inv);
+                v_dst2 = msa_mulq_f32(msa_cvtfintq_f32_u32(msa_paddlq_u16(aHi2)), v_scale_inv);
+                msa_st3q_f32(buf + j + 36, v_dst0, v_dst1, v_dst2);
             }
             #elif CV_SSE2
             if (scn == 3 && haveSIMD)
@@ -4359,20 +4451,29 @@ struct RGB2Luv_b
                 vst3_u8(dst + j, v_dst);
             }
             #elif CV_MSA
-            for ( ; j <= (dn - 8) * 3; j += 24)
+            for ( ; j <= (dn - 16) * 3; j += 48)
             {
-                v4f32 v_src00, v_src01, v_src02, v_src10, v_src11, v_src12;
-                msa_ld3q_f32(buf + j, &v_src00, &v_src01, &v_src02);
-                msa_ld3q_f32(buf + j + 12, &v_src10, &v_src11, &v_src12);
+                v4f32 v_src0[3], v_src1[3], v_src2[3], v_src3[3];
 
-                v8u8 v_dst0 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src00, v_scale))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_mulq_f32(v_src10, v_scale)))));
-                v8u8 v_dst1 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_addq_f32(msa_mulq_f32(v_src01, v_coeff1), v_coeff2))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_addq_f32(msa_mulq_f32(v_src11, v_coeff1), v_coeff2)))));
-                v8u8 v_dst2 = msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_rndq_u32_f32(msa_addq_f32(msa_mulq_f32(v_src02, v_coeff3), v_coeff4))),
-                                                            msa_qmovn_u32(msa_rndq_u32_f32(msa_addq_f32(msa_mulq_f32(v_src12, v_coeff3), v_coeff4)))));
+                msa_ld3q_f32(buf + j, &v_src0[0], &v_src0[1], &v_src0[2]);
+                msa_ld3q_f32(buf + j + 12, &v_src1[0], &v_src1[1], &v_src1[2]);
+                msa_ld3q_f32(buf + j + 24, &v_src2[0], &v_src2[1], &v_src2[2]);
+                msa_ld3q_f32(buf + j + 36, &v_src3[0], &v_src3[1], &v_src3[2]);
 
-                msa_st3_u8(dst + j, v_dst0, v_dst1, v_dst2);
+                v16u8 v_dst0 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale))))));
+                v16u8 v_dst1 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src0[1], v_coeff1))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src1[1], v_coeff1))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src2[1], v_coeff1))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src3[1], v_coeff1))))));
+                v16u8 v_dst2 = msa_combine_u8(msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src0[2], v_coeff3))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src1[2], v_coeff3))))),
+                                              msa_qmovn_u16(msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src2[2], v_coeff3))),
+                                                                            msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src3[2], v_coeff3))))));
+
+                msa_st3q_u8(dst + j, v_dst0, v_dst1, v_dst2);
             }
             #elif CV_SSE2
             if (haveSIMD)
@@ -4414,7 +4515,6 @@ struct RGB2Luv_b
     uint8x8_t v_alpha;
     #elif CV_MSA
     v4f32 v_scale, v_scale_inv, v_coeff1, v_coeff2, v_coeff3, v_coeff4;
-    v8u8 v_alpha;
     #elif CV_SSE2
     __m128 v_scale_inv;
     __m128i v_zero;
