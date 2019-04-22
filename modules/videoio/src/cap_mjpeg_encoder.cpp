@@ -703,148 +703,83 @@ static const char jpegHeader[] =
 
 
 #ifdef WITH_MSA
-/* Description : Interleave right half of halfword elements from vectors
-   Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7
-                 Outputs - out0, out1, out2, out3
-                 Return Type - as per RTYPE
-   Details     : Right half of halfword elements of in0 and right half of
-                 halfword elements of in1 are interleaved and copied to out0.
-                 Right half of halfword elements of in2 and right half of
-                 halfword elements of in3 are interleaved and copied to out1.
-                 Similar for other pairs
-*/
-#define ILVR_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+#define MSA_DCT_DESCALE_SW(x, n) \
+(msa_shrq_n_s32(msa_addq_s32((v4i32)x, msa_dupq_n_s32(1<<(n-1))), n))
+
+#define MSA_COMBINE_DCT_DESCALE(low, high, n) \
+(msa_combine_s16(msa_qmovn_s32(MSA_DCT_DESCALE_SW(low, n)), msa_qmovn_s32(MSA_DCT_DESCALE_SW(high, n))))
+
+#define MUL_HI_LO_SH_SW(a, b, pLow, pHi)                                   \
+{                                                                          \
+  v8i16 aLow, aHi, bLow, bHi;                                              \
+  v8i16 vZero = msa_dupq_n_s16(0);                                         \
+  ILVRL_H2_SH(a, vZero, aLow, aHi);                                        \
+  ILVRL_H2_SH(b, vZero, bLow, bHi);                                        \
+  pLow = msa_mulq_s32(msa_hadd_s32(aLow,vZero), msa_hadd_s32(bLow,vZero)); \
+  pHi = msa_mulq_s32(msa_hadd_s32(aHi,vZero), msa_hadd_s32(bHi,vZero));    \
+}
+
+#define TR8(TPV,in0,in1,in2,in3,in4,in5,in6,in7,            \
+            out0, out1, out2, out3, out4, out5, out6, out7) \
 {                                                           \
-    out0 = (RTYPE) __msa_ilvr_h((v8i16) in0, (v8i16) in1);  \
-    out1 = (RTYPE) __msa_ilvr_h((v8i16) in2, (v8i16) in3);  \
+    TPV t0,t1,t2,t3,t4,t5,t6,t7;                            \
+    t0 = msa_pckev_s16(in1, in0);                           \
+    t1 = msa_pckev_s16(in3, in2);                           \
+    t2 = msa_pckod_s16(in1, in0);                           \
+    t3 = msa_pckod_s16(in3, in2);                           \
+    t4 = msa_pckev_s16(in5, in4);                           \
+    t5 = msa_pckev_s16(in7, in6);                           \
+    t6 = msa_pckod_s16(in5, in4);                           \
+    t7 = msa_pckod_s16(in7, in6);                           \
+    in0 = msa_pckev_s16(t1, t0);                            \
+    in1 = msa_pckev_s16(t3, t2);                            \
+    in2 = msa_pckod_s16(t1, t0);                            \
+    in3 = msa_pckod_s16(t3, t2);                            \
+    in4 = msa_pckev_s16(t5, t4);                            \
+    in5 = msa_pckev_s16(t7, t6);                            \
+    in6 = msa_pckod_s16(t5, t4);                            \
+    in7 = msa_pckod_s16(t7, t6);                            \
+    out0 = msa_pckev_s16(in4, in0);                         \
+    out1 = msa_pckev_s16(in5, in1);                         \
+    out2 = msa_pckev_s16(in6, in2);                         \
+    out3 = msa_pckev_s16(in7, in3);                         \
+    out4 = msa_pckod_s16(in4, in0);                         \
+    out5 = msa_pckod_s16(in5, in1);                         \
+    out6 = msa_pckod_s16(in6, in2);                         \
+    out7 = msa_pckod_s16(in7, in3);                         \
 }
-#define ILVR_H2_SH(...) ILVR_H2(v8i16, __VA_ARGS__)
 
-/* Description : Interleave left half of halfword elements from vectors
-   Arguments   : Inputs  - in0, in1, in2, in3
-                 Outputs - out0, out1
-                 Return Type - as per RTYPE
-   Details     : Left half of halfword elements of in0 and left half of halfword
-                 elements of in1 are interleaved and copied to out0.
-                 Left half of halfword elements of in2 and left half of halfword
-                 elements of in3 are interleaved and copied to out1.
-*/
-#define ILVL_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
+#define LD8(TPV, ptr, step,                                 \
+            out0, out1, out2, out3, out4, out5, out6, out7) \
 {                                                           \
-    out0 = (RTYPE) __msa_ilvl_h((v8i16) in0, (v8i16) in1);  \
-    out1 = (RTYPE) __msa_ilvl_h((v8i16) in2, (v8i16) in3);  \
-}
-#define ILVL_H2_SH(...) ILVL_H2(v8i16, __VA_ARGS__)
-
-/* Description : Interleave left half of halfword elements from vectors
-   Arguments   : Inputs  - in0, in1, in2, in3
-                 Outputs - out0, out1
-                 Return Type - as per RTYPE
-   Details     : Left half of halfword elements of in0 and left half of halfword
-                 elements of in1 are interleaved and copied to out0.
-                 Left half of halfword elements of in2 and left half of halfword
-                 elements of in3 are interleaved and copied to out1.
-*/
-#define ILVL_H2(RTYPE, in0, in1, in2, in3, out0, out1)      \
-{                                                           \
-    out0 = (RTYPE) __msa_ilvl_h((v8i16) in0, (v8i16) in1);  \
-    out1 = (RTYPE) __msa_ilvl_h((v8i16) in2, (v8i16) in3);  \
-}
-#define ILVL_H2_SH(...) ILVL_H2(v8i16, __VA_ARGS__)
-
-/* Description : Pack even double word elements of vector pairs
-   Arguments   : Inputs  - in0, in1, in2, in3
-                 Outputs - out0, out1
-                 Return Type - as per RTYPE
-   Details     : Even double elements of in0 are copied to the left half of
-                 out0 & even double elements of in1 are copied to the right
-                 half of out0.
-                 Even double elements of in2 are copied to the left half of
-                 out1 & even double elements of in3 are copied to the right
-                 half of out1.
-*/
-#define PCKEV_D2(RTYPE, in0, in1, in2, in3, out0, out1)      \
-{                                                            \
-    out0 = (RTYPE) __msa_pckev_d((v2i64) in0, (v2i64) in1);  \
-    out1 = (RTYPE) __msa_pckev_d((v2i64) in2, (v2i64) in3);  \
+    TPV v0,v1,v2,v3,v4,v5,v6,v7;                            \
+    v0 = msa_ld1q_s16(ptr);                                 \
+    v1 = msa_ld1q_s16(((short*)ptr+step));                  \
+    v2 = msa_ld1q_s16(((short*)ptr+step*2));                \
+    v3 = msa_ld1q_s16(((short*)ptr+step*3));                \
+    v4 = msa_ld1q_s16(((short*)ptr+step*4));                \
+    v5 = msa_ld1q_s16(((short*)ptr+step*5));                \
+    v6 = msa_ld1q_s16(((short*)ptr+step*6));                \
+    v7 = msa_ld1q_s16(((short*)ptr+step*7));                \
+    TR8(TPV, v0, v1, v2, v3, v4, v5, v6, v7,                \
+        out0, out1, out2, out3, out4, out5, out6, out7);    \
 }
 
-#define PCKEV_D4(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7,  \
-                 out0, out1, out2, out3)                         \
-{                                                                \
-    PCKEV_D2(RTYPE, in0, in1, in2, in3, out0, out1);             \
-    PCKEV_D2(RTYPE, in4, in5, in6, in7, out2, out3);             \
-}
-
-/* Description : Transposes 8x8 block with half word elements in vectors
-   Arguments   : Inputs  - in0, in1, in2, in3, in4, in5, in6, in7
-                 Outputs - out0, out1, out2, out3, out4, out5, out6, out7
-                 Return Type - as per RTYPE
-*/
-#define TRANSPOSE8x8_H(RTYPE, in0, in1, in2, in3, in4, in5, in6, in7,   \
-                       out0, out1, out2, out3, out4, out5, out6, out7)  \
-{                                                                       \
-    v8i16 s0_m, s1_m;                                                   \
-    v8i16 tmp0_m, tmp1_m, tmp2_m, tmp3_m;                               \
-    v8i16 tmp4_m, tmp5_m, tmp6_m, tmp7_m;                               \
-                                                                        \
-    ILVR_H2_SH(in6, in4, in7, in5, s0_m, s1_m);                         \
-    ILVRL_H2_SH(s1_m, s0_m, tmp0_m, tmp1_m);                            \
-    ILVL_H2_SH(in6, in4, in7, in5, s0_m, s1_m);                         \
-    ILVRL_H2_SH(s1_m, s0_m, tmp2_m, tmp3_m);                            \
-    ILVR_H2_SH(in2, in0, in3, in1, s0_m, s1_m);                         \
-    ILVRL_H2_SH(s1_m, s0_m, tmp4_m, tmp5_m);                            \
-    ILVL_H2_SH(in2, in0, in3, in1, s0_m, s1_m);                         \
-    ILVRL_H2_SH(s1_m, s0_m, tmp6_m, tmp7_m);                            \
-    PCKEV_D4(RTYPE, tmp0_m, tmp4_m, tmp1_m, tmp5_m, tmp2_m, tmp6_m,     \
-             tmp3_m, tmp7_m, out0, out2, out4, out6);                   \
-    out1 = (RTYPE) __msa_pckod_d((v2i64) tmp0_m, (v2i64) tmp4_m);       \
-    out3 = (RTYPE) __msa_pckod_d((v2i64) tmp1_m, (v2i64) tmp5_m);       \
-    out5 = (RTYPE) __msa_pckod_d((v2i64) tmp2_m, (v2i64) tmp6_m);       \
-    out7 = (RTYPE) __msa_pckod_d((v2i64) tmp3_m, (v2i64) tmp7_m);       \
-}
-
-#define TRANSPOSE8x8_SH_SH(...) TRANSPOSE8x8_H(v8i16, __VA_ARGS__)
-
-inline v4i32 MSA_DCT_DESCALE_SW(v4i32 x, int n)
+inline v8i16 msa_dct_descale_mul(v8i16 a, v8i16 b, int n)
 {
-  v4i32 a = msa_shlq_n_s32(__msa_fill_w(1), (n-1));
-  v4i32 b = msa_addq_s32(x, a);
-  v4i32 c = msa_shrq_n_s32(b, n);
+  v4i32 low, hi;
 
-  return c;
+  MUL_HI_LO_SH_SW(a, b, low, hi);
+  return MSA_COMBINE_DCT_DESCALE(low, hi, n);
 }
 
-inline v8i16 MSA_COMBINE_DCT_DESCALE(v4i32 low, v4i32 high, int n)
+inline v8i16 msa_dct_descale_madd(v8i16 a, v8i16 b, v4i32 addL, v4i32 addH, int n)
 {
-  v4i32 lw = MSA_DCT_DESCALE_SW(low, n);
-  v4i32 hw = MSA_DCT_DESCALE_SW(high, n);
+  v4i32 low, hi;
 
-  return msa_combine_s16(msa_qmovn_s32(lw), msa_qmovn_s32(hw));
+  MUL_HI_LO_SH_SW(a, b, low, hi);
+  return MSA_COMBINE_DCT_DESCALE(msa_addq_s32(low, addL), msa_addq_s32(hi, addH), n);
 }
-
-inline v4i32 MSA_MUL_LOW_SH_SW(v8i16 a, v8i16 b)
-{
-  v4i32 la = msa_movl_s16(msa_get_low_s16(a));
-  v4i32 lb = msa_movl_s16(msa_get_low_s16(b));
-
-  return msa_mulq_s32(la, lb);
-}
-
-inline v4i32 MSA_MUL_HIGH_SH_SW(v8i16 a, v8i16 b)
-{
-  v4i32 ha = msa_movl_s16(msa_get_high_s16(a));
-  v4i32 hb = msa_movl_s16(msa_get_high_s16(b));
-
-  return msa_mulq_s32(ha, hb);
-}
-
-#define MSA_DCT_DESCALE_OP_MUL(v1,v2,n) \
-MSA_COMBINE_DCT_DESCALE(MSA_MUL_LOW_SH_SW((v8i16)v1, (v8i16)v2), MSA_MUL_HIGH_SH_SW((v8i16)v1, (v8i16)v2), n)
-
-#define MSA_DCT_DESCALE_OP_MADD(v1,v2,add_l,add_h,n) \
-MSA_COMBINE_DCT_DESCALE(msa_addq_s32(MSA_MUL_LOW_SH_SW((v8i16)v1, (v8i16)v2), (v4i32)add_l), msa_addq_s32(MSA_MUL_HIGH_SH_SW((v8i16)v1, (v8i16)v2), (v4i32)add_h), n)
-
 #endif
 
 #ifdef WITH_NEON
@@ -1055,195 +990,180 @@ static void aan_fdct8x8( const short *src, short *dst,
                         int step, const short *postscale )
 {
     // Pass 1: process rows
-    v8i16 tmp[8];
-    v8i16 res[8];
+    v8i16 tmp0,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7;
+    v8i16 res0,res1,res2,res3,res4,res5,res6,res7;
     v8i16 op1, op2;
-    int i = 0;
+    v4i32 pLow, pHi;
 
-    /* Load from src memory address */
-    for(i = 0; i < 8; i++)
-        tmp[i] = msa_ld1q_s16((src+step*i));
+    LD8(v8i16, src, step, res0,res1,res2,res3,res4,res5,res6,res7);
 
-    /* Transpose the source data matrix */
-    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
-                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
-
-    v8i16 x0 = res[0];    v8i16 x1 = res[7];
-    v8i16 x2 = res[3];    v8i16 x3 = res[4];
+    v8i16 x0 = res0;    v8i16 x1 = res7;
+    v8i16 x2 = res3;    v8i16 x3 = res4;
 
     v8i16 x4 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
     x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
 
-    tmp[7] = x0; tmp[1] = x2;
+    tmp7 = x0; tmp1 = x2;
 
     x2 = msa_addq_s16(x4, x1);    x4 = msa_subq_s16(x4, x1);
 
-    x0 = res[1];    x3 = res[6];
+    x0 = res1;    x3 = res6;
 
     x1 = msa_addq_s16(x0, x3);    x0 = msa_subq_s16(x0, x3);
-    tmp[5] = x0;
+    tmp5 = x0;
 
-    x0 = res[2];    x3 = res[5];
+    x0 = res2;    x3 = res5;
 
-    tmp[3] = msa_subq_s16(x0, x3);
+    tmp3 = msa_subq_s16(x0, x3);
     x0 = msa_addq_s16(x0, x3);
 
     x3 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
     x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
 
-    tmp[0] = x1;
-    tmp[4] = x2;
+    tmp0 = x1;
+    tmp4 = x2;
 
     op1 = msa_subq_s16(x0, x4);
-    op2 = __msa_fill_h(C0_707);
-    x0 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
-
+    op2 = msa_dupq_n_s16(C0_707);
+    x0 = msa_dct_descale_mul(op1, op2, fixb);
     x1 = msa_addq_s16(x4, x0);    x4 = msa_subq_s16(x4, x0);
 
-    tmp[2] = x4;
-    tmp[6] = x1;
+    tmp2 = x4;
+    tmp6 = x1;
 
-    x0 = tmp[1];    x1 = tmp[3];
-    x2 = tmp[5];    x3 = tmp[7];
+    x0 = tmp1;    x1 = tmp3;
+    x2 = tmp5;    x3 = tmp7;
     x0 = msa_addq_s16(x0, x1);    x1 = msa_addq_s16(x1, x2);    x2 = msa_addq_s16(x2, x3);
 
     op1 = x1;
-    op2 = __msa_fill_h(C0_707);
-    x1 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
-
+    op2 = msa_dupq_n_s16(C0_707);
+    x1 = msa_dct_descale_mul(op1, op2, fixb);
     x4 = msa_addq_s16(x1, x3);
     x3 = msa_subq_s16(x3, x1);
 
     op1 = msa_subq_s16(x0, x2);
-    op2 = __msa_fill_h(C0_382);
-    v4i32 x1_l = MSA_MUL_LOW_SH_SW(op1, op2);
-    v4i32 x1_h = MSA_MUL_HIGH_SH_SW(op1, op2);
+    op2 = msa_dupq_n_s16(C0_382);
+
+    MUL_HI_LO_SH_SW(op1, op2, pLow, pHi);
 
     op1 = x0;
-    op2 = __msa_fill_h(C0_541);
-    x0 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+    op2 = msa_dupq_n_s16(C0_541);
+    x0 = msa_dct_descale_madd(op1, op2, pLow, pHi, fixb);
 
     op1 = x2;
-    op2 = __msa_fill_h(C1_306);
-    x2 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+    op2 = msa_dupq_n_s16(C1_306);
+    x2 = msa_dct_descale_madd(op1, op2, pLow, pHi, fixb);
 
     x1 = msa_addq_s16(x0, x3);
     x3 = msa_subq_s16(x3, x0);
     x0 = msa_addq_s16(x4, x2);
     x4 = msa_subq_s16(x4, x2);
 
-    tmp[1] = x0;
-    tmp[3] = x3;
-    tmp[5] = x1;
-    tmp[7] = x4;
+    tmp1 = x0;
+    tmp3 = x3;
+    tmp5 = x1;
+    tmp7 = x4;
 
     //transpose a matrix
-    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
-                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
+    TR8(v8i16, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7,
+               res0, res1, res2, res3, res4, res5, res6, res7);
 
     // pass 2: process columns
     /* Load postscale data to vector */
-    for(i = 0; i <  8; i++)
-        tmp[i] = msa_ld1q_s16((postscale+8*i));
+    LD8(v8i16, postscale, 8, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7);
 
-    v8i16 ps[8];
-    /* Transpose the postscale matrix */
-    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
-                        ps[0], ps[1], ps[2], ps[3], ps[4], ps[5], ps[6], ps[7]);
-
-    x0 = res[0]; x1 = res[7];
-    x2 = res[3]; x3 = res[4];
+    x0 = res0; x1 = res7;
+    x2 = res3; x3 = res4;
 
     x4 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
     x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
 
-    res[7] = x0; res[0] = x2;
+    res7 = x0; res0 = x2;
 
     x2 = msa_addq_s16(x4, x1); x4 = msa_subq_s16(x4, x1);
 
-    x0 = res[1]; x3 = res[6];
+    x0 = res1; x3 = res6;
 
     x1 = msa_addq_s16(x0, x3); x0 = msa_subq_s16(x0, x3);
-    res[4] = x0;
+    res4 = x0;
 
-    x0 = res[2]; x3 = res[5];
+    x0 = res2; x3 = res5;
 
-    res[3] = msa_subq_s16(x0, x3); x0 = msa_addq_s16(x0, x3);
+    res3 = msa_subq_s16(x0, x3); x0 = msa_addq_s16(x0, x3);
 
     x3 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
     x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
 
     op1 = x1;
-    op2 = ps[0];
-    tmp[0] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp0;
+    tmp0 = msa_dct_descale_mul(op1, op2, postshift);
 
     op1 = x2;
-    op2 = ps[4];
-    tmp[4] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp4;
+    tmp4 = msa_dct_descale_mul(op1, op2, postshift);
 
     op1 = msa_subq_s16(x0, x4);
-    op2 = __msa_fill_h(C0_707);
-    x0 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+    op2 = msa_dupq_n_s16(C0_707);
+    x0 = msa_dct_descale_mul(op1, op2, fixb);
 
     x1 = msa_addq_s16(x4, x0); x4 = msa_subq_s16(x4, x0);
 
     op1 = x4;
-    op2 = ps[2];
-    tmp[2] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp2;
+    tmp2 = msa_dct_descale_mul(op1, op2, postshift);
 
     op1 = x1;
-    op2 = ps[6];
-    tmp[6] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp6;
+    tmp6 = msa_dct_descale_mul(op1, op2, postshift);
 
-    x0 = res[0]; x1 = res[3];
-    x2 = res[4]; x3 = res[7];
+    x0 = res0; x1 = res3;
+    x2 = res4; x3 = res7;
 
     x0 = msa_addq_s16(x0, x1); x1 = msa_addq_s16(x1, x2); x2 = msa_addq_s16(x2, x3);
 
     op1 = x1;
-    op2 = __msa_fill_h(C0_707);
-    x1 = MSA_DCT_DESCALE_OP_MUL(op1, op2, fixb);
+    op2 = msa_dupq_n_s16(C0_707);
+    x1 = msa_dct_descale_mul(op1, op2, fixb);
 
     x4 = msa_addq_s16(x1, x3); x3 = msa_subq_s16(x3, x1);
 
     op1 = msa_subq_s16(x0, x2);
-    op2 = __msa_fill_h(C0_382);
-    x1_l = MSA_MUL_LOW_SH_SW(op1, op2);
-    x1_h = MSA_MUL_HIGH_SH_SW(op1, op2);
+    op2 = msa_dupq_n_s16(C0_382);
+    MUL_HI_LO_SH_SW(op1, op2, pLow, pHi);
 
     op1 = x0;
-    op2 = __msa_fill_h(C0_541);
-    x0 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+    op2 = msa_dupq_n_s16(C0_541);
+    x0 = msa_dct_descale_madd(op1, op2, pLow, pHi, fixb);
 
     op1 = x2;
-    op2 = __msa_fill_h(C1_306);
-    x2 = MSA_DCT_DESCALE_OP_MADD(op1, op2, x1_l, x1_h, fixb);
+    op2 = msa_dupq_n_s16(C1_306);
+    x2 = msa_dct_descale_madd(op1, op2, pLow, pHi, fixb);
 
     x1 = msa_addq_s16(x0, x3); x3 = msa_subq_s16(x3, x0);
     x0 = msa_addq_s16(x4, x2); x4 = msa_subq_s16(x4, x2);
 
     op1 = x1;
-    op2 = ps[5];
-    tmp[5] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp5;
+    tmp5 = msa_dct_descale_mul(op1, op2, postshift);
 
     op1 = x0;
-    op2 = ps[1];
-    tmp[1] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp1;
+    tmp1 = msa_dct_descale_mul(op1, op2, postshift);
 
     op1 = x4;
-    op2 = ps[7];
-    tmp[7] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
-
+    op2 = tmp7;
+    tmp7 = msa_dct_descale_mul(op1, op2, postshift);
     op1 = x3;
-    op2 = ps[3];
-    tmp[3] = MSA_DCT_DESCALE_OP_MUL(op1, op2, postshift);
+    op2 = tmp3;
+    tmp3 = msa_dct_descale_mul(op1, op2, postshift);
 
-    TRANSPOSE8x8_SH_SH(tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7],
-                       res[0],res[1],res[2],res[3],res[4],res[5],res[6],res[7]);
+    TR8(v8i16, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7,
+               res0, res1, res2, res3, res4, res5, res6, res7);
 
-    /* Store the vector to destination memory address */
-    for(i = 0; i < 8; i++)
-        msa_st1q_s16((dst+8*i),res[i]);
+    msa_st1q_s16((dst),res0);     msa_st1q_s16((dst+8),res1);
+    msa_st1q_s16((dst+8*2),res2); msa_st1q_s16((dst+8*3),res3);
+    msa_st1q_s16((dst+8*4),res4); msa_st1q_s16((dst+8*5),res5);
+    msa_st1q_s16((dst+8*6),res6); msa_st1q_s16((dst+8*7),res7);
 }
 #else
 // FDCT with postscaling
