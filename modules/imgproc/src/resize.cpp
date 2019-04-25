@@ -2171,8 +2171,8 @@ private:
 class ResizeAreaFastVec_SIMD_8u
 {
 public:
-    ResizeAreaFastVec_SIMD_8u(int _cn, int _step) :
-        cn(_cn), step(_step)
+    ResizeAreaFastVec_SIMD_8u(int _cn, int _step)
+        : cn(_cn), step(_step)
     {
     }
 
@@ -2183,47 +2183,47 @@ public:
 
         v8u16 v_2 = msa_dupq_n_u16(2);
 
-        if (cn == 1)
+        if( cn == 1 )
         {
-            for ( ; dx <= w - 16; dx += 16, S0 += 32, S1 += 32, D += 16)
+            for( ; dx <= w - 16; dx += 16, S0 += 32, S1 += 32, D += 16 )
             {
-                v16u8 v_row[2], aLow0, aHi0, bLow0, bHi0, aLow1, aHi1, bLow1, bHi1;
+                v16u8 v_row[2], row0_lo0, row0_hi0, row1_lo0, row1_hi0, row0_lo1, row0_hi1, row1_lo1, row1_hi1;
 
                 msa_ld2q_u8(S0, &v_row[0], &v_row[1]);
-                ILVRL_B2_UB(v_row[0], msa_dupq_n_u8(0), aLow0, aHi0);
-                ILVRL_B2_UB(v_row[1], msa_dupq_n_u8(0), bLow0, bHi0);
+                ILVRL_B2_UB(v_row[0], msa_dupq_n_u8(0), row0_lo0, row0_hi0);
+                ILVRL_B2_UB(v_row[1], msa_dupq_n_u8(0), row1_lo0, row1_hi0);
                 msa_ld2q_u8(S1, &v_row[0], &v_row[1]);
-                ILVRL_B2_UB(v_row[0], msa_dupq_n_u8(0), aLow1, aHi1);
-                ILVRL_B2_UB(v_row[1], msa_dupq_n_u8(0), bLow1, bHi1);
+                ILVRL_B2_UB(v_row[0], msa_dupq_n_u8(0), row0_lo1, row0_hi1);
+                ILVRL_B2_UB(v_row[1], msa_dupq_n_u8(0), row1_lo1, row1_hi1);
 
-                v8u16 v_dst0 = msa_addq_u16(msa_addq_u16(msa_paddlq_u8(aLow0), msa_paddlq_u8(bLow0)),
-                                            msa_addq_u16(msa_paddlq_u8(aLow1), msa_paddlq_u8(bLow1)));
-                v8u16 v_dst1 = msa_addq_u16(msa_addq_u16(msa_paddlq_u8(aHi0), msa_paddlq_u8(bHi0)),
-                                            msa_addq_u16(msa_paddlq_u8(aHi1), msa_paddlq_u8(bHi1)));
+                v8u16 v_dst0 = msa_addq_u16(msa_addq_u16(msa_paddlq_u8(row0_lo0), msa_paddlq_u8(row1_lo0)),
+                                            msa_addq_u16(msa_paddlq_u8(row0_lo1), msa_paddlq_u8(row1_lo1)));
+                v8u16 v_dst1 = msa_addq_u16(msa_addq_u16(msa_paddlq_u8(row0_hi0), msa_paddlq_u8(row1_hi0)),
+                                            msa_addq_u16(msa_paddlq_u8(row0_hi1), msa_paddlq_u8(row1_hi1)));
                 msa_st1q_u8(D, msa_combine_u8(msa_movn_u16(msa_shrq_n_u16(msa_addq_u16(v_dst0, v_2), 2)),
                                               msa_movn_u16(msa_shrq_n_u16(msa_addq_u16(v_dst1, v_2), 2))));
             }
         }
-        else if (cn == 4)
+        else if( cn == 4 )
         {
-            for ( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8)
+            for( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8 )
             {
-                v16u8 Low0, Hi0, Low1, Hi1;
-                v8u16 Low2, Hi2;
+                v16u8 row_lo0, row_hi0, row_lo1, row_hi1;
+                v8u16 row16_lo, row16_hi;
 
-                v16u8 v_row8 = msa_ld1q_u8(S0);
-                ILVRL_B2_UB(v_row8, msa_dupq_n_u8(0), Low0, Hi0);
+                v16u8 v_row = msa_ld1q_u8(S0);
+                ILVRL_B2_UB(v_row, msa_dupq_n_u8(0), row_lo0, row_hi0);
 
-                v_row8 = msa_ld1q_u8(S1);
-                ILVRL_B2_UB(v_row8, msa_dupq_n_u8(0), Low1, Hi1);
+                v_row = msa_ld1q_u8(S1);
+                ILVRL_B2_UB(v_row, msa_dupq_n_u8(0), row_lo1, row_hi1);
 
-                v8u16 v_row16 = msa_addq_u16(msa_paddlq_u8(Low0), msa_paddlq_u8(Low1));
-                ILVRL_H2_UH(v_row16, msa_dupq_n_u16(0), Low2, Hi2);
-                v4u32 v_p0 = msa_addq_u32(msa_paddlq_u16(Low2), msa_paddlq_u16(Hi2));
+                v8u16 v_row16 = msa_addq_u16(msa_paddlq_u8(row_lo0), msa_paddlq_u8(row_lo1));
+                ILVRL_H2_UH(v_row16, msa_dupq_n_u16(0), row16_lo, row16_hi);
+                v4u32 v_p0 = msa_addq_u32(msa_paddlq_u16(row16_lo), msa_paddlq_u16(row16_hi));
 
-                v_row16 = msa_addq_u16(msa_paddlq_u8(Hi0), msa_paddlq_u8(Hi1));
-                ILVRL_H2_UH(v_row16, msa_dupq_n_u16(0), Low2, Hi2);
-                v4u32 v_p1 = msa_addq_u32(msa_paddlq_u16(Low2), msa_paddlq_u16(Hi2));
+                v_row16 = msa_addq_u16(msa_paddlq_u8(row_hi0), msa_paddlq_u8(row_hi1));
+                ILVRL_H2_UH(v_row16, msa_dupq_n_u16(0), row16_lo, row16_hi);
+                v4u32 v_p1 = msa_addq_u32(msa_paddlq_u16(row16_lo), msa_paddlq_u16(row16_hi));
 
                 v8u16 v_dst = msa_shrq_n_u16(msa_addq_u16(msa_combine_u16(msa_movn_u32(v_p0), msa_movn_u32(v_p1)), v_2), 2);
                 msa_st1_u8(D, msa_movn_u16(v_dst));
@@ -2240,8 +2240,8 @@ private:
 class ResizeAreaFastVec_SIMD_16u
 {
 public:
-    ResizeAreaFastVec_SIMD_16u(int _cn, int _step) :
-        cn(_cn), step(_step)
+    ResizeAreaFastVec_SIMD_16u(int _cn, int _step)
+        : cn(_cn), step(_step)
     {
     }
 
@@ -2252,40 +2252,40 @@ public:
 
         v4u32 v_2 = msa_dupq_n_u32(2);
 
-        if (cn == 1)
+        if( cn == 1 )
         {
-            for ( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8)
+            for( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8 )
             {
-                v8u16 v_row[2], aLow0, aHi0, bLow0, bHi0, aLow1, aHi1, bLow1, bHi1;
+                v8u16 v_row[2], row0_lo0, row0_hi0, row1_lo0, row1_hi0, row0_lo1, row0_hi1, row1_lo1, row1_hi1;
 
                 msa_ld2q_u16(S0, &v_row[0], &v_row[1]);
-                ILVRL_H2_UH(v_row[0], msa_dupq_n_u16(0), aLow0, aHi0);
-                ILVRL_H2_UH(v_row[1], msa_dupq_n_u16(0), bLow0, bHi0);
+                ILVRL_H2_UH(v_row[0], msa_dupq_n_u16(0), row0_lo0, row0_hi0);
+                ILVRL_H2_UH(v_row[1], msa_dupq_n_u16(0), row1_lo0, row1_hi0);
                 msa_ld2q_u16(S1, &v_row[0], &v_row[1]);
-                ILVRL_H2_UH(v_row[0], msa_dupq_n_u16(0), aLow1, aHi1);
-                ILVRL_H2_UH(v_row[1], msa_dupq_n_u16(0), bLow1, bHi1);
+                ILVRL_H2_UH(v_row[0], msa_dupq_n_u16(0), row0_lo1, row0_hi1);
+                ILVRL_H2_UH(v_row[1], msa_dupq_n_u16(0), row1_lo1, row1_hi1);
 
-                v4u32 v_dst0 = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(aLow0), msa_paddlq_u16(bLow0)),
-                                            msa_addq_u32(msa_paddlq_u16(aLow1), msa_paddlq_u16(bLow1)));
-                v4u32 v_dst1 = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(aHi0), msa_paddlq_u16(bHi0)),
-                                            msa_addq_u32(msa_paddlq_u16(aHi1), msa_paddlq_u16(bHi1)));
+                v4u32 v_dst0 = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(row0_lo0), msa_paddlq_u16(row1_lo0)),
+                                            msa_addq_u32(msa_paddlq_u16(row0_lo1), msa_paddlq_u16(row1_lo1)));
+                v4u32 v_dst1 = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(row0_hi0), msa_paddlq_u16(row1_hi0)),
+                                            msa_addq_u32(msa_paddlq_u16(row0_hi1), msa_paddlq_u16(row1_hi1)));
                 msa_st1q_u16(D, msa_combine_u16(msa_movn_u32(msa_shrq_n_u32(msa_addq_u32(v_dst0, v_2), 2)),
                                                 msa_movn_u32(msa_shrq_n_u32(msa_addq_u32(v_dst1, v_2), 2))));
             }
         }
-        else if (cn == 4)
+        else if( cn == 4 )
         {
-            for ( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4)
+            for( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4 )
             {
-                v8u16 Low0, Hi0, Low1, Hi1;
+                v8u16 row_lo0, row_hi0, row_lo1, row_hi1;
 
                 v8u16 v_row = msa_ld1q_u16(S0);
-                ILVRL_H2_UH(v_row, msa_dupq_n_u16(0), Low0, Hi0);
+                ILVRL_H2_UH(v_row, msa_dupq_n_u16(0), row_lo0, row_hi0);
                 v_row = msa_ld1q_u16(S1);
-                ILVRL_H2_UH(v_row, msa_dupq_n_u16(0), Low1, Hi1);
+                ILVRL_H2_UH(v_row, msa_dupq_n_u16(0), row_lo1, row_hi1);
 
-                v4u32 v_dst = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(Low0), msa_paddlq_u16(Hi0)),
-                                           msa_addq_u32(msa_paddlq_u16(Low1), msa_paddlq_u16(Hi1)));
+                v4u32 v_dst = msa_addq_u32(msa_addq_u32(msa_paddlq_u16(row_lo0), msa_paddlq_u16(row_hi0)),
+                                           msa_addq_u32(msa_paddlq_u16(row_lo1), msa_paddlq_u16(row_hi1)));
                 msa_st1_u16(D, msa_movn_u32(msa_shrq_n_u32(msa_addq_u32(v_dst, v_2), 2)));
             }
         }
@@ -2300,8 +2300,8 @@ private:
 class ResizeAreaFastVec_SIMD_16s
 {
 public:
-    ResizeAreaFastVec_SIMD_16s(int _cn, int _step) :
-        cn(_cn), step(_step)
+    ResizeAreaFastVec_SIMD_16s(int _cn, int _step)
+        : cn(_cn), step(_step)
     {
     }
 
@@ -2312,40 +2312,40 @@ public:
 
         v4i32 v_2 = msa_dupq_n_s32(2);
 
-        if (cn == 1)
+        if( cn == 1 )
         {
-            for ( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8)
+            for( ; dx <= w - 8; dx += 8, S0 += 16, S1 += 16, D += 8 )
             {
-                v8i16 v_row[2], aLow0, aHi0, bLow0, bHi0, aLow1, aHi1, bLow1, bHi1;
+                v8i16 v_row[2], row0_lo0, row0_hi0, row1_lo0, row1_hi0, row0_lo1, row0_hi1, row1_lo1, row1_hi1;
 
                 msa_ld2q_s16(S0, &v_row[0], &v_row[1]);
-                ILVRL_H2_SH(v_row[0], msa_dupq_n_s16(0), aLow0, aHi0);
-                ILVRL_H2_SH(v_row[1], msa_dupq_n_s16(0), bLow0, bHi0);
+                ILVRL_H2_SH(v_row[0], msa_dupq_n_s16(0), row0_lo0, row0_hi0);
+                ILVRL_H2_SH(v_row[1], msa_dupq_n_s16(0), row1_lo0, row1_hi0);
                 msa_ld2q_s16(S1, &v_row[0], &v_row[1]);
-                ILVRL_H2_SH(v_row[0], msa_dupq_n_s16(0), aLow1, aHi1);
-                ILVRL_H2_SH(v_row[1], msa_dupq_n_s16(0), bLow1, bHi1);
+                ILVRL_H2_SH(v_row[0], msa_dupq_n_s16(0), row0_lo1, row0_hi1);
+                ILVRL_H2_SH(v_row[1], msa_dupq_n_s16(0), row1_lo1, row1_hi1);
 
-                v4i32 v_dst0 = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(aLow0), msa_paddlq_s16(bLow0)),
-                                            msa_addq_s32(msa_paddlq_s16(aLow1), msa_paddlq_s16(bLow1)));
-                v4i32 v_dst1 = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(aHi0), msa_paddlq_s16(bHi0)),
-                                            msa_addq_s32(msa_paddlq_s16(aHi1), msa_paddlq_s16(bHi1)));
+                v4i32 v_dst0 = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(row0_lo0), msa_paddlq_s16(row1_lo0)),
+                                            msa_addq_s32(msa_paddlq_s16(row0_lo1), msa_paddlq_s16(row1_lo1)));
+                v4i32 v_dst1 = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(row0_hi0), msa_paddlq_s16(row1_hi0)),
+                                            msa_addq_s32(msa_paddlq_s16(row0_hi1), msa_paddlq_s16(row1_hi1)));
                 msa_st1q_s16(D, msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_dst0, v_2), 2)),
                                                 msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_dst1, v_2), 2))));
             }
         }
-        else if (cn == 4)
+        else if( cn == 4 )
         {
-            for ( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4)
+            for( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4 )
             {
-                v8i16 Low0, Hi0, Low1, Hi1;
+                v8i16 row_lo0, row_hi0, row_lo1, row_hi1;
 
                 v8i16 v_row = msa_ld1q_s16(S0);
-                ILVRL_H2_SH(v_row, msa_dupq_n_s16(0), Low0, Hi0);
+                ILVRL_H2_SH(v_row, msa_dupq_n_s16(0), row_lo0, row_hi0);
                 v_row = msa_ld1q_s16(S1);
-                ILVRL_H2_SH(v_row, msa_dupq_n_s16(0), Low1, Hi1);
+                ILVRL_H2_SH(v_row, msa_dupq_n_s16(0), row_lo1, row_hi1);
 
-                v4i32 v_dst = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(Low0), msa_paddlq_s16(Hi0)),
-                                           msa_addq_s32(msa_paddlq_s16(Low1), msa_paddlq_s16(Hi1)));
+                v4i32 v_dst = msa_addq_s32(msa_addq_s32(msa_paddlq_s16(row_lo0), msa_paddlq_s16(row_hi0)),
+                                           msa_addq_s32(msa_paddlq_s16(row_lo1), msa_paddlq_s16(row_hi1)));
                 msa_st1_s16(D, msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_dst, v_2), 2)));
             }
         }
@@ -2359,8 +2359,8 @@ private:
 
 struct ResizeAreaFastVec_SIMD_32f
 {
-    ResizeAreaFastVec_SIMD_32f(int _scale_x, int _scale_y, int _cn, int _step) :
-        cn(_cn), step(_step)
+    ResizeAreaFastVec_SIMD_32f(int _scale_x, int _scale_y, int _cn, int _step)
+        : cn(_cn), step(_step)
     {
         fast_mode = _scale_x == 2 && _scale_y == 2 && (cn == 1 || cn == 4);
     }
@@ -2375,9 +2375,9 @@ struct ResizeAreaFastVec_SIMD_32f
 
         v4f32 v_025 = msa_dupq_n_f32(0.25f);
 
-        if (cn == 1)
+        if( cn == 1 )
         {
-            for ( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4)
+            for( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4 )
             {
                 v4f32 v_row[2];
 
@@ -2389,9 +2389,9 @@ struct ResizeAreaFastVec_SIMD_32f
                 msa_st1q_f32(D, msa_mulq_f32(msa_addq_f32(v_dst0, v_dst1), v_025));
             }
         }
-        else if (cn == 4)
+        else if( cn == 4 )
         {
-            for ( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4)
+            for( ; dx <= w - 4; dx += 4, S0 += 8, S1 += 8, D += 4 )
             {
                 v4f32 v_dst0 = msa_addq_f32(msa_ld1q_f32(S0), msa_ld1q_f32(S0 + 4));
                 v4f32 v_dst1 = msa_addq_f32(msa_ld1q_f32(S1), msa_ld1q_f32(S1 + 4));

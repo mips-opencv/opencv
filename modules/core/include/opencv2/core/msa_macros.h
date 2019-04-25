@@ -1585,18 +1585,6 @@ msa_ld2q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b) \
 } \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
-{ \
-  int i, i3; \
-  for(i = i3 = 0; i < nlanes; i++, i3 += 3) \
-  { \
-    *((_Tp*)a + i) = ptr[i3]; \
-    *((_Tp*)b + i) = ptr[i3+1]; \
-    *((_Tp*)c + i) = ptr[i3+2]; \
-  } \
-} \
-__extension__ extern __inline void \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld4q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c, _Tpv* d) \
 { \
   _Tpv v0, v1, v2, v3; \
@@ -1620,18 +1608,6 @@ msa_st2q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b) \
 { \
   msa_st1q_##suffix(ptr, (_Tpv)__builtin_msa_ilvr_##df((_Tpvs)b, (_Tpvs)a)); \
   msa_st1q_##suffix(ptr + nlanes, (_Tpv)__builtin_msa_ilvl_##df((_Tpvs)b, (_Tpvs)a)); \
-} \
-__extension__ extern __inline void \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
-{ \
-  int i, i3; \
-  for(i = i3 = 0; i < nlanes; i++, i3 += 3) \
-  { \
-    ptr[i3] = a[i]; \
-    ptr[i3+1] = b[i]; \
-    ptr[i3+2] = c[i]; \
-  } \
 } \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -1659,14 +1635,158 @@ MSA_INTERLEAVED_IMPL(double, v2f64, v2i64, f64, d, 2)
 MSA_INTERLEAVED_IMPL(int64_t, v2i64, v2i64, s64, d, 2)
 MSA_INTERLEAVED_IMPL(uint64_t, v2u64, v2i64, u64, d, 2)
 
+#define MSA_INTERLEAVED_IMPL_LOAD3_8(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  *((_Tp*)a) = *ptr;             *((_Tp*)b) = *(ptr + 1);       *((_Tp*)c) = *(ptr + 2);       \
+  *((_Tp*)a + 1) = *(ptr + 3);   *((_Tp*)b + 1) = *(ptr + 4);   *((_Tp*)c + 1) = *(ptr + 5);   \
+  *((_Tp*)a + 2) = *(ptr + 6);   *((_Tp*)b + 2) = *(ptr + 7);   *((_Tp*)c + 2) = *(ptr + 8);   \
+  *((_Tp*)a + 3) = *(ptr + 9);   *((_Tp*)b + 3) = *(ptr + 10);  *((_Tp*)c + 3) = *(ptr + 11);  \
+  *((_Tp*)a + 4) = *(ptr + 12);  *((_Tp*)b + 4) = *(ptr + 13);  *((_Tp*)c + 4) = *(ptr + 14);  \
+  *((_Tp*)a + 5) = *(ptr + 15);  *((_Tp*)b + 5) = *(ptr + 16);  *((_Tp*)c + 5) = *(ptr + 17);  \
+  *((_Tp*)a + 6) = *(ptr + 18);  *((_Tp*)b + 6) = *(ptr + 19);  *((_Tp*)c + 6) = *(ptr + 20);  \
+  *((_Tp*)a + 7) = *(ptr + 21);  *((_Tp*)b + 7) = *(ptr + 22);  *((_Tp*)c + 7) = *(ptr + 23);  \
+  *((_Tp*)a + 8) = *(ptr + 24);  *((_Tp*)b + 8) = *(ptr + 25);  *((_Tp*)c + 8) = *(ptr + 26);  \
+  *((_Tp*)a + 9) = *(ptr + 27);  *((_Tp*)b + 9) = *(ptr + 28);  *((_Tp*)c + 9) = *(ptr + 29);  \
+  *((_Tp*)a + 10) = *(ptr + 30); *((_Tp*)b + 10) = *(ptr + 31); *((_Tp*)c + 10) = *(ptr + 32); \
+  *((_Tp*)a + 11) = *(ptr + 33); *((_Tp*)b + 11) = *(ptr + 34); *((_Tp*)c + 11) = *(ptr + 35); \
+  *((_Tp*)a + 12) = *(ptr + 36); *((_Tp*)b + 12) = *(ptr + 37); *((_Tp*)c + 12) = *(ptr + 38); \
+  *((_Tp*)a + 13) = *(ptr + 39); *((_Tp*)b + 13) = *(ptr + 40); *((_Tp*)c + 13) = *(ptr + 41); \
+  *((_Tp*)a + 14) = *(ptr + 42); *((_Tp*)b + 14) = *(ptr + 43); *((_Tp*)c + 14) = *(ptr + 44); \
+  *((_Tp*)a + 15) = *(ptr + 45); *((_Tp*)b + 15) = *(ptr + 46); *((_Tp*)c + 15) = *(ptr + 47); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD3_8(uint8_t, v16u8, u8)
+MSA_INTERLEAVED_IMPL_LOAD3_8(int8_t, v16i8, s8)
+
+#define MSA_INTERLEAVED_IMPL_LOAD3_16(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  *((_Tp*)a) = *ptr;            *((_Tp*)b) = *(ptr + 1);      *((_Tp*)c) = *(ptr + 2);      \
+  *((_Tp*)a + 1) = *(ptr + 3);  *((_Tp*)b + 1) = *(ptr + 4);  *((_Tp*)c + 1) = *(ptr + 5);  \
+  *((_Tp*)a + 2) = *(ptr + 6);  *((_Tp*)b + 2) = *(ptr + 7);  *((_Tp*)c + 2) = *(ptr + 8);  \
+  *((_Tp*)a + 3) = *(ptr + 9);  *((_Tp*)b + 3) = *(ptr + 10); *((_Tp*)c + 3) = *(ptr + 11); \
+  *((_Tp*)a + 4) = *(ptr + 12); *((_Tp*)b + 4) = *(ptr + 13); *((_Tp*)c + 4) = *(ptr + 14); \
+  *((_Tp*)a + 5) = *(ptr + 15); *((_Tp*)b + 5) = *(ptr + 16); *((_Tp*)c + 5) = *(ptr + 17); \
+  *((_Tp*)a + 6) = *(ptr + 18); *((_Tp*)b + 6) = *(ptr + 19); *((_Tp*)c + 6) = *(ptr + 20); \
+  *((_Tp*)a + 7) = *(ptr + 21); *((_Tp*)b + 7) = *(ptr + 22); *((_Tp*)c + 7) = *(ptr + 23); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD3_16(uint16_t, v8u16, u16)
+MSA_INTERLEAVED_IMPL_LOAD3_16(int16_t, v8i16, s16)
+
+#define MSA_INTERLEAVED_IMPL_LOAD3_32(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  *((_Tp*)a) = *ptr;           *((_Tp*)b) = *(ptr + 1);      *((_Tp*)c) = *(ptr + 2);      \
+  *((_Tp*)a + 1) = *(ptr + 3); *((_Tp*)b + 1) = *(ptr + 4);  *((_Tp*)c + 1) = *(ptr + 5);  \
+  *((_Tp*)a + 2) = *(ptr + 6); *((_Tp*)b + 2) = *(ptr + 7);  *((_Tp*)c + 2) = *(ptr + 8);  \
+  *((_Tp*)a + 3) = *(ptr + 9); *((_Tp*)b + 3) = *(ptr + 10); *((_Tp*)c + 3) = *(ptr + 11); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD3_32(uint32_t, v4u32, u32)
+MSA_INTERLEAVED_IMPL_LOAD3_32(int32_t, v4i32, s32)
+MSA_INTERLEAVED_IMPL_LOAD3_32(float, v4f32, f32)
+
+#define MSA_INTERLEAVED_IMPL_LOAD3_64(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  *((_Tp*)a) = *ptr;           *((_Tp*)b) = *(ptr + 1);     *((_Tp*)c) = *(ptr + 2);     \
+  *((_Tp*)a + 1) = *(ptr + 3); *((_Tp*)b + 1) = *(ptr + 4); *((_Tp*)c + 1) = *(ptr + 5); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD3_64(uint64_t, v2u64, u64)
+MSA_INTERLEAVED_IMPL_LOAD3_64(int64_t, v2i64, s64)
+MSA_INTERLEAVED_IMPL_LOAD3_64(double, v2f64, f64)
+
+#define MSA_INTERLEAVED_IMPL_STORE3_8(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  *ptr = a[0];         *(ptr + 1) = b[0];   *(ptr + 2) = c[0];   \
+  *(ptr + 3) = a[1];   *(ptr + 4) = b[1];   *(ptr + 5) = c[1];   \
+  *(ptr + 6) = a[2];   *(ptr + 7) = b[2];   *(ptr + 8) = c[2];   \
+  *(ptr + 9) = a[3];   *(ptr + 10) = b[3];  *(ptr + 11) = c[3];  \
+  *(ptr + 12) = a[4];  *(ptr + 13) = b[4];  *(ptr + 14) = c[4];  \
+  *(ptr + 15) = a[5];  *(ptr + 16) = b[5];  *(ptr + 17) = c[5];  \
+  *(ptr + 18) = a[6];  *(ptr + 19) = b[6];  *(ptr + 20) = c[6];  \
+  *(ptr + 21) = a[7];  *(ptr + 22) = b[7];  *(ptr + 23) = c[7];  \
+  *(ptr + 24) = a[8];  *(ptr + 25) = b[8];  *(ptr + 26) = c[8];  \
+  *(ptr + 27) = a[9];  *(ptr + 28) = b[9];  *(ptr + 29) = c[9];  \
+  *(ptr + 30) = a[10]; *(ptr + 31) = b[10]; *(ptr + 32) = c[10]; \
+  *(ptr + 33) = a[11]; *(ptr + 34) = b[11]; *(ptr + 35) = c[11]; \
+  *(ptr + 36) = a[12]; *(ptr + 37) = b[12]; *(ptr + 38) = c[12]; \
+  *(ptr + 39) = a[13]; *(ptr + 40) = b[13]; *(ptr + 41) = c[13]; \
+  *(ptr + 42) = a[14]; *(ptr + 43) = b[14]; *(ptr + 44) = c[14]; \
+  *(ptr + 45) = a[15]; *(ptr + 46) = b[15]; *(ptr + 47) = c[15]; \
+}
+
+MSA_INTERLEAVED_IMPL_STORE3_8(uint8_t, v16u8, u8)
+MSA_INTERLEAVED_IMPL_STORE3_8(int8_t, v16i8, s8)
+
+#define MSA_INTERLEAVED_IMPL_STORE3_16(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  *ptr = a[0];        *(ptr + 1) = b[0];  *(ptr + 2) = c[0];  \
+  *(ptr + 3) = a[1];  *(ptr + 4) = b[1];  *(ptr + 5) = c[1];  \
+  *(ptr + 6) = a[2];  *(ptr + 7) = b[2];  *(ptr + 8) = c[2];  \
+  *(ptr + 9) = a[3];  *(ptr + 10) = b[3]; *(ptr + 11) = c[3]; \
+  *(ptr + 12) = a[4]; *(ptr + 13) = b[4]; *(ptr + 14) = c[4]; \
+  *(ptr + 15) = a[5]; *(ptr + 16) = b[5]; *(ptr + 17) = c[5]; \
+  *(ptr + 18) = a[6]; *(ptr + 19) = b[6]; *(ptr + 20) = c[6]; \
+  *(ptr + 21) = a[7]; *(ptr + 22) = b[7]; *(ptr + 23) = c[7]; \
+}
+
+MSA_INTERLEAVED_IMPL_STORE3_16(uint16_t, v8u16, u16)
+MSA_INTERLEAVED_IMPL_STORE3_16(int16_t, v8i16, s16)
+
+#define MSA_INTERLEAVED_IMPL_STORE3_32(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  *ptr = a[0];       *(ptr + 1) = b[0];  *(ptr + 2) = c[0];  \
+  *(ptr + 3) = a[1]; *(ptr + 4) = b[1];  *(ptr + 5) = c[1];  \
+  *(ptr + 6) = a[2]; *(ptr + 7) = b[2];  *(ptr + 8) = c[2];  \
+  *(ptr + 9) = a[3]; *(ptr + 10) = b[3]; *(ptr + 11) = c[3]; \
+}
+
+MSA_INTERLEAVED_IMPL_STORE3_32(uint32_t, v4u32, u32)
+MSA_INTERLEAVED_IMPL_STORE3_32(int32_t, v4i32, s32)
+MSA_INTERLEAVED_IMPL_STORE3_32(float, v4f32, f32)
+
+#define MSA_INTERLEAVED_IMPL_STORE3_64(_Tp, _Tpv, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  *ptr = a[0];       *(ptr + 1) = b[0]; *(ptr + 2) = c[0]; \
+  *(ptr + 3) = a[1]; *(ptr + 4) = b[1]; *(ptr + 5) = c[1]; \
+}
+
+MSA_INTERLEAVED_IMPL_STORE3_64(uint64_t, v2u64, u64)
+MSA_INTERLEAVED_IMPL_STORE3_64(int64_t, v2i64, s64)
+MSA_INTERLEAVED_IMPL_STORE3_64(double, v2f64, f64)
+
 __extension__ extern __inline v8i16
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
 msa_qdmulhq_n_s16(v8i16 a, int16_t b)
 {
-  v8i16 aLow, aHi;
-  ILVRL_H2_SH(a, msa_dupq_n_s16(0), aLow, aHi);
-  return msa_combine_s16(msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(aLow), msa_dupq_n_s32(b)), 1), 16),
-                         msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(aHi), msa_dupq_n_s32(b)), 1), 16));
+  v8i16 a_lo, a_hi;
+  ILVRL_H2_SH(a, msa_dupq_n_s16(0), a_lo, a_hi);
+  return msa_combine_s16(msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_lo), msa_dupq_n_s32(b)), 1), 16),
+                         msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_hi), msa_dupq_n_s32(b)), 1), 16));
 }
 
 #ifdef __cplusplus

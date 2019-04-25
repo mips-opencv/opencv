@@ -310,19 +310,17 @@
 }
 #define HSUB_UB2_SH(...) HSUB_UB2(v8i16, __VA_ARGS__)
 
-#define SLDI_B2_0(RTYPE, in0, in1, out0, out1, slide_val)                 \
-{                                                                         \
-    v16i8 zero_m = { 0 };                                                 \
-    out0 = (RTYPE) __msa_sldi_b((v16i8) zero_m, (v16i8) in0, slide_val);  \
-    out1 = (RTYPE) __msa_sldi_b((v16i8) zero_m, (v16i8) in1, slide_val);  \
+#define SLDI_B2_0(RTYPE, in0, in1, out0, out1, slide_val)                          \
+{                                                                                  \
+    out0 = (RTYPE) __msa_sldi_b((v16i8) __msa_fill_b(0), (v16i8) in0, slide_val);  \
+    out1 = (RTYPE) __msa_sldi_b((v16i8) __msa_fill_b(0), (v16i8) in1, slide_val);  \
 }
 #define SLDI_B2_0_UB(...) SLDI_B2_0(v16u8, __VA_ARGS__)
 
-#define SLDI_B3_0(RTYPE, in0, in1, in2, out0, out1, out2,  slide_val)     \
-{                                                                         \
-    v16i8 zero_m = { 0 };                                                 \
-    SLDI_B2_0(RTYPE, in0, in1, out0, out1, slide_val);                    \
-    out2 = (RTYPE) __msa_sldi_b((v16i8) zero_m, (v16i8) in2, slide_val);  \
+#define SLDI_B3_0(RTYPE, in0, in1, in2, out0, out1, out2,  slide_val)              \
+{                                                                                  \
+    SLDI_B2_0(RTYPE, in0, in1, out0, out1, slide_val);                             \
+    out2 = (RTYPE) __msa_sldi_b((v16i8) __msa_fill_b(0), (v16i8) in2, slide_val);  \
 }
 #define SLDI_B3_0_UB(...) SLDI_B3_0(v16u8, __VA_ARGS__)
 
@@ -335,11 +333,9 @@
 
 #define ADD_ABS_H3(RTYPE, in0, in1, in2, out0, out1, out2)  \
 {                                                           \
-    RTYPE zero = {0};                                       \
-                                                            \
-    out0 = __msa_add_a_h((v8i16) zero, in0);                \
-    out1 = __msa_add_a_h((v8i16) zero, in1);                \
-    out2 = __msa_add_a_h((v8i16) zero, in2);                \
+    out0 = __msa_add_a_h((v8i16) __msa_fill_h(0), in0);     \
+    out1 = __msa_add_a_h((v8i16) __msa_fill_h(0), in1);     \
+    out2 = __msa_add_a_h((v8i16) __msa_fill_h(0), in2);     \
 }
 #define ADD_ABS_H3_SH(...) ADD_ABS_H3(v8i16, __VA_ARGS__)
 
@@ -459,6 +455,7 @@ void png_read_filter_row_sub4_msa(png_row_infop row_info, png_bytep row,
                                   png_const_bytep prev_row)
 {
    size_t count;
+   prev_row = prev_row;
    size_t istop = row_info->rowbytes;
    png_bytep src = row;
    png_bytep nxt = row + 4;
@@ -498,6 +495,7 @@ void png_read_filter_row_sub3_msa(png_row_infop row_info, png_bytep row,
                                   png_const_bytep prev_row)
 {
    size_t count;
+   prev_row = prev_row;
    size_t istop = row_info->rowbytes;
    png_bytep src = row;
    png_bytep nxt = row + 3;

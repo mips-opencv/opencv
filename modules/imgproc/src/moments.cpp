@@ -344,6 +344,36 @@ struct MomentsInTile_SIMD<uchar, int, int>
         v_step = msa_dupq_n_u16(8);
     }
 
+    void process(v8u16 src, v8u16 & qx, v4u32 & v_x0, v4u32 & v_x1, v4u32 & v_x2, v4u32 & v_x3) const
+    {
+        v8u16 src_lo, src_hi, qx_lo, qx_hi;
+
+        ILVRL_H2_UH(src, msa_dupq_n_u16(0), src_lo, src_hi);
+        ILVRL_H2_UH(qx, msa_dupq_n_u16(0), qx_lo, qx_hi);
+
+        v4u32 v_p = msa_paddlq_u16(src_lo);
+        v4u32 v_qx = msa_paddlq_u16(qx_lo);
+        v4u32 v_px = msa_mulq_u32(v_qx, v_p);
+
+        v_x0 = msa_addq_u32(v_x0, v_p);
+        v_x1 = msa_addq_u32(v_x1, v_px);
+        v_px = msa_mulq_u32(v_px, v_qx);
+        v_x2 = msa_addq_u32(v_x2, v_px);
+        v_x3 = (v4u32)msa_mlaq_s32((v4i32)v_x3, (v4i32)v_px, (v4i32)v_qx);
+
+        v_p = msa_paddlq_u16(src_hi);
+        v_qx = msa_paddlq_u16(qx_hi);
+        v_px = msa_mulq_u32(v_qx, v_p);
+
+        v_x0 = msa_addq_u32(v_x0, v_p);
+        v_x1 = msa_addq_u32(v_x1, v_px);
+        v_px = msa_mulq_u32(v_px, v_qx);
+        v_x2 = msa_addq_u32(v_x2, v_px);
+        v_x3 = (v4u32)msa_mlaq_s32((v4i32)v_x3, (v4i32)v_px, (v4i32)v_qx);
+
+        qx = msa_addq_u16(qx, v_step);
+    }
+
     int operator() (const uchar * ptr, int len, int & x0, int & x1, int & x2, int & x3)
     {
         int x = 0;
@@ -351,36 +381,18 @@ struct MomentsInTile_SIMD<uchar, int, int>
         v4u32 v_z = msa_dupq_n_u32(0), v_x0 = v_z, v_x1 = v_z, v_x2 = v_z, v_x3 = v_z;
         v8u16 qx = qx_init;
 
+        for( ; x <= len - 16; x += 16 )
+        {
+            v16u8 v_src = msa_ld1q_u8(ptr + x), v_lo, v_hi;
+            ILVRL_B2_UB(v_src, msa_dupq_n_u8(0), v_lo, v_hi);
+
+            process(msa_paddlq_u8(v_lo), qx, v_x0, v_x1, v_x2, v_x3);
+            process(msa_paddlq_u8(v_hi), qx, v_x0, v_x1, v_x2, v_x3);
+        }
+
         for( ; x <= len - 8; x += 8 )
         {
-            v8u16 aLow, aHi, bLow, bHi;
-            v8u16 v_src = msa_movl_u8(msa_ld1_u8(ptr + x));
-            ILVRL_H2_UH(qx, msa_dupq_n_u16(0), aLow, aHi);
-            ILVRL_H2_UH(v_src, msa_dupq_n_u16(0), bLow, bHi);
-
-            // first part
-            v4u32 v_qx = msa_paddlq_u16(aLow);
-            v4u32 v_p = msa_paddlq_u16(bLow);
-            v4u32 v_px = msa_mulq_u32(v_qx, v_p);
-
-            v_x0 = msa_addq_u32(v_x0, v_p);
-            v_x1 = msa_addq_u32(v_x1, v_px);
-            v_px = msa_mulq_u32(v_px, v_qx);
-            v_x2 = msa_addq_u32(v_x2, v_px);
-            v_x3 = msa_addq_u32(v_x3, msa_mulq_u32(v_px, v_qx));
-
-            // second part
-            v_qx = msa_paddlq_u16(aHi);
-            v_p = msa_paddlq_u16(bHi);
-            v_px = msa_mulq_u32(v_qx, v_p);
-
-            v_x0 = msa_addq_u32(v_x0, v_p);
-            v_x1 = msa_addq_u32(v_x1, v_px);
-            v_px = msa_mulq_u32(v_px, v_qx);
-            v_x2 = msa_addq_u32(v_x2, v_px);
-            v_x3 = msa_addq_u32(v_x3, msa_mulq_u32(v_px, v_qx));
-
-            qx = msa_addq_u16(qx, v_step);
+            process(msa_movl_u8(msa_ld1_u8(ptr + x)), qx, v_x0, v_x1, v_x2, v_x3);
         }
 
         x0 = (int)msa_sum_u32(v_x0);
