@@ -441,14 +441,14 @@ struct Hamming
             result = vgetq_lane_s32 (vreinterpretq_s32_u64(bitSet2),0);
             result += vgetq_lane_s32 (vreinterpretq_s32_u64(bitSet2),2);
         }
-#elif defined(CV_MSA)
+#elif CV_MSA
         {
             v4u32 bits = msa_dupq_n_u32(0);
             for (size_t i = 0; i < size; i += 16) {
                 v16u8 A_vec = msa_ld1q_u8 (a + i);
                 v16u8 B_vec = msa_ld1q_u8 (b + i);
                 v16u8 AxorB = msa_eorq_u8 (A_vec, B_vec);
-                v16u8 bitsSet = msa_pcnt_s8 (AxorB);
+                v16u8 bitsSet = msa_cntq_s8 (AxorB);
                 v8u16 bitSet8 = msa_paddlq_u8 (bitsSet);
                 v4u32 bitSet4 = msa_paddlq_u16 (bitSet8);
                 bits = msa_addq_u32(bits, bitSet4);

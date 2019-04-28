@@ -236,11 +236,13 @@ inline float32x4_t vsetq_f32(float f0, float f1, float f2, float f3)
 #elif CV_MSA
 inline v4f32 msa_setq_f32(float f0, float f1, float f2, float f3)
 {
-    v4f32 a = msa_dupq_n_f32(f0);
-    a[1] = f1;
-    a[2] = f2;
-    a[3] = f3;
-    return a;
+    return (v4f32){f0, f1, f2, f3};
+}
+
+inline v4i32 msa_floor_f32(const v4f32 a)
+{
+    v4i32 a1 = msa_cvttintq_s32_f32(a);
+    return msa_addq_s32(a1, MSA_TPV_REINTERPRET(v4i32, msa_cltq_f32(a, msa_cvtfintq_f32_s32(a1))));
 }
 #endif
 void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, InputOutputArray _qangle,
@@ -308,8 +310,11 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
 
     float* const _data = &_lut(0, 0);
     if( gammaCorrection )
-        for( i = 0; i < 256; i++ )
-            _lut(0,i) = std::sqrt((float)i);
+        for( i = 0; i < 256; i += 4 )
+        {
+            msa_st1q_f32(_data + i, msa_sqrtq_f32(msa_cvtfintq_f32_u32(idx)));
+            idx = msa_addq_u32 (idx, ifour);
+        }
     else
         for( i = 0; i < 256; i += 4 )
         {
@@ -593,6 +598,39 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
             it0 = _mm_unpacklo_epi8(it0, it1);
 
             _mm_storel_epi64((__m128i*)(qanglePtr + x2), it0);
+        }
+#elif defined(CV_MSA)
+        v4f32 fhalf = msa_dupq_n_f32(0.5f), fone = msa_dupq_n_f32(1.0f);
+        v4f32 _angleScale = msa_dupq_n_f32(angleScale);
+        v4i32 _nbins = msa_dupq_n_s32(nbins), izero = msa_dupq_n_s32(0), ione = msa_dupq_n_s32(1);
+        v4i32 _hidx = msa_dupq_n_s32(0);
+        v4f32 ft0, ft1 = msa_dupq_n_f32(0.0f);
+        v8i16 ub0, ub1 = msa_dupq_n_s16(0);
+
+        for ( ; x <= width - 4; x += 4)
+        {
+            int x2 = x * 2;
+            v4f32 _mag = msa_ld1q_f32((dbuf + x + width * 2));
+            v4f32 _angle = msa_ld1q_f32((dbuf + x + width * 3));
+            _angle = msa_subq_f32(msa_mulq_f32(_angleScale, _angle), fhalf);
+
+            _hidx = msa_floor_f32(_angle);
+            _angle = msa_subq_f32(_angle, msa_cvtfintq_f32_s32(_hidx));
+
+            ft0 = msa_mulq_f32(_mag, msa_subq_f32(fone, _angle));
+            ft1 = msa_mulq_f32(_mag, _angle);
+
+            msa_st1q_f32((gradPtr + x2), msa_ilvr_f32(ft1, ft0));
+            msa_st1q_f32((gradPtr + x2 + 4), msa_ilvl_f32(ft1, ft0));
+
+            _hidx = msa_subq_s32(_hidx, msa_mulq_s32(_nbins,(v4i32)msa_cltq_s32(_hidx, izero)));
+            _hidx = msa_addq_s32(_hidx, msa_mulq_s32(_nbins,(v4i32)msa_cgeq_s32(_hidx, _nbins)));
+
+            ub0 = msa_combine_s16(msa_qmovn_s32(_hidx), msa_qmovn_s32(izero));
+            _hidx = msa_addq_s32(ione, _hidx);
+            _hidx = msa_andq_s32(_hidx, (v4i32)msa_cltq_s32(_hidx, _nbins));
+            ub1 = msa_combine_s16(msa_qmovn_s32(_hidx), msa_qmovn_s32(izero));
+            msa_st1_u8((qanglePtr + x2), msa_qmovun_s16(__msa_ilvr_h(ub1, ub0)));
         }
 #endif
         for( ; x < width; x++ )

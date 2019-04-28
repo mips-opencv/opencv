@@ -915,11 +915,16 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 /* v2i64 msa_hadd_s64 ((v4i32)__a, (v4i32)__b)*/
 #define msa_hadd_s64(__a, __b)  __builtin_msa_hadd_s_d((v4i32)__a, (v4i32)__b)
 
-/* Count the number of bits set to 1 for elements in vector __a and store the results to the elements in the returned vector.*/
-#define msa_pcnt_s8(__a)  __builtin_msa_pcnt_b((v16i8)__a)
-#define msa_pcnt_s16(__a) __builtin_msa_pcnt_h((v8i16)__a)
-#define msa_pcnt_s32(__a) __builtin_msa_pcnt_w((v4i32)__a)
-#define msa_pcnt_s64(__a) __builtin_msa_pcnt_d((v2i64)__a)
+/*The right half elements in vector in_odd are copied to the odd elements of destination vector.
+  The right half elements in vector in_ev are copied to the even elements of destination vector.
+*/
+#define msa_ilvr_f32(in_odd, in_ev) (v4f32)__builtin_msa_ilvr_w((v4i32)in_odd, (v4i32)in_ev)
+#define msa_ilvr_s32(in_odd, in_ev) (v4i32)__builtin_msa_ilvr_w((v4i32)in_odd, (v4i32)in_ev)
+/*The left half elements in vector in_odd are copied to the odd elements of destination vector.
+  The left half elements in vector in_ev are copied to the even elements of destination vector.
+*/
+#define msa_ilvl_f32(in_odd, in_ev) (v4f32)__builtin_msa_ilvl_w((v4i32)in_odd, (v4i32)in_ev)
+#define msa_ilvl_s32(in_odd, in_ev) (v4i32)__builtin_msa_ilvl_w((v4i32)in_odd, (v4i32)in_ev)
 
 /* Copy even elements in __a to the left half and even elements in __b to the right half and return the result vector.*/
 #define msa_pckev_s8(__a, __b)  __builtin_msa_pckev_b((v16i8)__a, (v16i8)__b)

@@ -49,9 +49,7 @@
 
 #if CV_NEON
 #define WITH_NEON
-#endif
-
-#if CV_MSA
+#elif CV_MSA
 #define WITH_MSA
 #endif
 
@@ -722,23 +720,23 @@ static const char jpegHeader[] =
 #define TR8(TPV,in0,in1,in2,in3,in4,in5,in6,in7,            \
             out0, out1, out2, out3, out4, out5, out6, out7) \
 {                                                           \
-    TPV t0,t1,t2,t3,t4,t5,t6,t7;                            \
+    TPV t0,t1,t2,t3;                                        \
     t0 = msa_pckev_s16(in1, in0);                           \
     t1 = msa_pckev_s16(in3, in2);                           \
     t2 = msa_pckod_s16(in1, in0);                           \
     t3 = msa_pckod_s16(in3, in2);                           \
-    t4 = msa_pckev_s16(in5, in4);                           \
-    t5 = msa_pckev_s16(in7, in6);                           \
-    t6 = msa_pckod_s16(in5, in4);                           \
-    t7 = msa_pckod_s16(in7, in6);                           \
     in0 = msa_pckev_s16(t1, t0);                            \
     in1 = msa_pckev_s16(t3, t2);                            \
     in2 = msa_pckod_s16(t1, t0);                            \
     in3 = msa_pckod_s16(t3, t2);                            \
-    in4 = msa_pckev_s16(t5, t4);                            \
-    in5 = msa_pckev_s16(t7, t6);                            \
-    in6 = msa_pckod_s16(t5, t4);                            \
-    in7 = msa_pckod_s16(t7, t6);                            \
+    t0 = msa_pckev_s16(in5, in4);                           \
+    t1 = msa_pckev_s16(in7, in6);                           \
+    t2 = msa_pckod_s16(in5, in4);                           \
+    t3 = msa_pckod_s16(in7, in6);                           \
+    in4 = msa_pckev_s16(t1, t0);                            \
+    in5 = msa_pckev_s16(t3, t2);                            \
+    in6 = msa_pckod_s16(t1, t0);                            \
+    in7 = msa_pckod_s16(t3, t2);                            \
     out0 = msa_pckev_s16(in4, in0);                         \
     out1 = msa_pckev_s16(in5, in1);                         \
     out2 = msa_pckev_s16(in6, in2);                         \
