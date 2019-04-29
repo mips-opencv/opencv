@@ -958,18 +958,18 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_get_lane_u32(__a, __b)       ((uint32_t)(__a)[LANE_IMM0_1(__b)])
 #define msa_get_lane_s32(__a, __b)       ((int32_t)(__a)[LANE_IMM0_1(__b)])
 #define msa_get_lane_f32(__a, __b)       ((float)(__a)[LANE_IMM0_3(__b)])
-#define msa_getq_lane_u8(a, imm0_15)     __builtin_msa_copy_u_b((v16i8)(a), imm0_15)
+#define msa_getq_lane_u8(__a, imm0_15)     __builtin_msa_copy_u_b((v16i8)(__a), imm0_15)
 #define msa_getq_lane_s8                 __builtin_msa_copy_s_b
-#define msa_getq_lane_u16(a, imm0_7)     __builtin_msa_copy_u_h((v8i16)(a), imm0_7)
+#define msa_getq_lane_u16(__a, imm0_7)     __builtin_msa_copy_u_h((v8i16)(__a), imm0_7)
 #define msa_getq_lane_s16                __builtin_msa_copy_s_h
-#define msa_getq_lane_u32(a, imm0_3)     __builtin_msa_copy_u_w((v4i32)(a), imm0_3)
+#define msa_getq_lane_u32(__a, imm0_3)     __builtin_msa_copy_u_w((v4i32)(__a), imm0_3)
 #define msa_getq_lane_s32                __builtin_msa_copy_s_w
 #if (__mips == 64)
-#define msa_getq_lane_u64(a, imm0_1)     __builtin_msa_copy_u_d((v2i64)(a), imm0_1)
+#define msa_getq_lane_u64(__a, imm0_1)     __builtin_msa_copy_u_d((v2i64)(__a), imm0_1)
 #define msa_getq_lane_s64                __builtin_msa_copy_s_d
 #else
-#define msa_getq_lane_u64(a, imm0_1)     ((uint64_t)(__a)[LANE_IMM0_1(imm0_1)])
-#define msa_getq_lane_s64(a, imm0_1)     ((int64_t)(__a)[LANE_IMM0_1(imm0_1)])
+#define msa_getq_lane_u64(__a, imm0_1)     ((uint64_t)(__a)[LANE_IMM0_1(imm0_1)])
+#define msa_getq_lane_s64(__a, imm0_1)     ((int64_t)(__a)[LANE_IMM0_1(imm0_1)])
 #endif
 
 /* combine */
@@ -1006,9 +1006,13 @@ msa_pmax_f32 (v2f32 a, v2f32 b)
 #define msa_combine_f64(__a, __b)  __COMBINE_64_64(v2f64, __a, __b)
 
 /* get_low, get_high */
+#if (__mips == 64)
 #define __GET_LOW(__TYPE, a)   ((__TYPE)((v1u64)(__builtin_msa_copy_u_d((v2i64)a, 0))))
-
 #define __GET_HIGH(__TYPE, a)  ((__TYPE)((v1u64)(__builtin_msa_copy_u_d((v2i64)a, 1))))
+#else
+#define __GET_LOW(__TYPE, a)   ((__TYPE)(((v2u64)a)[0]))
+#define __GET_HIGH(__TYPE, a)  ((__TYPE)(((v2u64)a)[1]))
+#endif
 
 /* v8i8 msa_get_low_s8(v16i8 __a) */
 #define msa_get_low_s8(__a)  __GET_LOW(v8i8, __a)

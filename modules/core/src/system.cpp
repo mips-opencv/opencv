@@ -515,7 +515,7 @@ struct HWFeatures
     #endif
     #endif
 
-    #ifdef __mips__
+    #ifdef __mips_msa
         have[CV_CPU_MSA] = true;
     #endif
 
