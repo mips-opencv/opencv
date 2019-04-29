@@ -1328,91 +1328,49 @@ OPENCV_HAL_IMPL_MSA_TRANSPOSE4x4(v_uint32x4, v4u32, v4i32, s32)
 OPENCV_HAL_IMPL_MSA_TRANSPOSE4x4(v_int32x4, v4i32, v4i32, s32)
 OPENCV_HAL_IMPL_MSA_TRANSPOSE4x4(v_float32x4, v4f32, v4i32, s32)
 
-#define OPENCV_HAL_IMPL_MSA_INTERLEAVED(_Tpvec, _Tp, _Tpv, _Tpvs, suffix, df) \
+#define OPENCV_HAL_IMPL_MSA_INTERLEAVED(_Tpvec, _Tp, suffix) \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b) \
 { \
-    unsigned nlanes = v_##_Tpvec::nlanes; \
-    _Tpv v0,v1; \
-    v0 = msa_ld1q_##suffix(ptr); \
-    v1 = msa_ld1q_##suffix(ptr+nlanes); \
-    a.val = (_Tpv) __msa_pckev_##df((_Tpvs)v1,(_Tpvs)v0); \
-    b.val = (_Tpv) __msa_pckod_##df((_Tpvs)v1,(_Tpvs)v0); \
+    msa_ld2q_##suffix(ptr, &a.val, &b.val); \
 } \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, v_##_Tpvec& c) \
 { \
-    int i, i3; \
-    for( i = i3 = 0; i < v_##_Tpvec::nlanes; i++, i3 += 3 ) \
-    { \
-        a.val[i] = ptr[i3]; \
-        b.val[i] = ptr[i3+1]; \
-        c.val[i] = ptr[i3+2]; \
-    } \
+    msa_ld3q_##suffix(ptr, &a.val, &b.val, &c.val); \
 } \
 inline void v_load_deinterleave(const _Tp* ptr, v_##_Tpvec& a, v_##_Tpvec& b, \
                                 v_##_Tpvec& c, v_##_Tpvec& d) \
 { \
-    unsigned nlanes = v_##_Tpvec::nlanes; \
-    _Tpv v0,v1,v2,v3; \
-    _Tpvs t0,t1,t2,t3; \
-    v0 = msa_ld1q_##suffix(ptr); \
-    v1 = msa_ld1q_##suffix(ptr+nlanes); \
-    v2 = msa_ld1q_##suffix(ptr+nlanes*2); \
-    v3 = msa_ld1q_##suffix(ptr+nlanes*3); \
-    t0 = __msa_pckev_##df((_Tpvs)v1,(_Tpvs)v0); \
-    t1 = __msa_pckev_##df((_Tpvs)v3,(_Tpvs)v2); \
-    t2 = __msa_pckod_##df((_Tpvs)v1,(_Tpvs)v0); \
-    t3 = __msa_pckod_##df((_Tpvs)v3,(_Tpvs)v2); \
-    a.val = (_Tpv) __msa_pckev_##df(t1,t0); \
-    b.val = (_Tpv) __msa_pckev_##df(t3,t2); \
-    c.val = (_Tpv) __msa_pckod_##df(t1,t0); \
-    d.val = (_Tpv) __msa_pckod_##df(t3,t2); \
+    msa_ld4q_##suffix(ptr, &a.val, &b.val, &c.val, &d.val); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
 { \
-    unsigned nlanes = v_##_Tpvec::nlanes; \
-    msa_st1q_##suffix( ptr, (_Tpv)__msa_ilvr_##df((_Tpvs)b.val,(_Tpvs)a.val));\
-    msa_st1q_##suffix( ptr+nlanes, (_Tpv)__msa_ilvl_##df((_Tpvs)b.val,(_Tpvs)a.val));\
+    msa_st2q_##suffix(ptr, a.val, b.val); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 const v_##_Tpvec& c, hal::StoreMode /*mode*/=hal::STORE_UNALIGNED) \
 { \
-    int i, i3; \
-    for( i = i3 = 0; i < v_##_Tpvec::nlanes; i++, i3 += 3 ) \
-    { \
-        ptr[i3] = a.val[i]; \
-        ptr[i3+1] = b.val[i]; \
-        ptr[i3+2] = c.val[i]; \
-    } \
+    msa_st3q_##suffix(ptr, a.val, b.val, c.val); \
 } \
 inline void v_store_interleave( _Tp* ptr, const v_##_Tpvec& a, const v_##_Tpvec& b, \
                                 const v_##_Tpvec& c, const v_##_Tpvec& d, \
                                 hal::StoreMode /*mode*/=hal::STORE_UNALIGNED ) \
 { \
-    _Tpvs v0,v1,v2,v3;\
-    unsigned nlanes = v_##_Tpvec::nlanes; \
-    v0 = __msa_ilvr_##df((_Tpvs)c.val,(_Tpvs)a.val); \
-    v1 = __msa_ilvr_##df((_Tpvs)d.val,(_Tpvs)b.val); \
-    v2 = __msa_ilvl_##df((_Tpvs)c.val,(_Tpvs)a.val); \
-    v3 = __msa_ilvl_##df((_Tpvs)d.val,(_Tpvs)b.val); \
-    msa_st1q_##suffix( ptr, (_Tpv)__msa_ilvr_##df(v1,v0));\
-    msa_st1q_##suffix( ptr+nlanes, (_Tpv)__msa_ilvl_##df(v1,v0));\
-    msa_st1q_##suffix( ptr+2*nlanes, (_Tpv)__msa_ilvr_##df(v3,v2));\
-    msa_st1q_##suffix( ptr+3*nlanes, (_Tpv)__msa_ilvl_##df(v3,v2));\
+    msa_st4q_##suffix(ptr, a.val, b.val, c.val, d.val); \
 }
 
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint8x16, uchar, v16u8, v16i8, u8, b)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(int8x16, schar, v16i8, v16i8, s8, b)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint16x8, ushort, v8u16, v8i16, u16, h)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(int16x8, short, v8i16, v8i16, s16, h)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint32x4, unsigned, v4u32, v4i32, u32, w)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(int32x4, int, v4i32, v4i32, s32, w)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(float32x4, float, v4f32, v4i32, f32, w)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint8x16, uchar, u8)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int8x16, schar, s8)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint16x8, ushort, u16)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int16x8, short, s16)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint32x4, unsigned, u32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int32x4, int, s32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float32x4, float, f32)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint64x2, uint64, u64)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(int64x2, int64, s64)
 #if CV_SIMD128_64F
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(float64x2, double, v2f64, v2i64, f64, d)
+OPENCV_HAL_IMPL_MSA_INTERLEAVED(float64x2, double, f64)
 #endif
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(int64x2, int64, v2i64, v2i64, s64, d)
-OPENCV_HAL_IMPL_MSA_INTERLEAVED(uint64x2, uint64, v2u64, v2i64, u64, d)
 
 /* v_cvt_f32, v_cvt_f64, v_cvt_f64_high */
 inline v_float32x4 v_cvt_f32(const v_int32x4& a)

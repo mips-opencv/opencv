@@ -1581,35 +1581,15 @@ msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
 #define msa_recpeq_f32        __builtin_msa_frcp_w
 #define msa_recpsq_f32(a, b)  (__builtin_msa_fsub_w(msa_dupq_n_f32(2.0f), __builtin_msa_fmul_w(a, b)))
 
-#define MSA_INTERLEAVED_IMPL(_Tp, _Tpv, _Tpvs, suffix, df, nlanes) \
+#define MSA_INTERLEAVED_IMPL_LOAD2_STORE2(_Tp, _Tpv, _Tpvs, suffix, df, nlanes) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld2q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b) \
 { \
-  _Tpv v0,v1; \
-  v0 = msa_ld1q_##suffix(ptr); \
-  v1 = msa_ld1q_##suffix(ptr + nlanes); \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + nlanes); \
   *a = (_Tpv)__builtin_msa_pckev_##df((_Tpvs)v1, (_Tpvs)v0); \
   *b = (_Tpv)__builtin_msa_pckod_##df((_Tpvs)v1, (_Tpvs)v0); \
-} \
-__extension__ extern __inline void \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_ld4q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c, _Tpv* d) \
-{ \
-  _Tpv v0, v1, v2, v3; \
-  _Tpvs t0, t1, t2, t3; \
-  v0 = msa_ld1q_##suffix(ptr); \
-  v1 = msa_ld1q_##suffix(ptr + nlanes); \
-  v2 = msa_ld1q_##suffix(ptr + nlanes * 2); \
-  v3 = msa_ld1q_##suffix(ptr + nlanes * 3); \
-  t0 = __builtin_msa_pckev_##df((_Tpvs)v1, (_Tpvs)v0); \
-  t1 = __builtin_msa_pckev_##df((_Tpvs)v3, (_Tpvs)v2); \
-  t2 = __builtin_msa_pckod_##df((_Tpvs)v1, (_Tpvs)v0); \
-  t3 = __builtin_msa_pckod_##df((_Tpvs)v3, (_Tpvs)v2); \
-  *a = (_Tpv)__builtin_msa_pckev_##df(t1, t0); \
-  *b = (_Tpv)__builtin_msa_pckev_##df(t3, t2); \
-  *c = (_Tpv)__builtin_msa_pckod_##df(t1, t0); \
-  *d = (_Tpv)__builtin_msa_pckod_##df(t3, t2); \
 } \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
@@ -1617,91 +1597,112 @@ msa_st2q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b) \
 { \
   msa_st1q_##suffix(ptr, (_Tpv)__builtin_msa_ilvr_##df((_Tpvs)b, (_Tpvs)a)); \
   msa_st1q_##suffix(ptr + nlanes, (_Tpv)__builtin_msa_ilvl_##df((_Tpvs)b, (_Tpvs)a)); \
-} \
-__extension__ extern __inline void \
-__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
-msa_st4q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c, const _Tpv d) \
-{ \
-  _Tpvs v0, v1, v2, v3; \
-  v0 = __builtin_msa_ilvr_##df((_Tpvs)c, (_Tpvs)a); \
-  v1 = __builtin_msa_ilvr_##df((_Tpvs)d, (_Tpvs)b); \
-  v2 = __builtin_msa_ilvl_##df((_Tpvs)c, (_Tpvs)a); \
-  v3 = __builtin_msa_ilvl_##df((_Tpvs)d, (_Tpvs)b); \
-  msa_st1q_##suffix(ptr, (_Tpv)__builtin_msa_ilvr_##df(v1, v0)); \
-  msa_st1q_##suffix(ptr + nlanes, (_Tpv)__builtin_msa_ilvl_##df(v1, v0)); \
-  msa_st1q_##suffix(ptr + 2 * nlanes, (_Tpv)__builtin_msa_ilvr_##df(v3, v2)); \
-  msa_st1q_##suffix(ptr + 3 * nlanes, (_Tpv)__builtin_msa_ilvl_##df(v3, v2)); \
 }
 
-MSA_INTERLEAVED_IMPL(uint8_t, v16u8, v16i8, u8, b, 16)
-MSA_INTERLEAVED_IMPL(int8_t, v16i8, v16i8, s8, b, 16)
-MSA_INTERLEAVED_IMPL(uint16_t, v8u16, v8i16, u16, h, 8)
-MSA_INTERLEAVED_IMPL(int16_t, v8i16, v8i16, s16, h, 8)
-MSA_INTERLEAVED_IMPL(uint32_t, v4u32, v4i32, u32, w, 4)
-MSA_INTERLEAVED_IMPL(int32_t, v4i32, v4i32, s32, w, 4)
-MSA_INTERLEAVED_IMPL(float, v4f32, v4i32, f32, w, 4)
-MSA_INTERLEAVED_IMPL(double, v2f64, v2i64, f64, d, 2)
-MSA_INTERLEAVED_IMPL(int64_t, v2i64, v2i64, s64, d, 2)
-MSA_INTERLEAVED_IMPL(uint64_t, v2u64, v2i64, u64, d, 2)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(uint8_t, v16u8, v16i8, u8, b, 16)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(int8_t, v16i8, v16i8, s8, b, 16)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(uint16_t, v8u16, v8i16, u16, h, 8)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(int16_t, v8i16, v8i16, s16, h, 8)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(uint32_t, v4u32, v4i32, u32, w, 4)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(int32_t, v4i32, v4i32, s32, w, 4)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(float, v4f32, v4i32, f32, w, 4)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(uint64_t, v2u64, v2i64, u64, d, 2)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(int64_t, v2i64, v2i64, s64, d, 2)
+MSA_INTERLEAVED_IMPL_LOAD2_STORE2(double, v2f64, v2i64, f64, d, 2)
 
-#define MSA_INTERLEAVED_IMPL_LOAD3_8(_Tp, _Tpv, suffix) \
+#ifdef _MIPSEB
+#define MSA_INTERLEAVED_IMPL_LOAD3_8(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
 { \
-  *((_Tp*)a) = *ptr;             *((_Tp*)b) = *(ptr + 1);       *((_Tp*)c) = *(ptr + 2);       \
-  *((_Tp*)a + 1) = *(ptr + 3);   *((_Tp*)b + 1) = *(ptr + 4);   *((_Tp*)c + 1) = *(ptr + 5);   \
-  *((_Tp*)a + 2) = *(ptr + 6);   *((_Tp*)b + 2) = *(ptr + 7);   *((_Tp*)c + 2) = *(ptr + 8);   \
-  *((_Tp*)a + 3) = *(ptr + 9);   *((_Tp*)b + 3) = *(ptr + 10);  *((_Tp*)c + 3) = *(ptr + 11);  \
-  *((_Tp*)a + 4) = *(ptr + 12);  *((_Tp*)b + 4) = *(ptr + 13);  *((_Tp*)c + 4) = *(ptr + 14);  \
-  *((_Tp*)a + 5) = *(ptr + 15);  *((_Tp*)b + 5) = *(ptr + 16);  *((_Tp*)c + 5) = *(ptr + 17);  \
-  *((_Tp*)a + 6) = *(ptr + 18);  *((_Tp*)b + 6) = *(ptr + 19);  *((_Tp*)c + 6) = *(ptr + 20);  \
-  *((_Tp*)a + 7) = *(ptr + 21);  *((_Tp*)b + 7) = *(ptr + 22);  *((_Tp*)c + 7) = *(ptr + 23);  \
-  *((_Tp*)a + 8) = *(ptr + 24);  *((_Tp*)b + 8) = *(ptr + 25);  *((_Tp*)c + 8) = *(ptr + 26);  \
-  *((_Tp*)a + 9) = *(ptr + 27);  *((_Tp*)b + 9) = *(ptr + 28);  *((_Tp*)c + 9) = *(ptr + 29);  \
-  *((_Tp*)a + 10) = *(ptr + 30); *((_Tp*)b + 10) = *(ptr + 31); *((_Tp*)c + 10) = *(ptr + 32); \
-  *((_Tp*)a + 11) = *(ptr + 33); *((_Tp*)b + 11) = *(ptr + 34); *((_Tp*)c + 11) = *(ptr + 35); \
-  *((_Tp*)a + 12) = *(ptr + 36); *((_Tp*)b + 12) = *(ptr + 37); *((_Tp*)c + 12) = *(ptr + 38); \
-  *((_Tp*)a + 13) = *(ptr + 39); *((_Tp*)b + 13) = *(ptr + 40); *((_Tp*)c + 13) = *(ptr + 41); \
-  *((_Tp*)a + 14) = *(ptr + 42); *((_Tp*)b + 14) = *(ptr + 43); *((_Tp*)c + 14) = *(ptr + 44); \
-  *((_Tp*)a + 15) = *(ptr + 45); *((_Tp*)b + 15) = *(ptr + 46); *((_Tp*)c + 15) = *(ptr + 47); \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + 16); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + 32); \
+  _Tpvs v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0704011F1F1F1F1F, 0x1F1C191613100D0A}), (_Tpvs)v0, (_Tpvs)v1); \
+  *a = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x1716150E0B080502, 0x1F1E1D1C1B1A1918}), v3, (_Tpvs)v2); \
+  v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0603001F1F1F1F1F, 0x1E1B1815120F0C09}), (_Tpvs)v0, (_Tpvs)v1); \
+  *b = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x1716150D0A070401, 0x1F1E1D1C1B1A1918}), v3, (_Tpvs)v2); \
+  v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x05021F1F1F1F1F1F, 0x1D1A1714110E0B08}), (_Tpvs)v0, (_Tpvs)v1); \
+  *c = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x17160F0C09060300, 0x1F1E1D1C1B1A1918}), v3, (_Tpvs)v2); \
 }
-
-MSA_INTERLEAVED_IMPL_LOAD3_8(uint8_t, v16u8, u8)
-MSA_INTERLEAVED_IMPL_LOAD3_8(int8_t, v16i8, s8)
-
-#define MSA_INTERLEAVED_IMPL_LOAD3_16(_Tp, _Tpv, suffix) \
+#else
+#define MSA_INTERLEAVED_IMPL_LOAD3_8(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
 { \
-  *((_Tp*)a) = *ptr;            *((_Tp*)b) = *(ptr + 1);      *((_Tp*)c) = *(ptr + 2);      \
-  *((_Tp*)a + 1) = *(ptr + 3);  *((_Tp*)b + 1) = *(ptr + 4);  *((_Tp*)c + 1) = *(ptr + 5);  \
-  *((_Tp*)a + 2) = *(ptr + 6);  *((_Tp*)b + 2) = *(ptr + 7);  *((_Tp*)c + 2) = *(ptr + 8);  \
-  *((_Tp*)a + 3) = *(ptr + 9);  *((_Tp*)b + 3) = *(ptr + 10); *((_Tp*)c + 3) = *(ptr + 11); \
-  *((_Tp*)a + 4) = *(ptr + 12); *((_Tp*)b + 4) = *(ptr + 13); *((_Tp*)c + 4) = *(ptr + 14); \
-  *((_Tp*)a + 5) = *(ptr + 15); *((_Tp*)b + 5) = *(ptr + 16); *((_Tp*)c + 5) = *(ptr + 17); \
-  *((_Tp*)a + 6) = *(ptr + 18); *((_Tp*)b + 6) = *(ptr + 19); *((_Tp*)c + 6) = *(ptr + 20); \
-  *((_Tp*)a + 7) = *(ptr + 21); *((_Tp*)b + 7) = *(ptr + 22); *((_Tp*)c + 7) = *(ptr + 23); \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + 16); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + 32); \
+  _Tpvs v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x15120F0C09060300, 0x00000000001E1B18}), (_Tpvs)v1, (_Tpvs)v0); \
+  *a = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x0706050403020100, 0x1D1A1714110A0908}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x1613100D0A070401, 0x00000000001F1C19}), (_Tpvs)v1, (_Tpvs)v0); \
+  *b = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x0706050403020100, 0x1E1B1815120A0908}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x1714110E0B080502, 0x0000000000001D1A}), (_Tpvs)v1, (_Tpvs)v0); \
+  *c = (_Tpv)__builtin_msa_vshf_b((_Tpvs)((v2i64){0x0706050403020100, 0x1F1C191613100908}), (_Tpvs)v2, v3); \
 }
+#endif
 
-MSA_INTERLEAVED_IMPL_LOAD3_16(uint16_t, v8u16, u16)
-MSA_INTERLEAVED_IMPL_LOAD3_16(int16_t, v8i16, s16)
+MSA_INTERLEAVED_IMPL_LOAD3_8(uint8_t, v16u8, v16i8, u8)
+MSA_INTERLEAVED_IMPL_LOAD3_8(int8_t, v16i8, v16i8, s8)
 
-#define MSA_INTERLEAVED_IMPL_LOAD3_32(_Tp, _Tpv, suffix) \
+#ifdef _MIPSEB
+#define MSA_INTERLEAVED_IMPL_LOAD3_16(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
 { \
-  *((_Tp*)a) = *ptr;           *((_Tp*)b) = *(ptr + 1);      *((_Tp*)c) = *(ptr + 2);      \
-  *((_Tp*)a + 1) = *(ptr + 3); *((_Tp*)b + 1) = *(ptr + 4);  *((_Tp*)c + 1) = *(ptr + 5);  \
-  *((_Tp*)a + 2) = *(ptr + 6); *((_Tp*)b + 2) = *(ptr + 7);  *((_Tp*)c + 2) = *(ptr + 8);  \
-  *((_Tp*)a + 3) = *(ptr + 9); *((_Tp*)b + 3) = *(ptr + 10); *((_Tp*)c + 3) = *(ptr + 11); \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + 8); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + 16); \
+  _Tpvs v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x00030000000F000F, 0x000F000C00090006}), (_Tpvs)v1, (_Tpvs)v0); \
+  *a = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x000B000A00050002, 0x000F000E000D000C}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0002000F000F000F, 0x000E000B00080005}), (_Tpvs)v1, (_Tpvs)v0); \
+  *b = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x000B000700040001, 0x000F000E000D000C}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0001000F000F000F, 0x000D000A00070004}), (_Tpvs)v1, (_Tpvs)v0); \
+  *c = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x000B000600030000, 0x000F000E000D000C}), (_Tpvs)v2, v3); \
+}
+#else
+#define MSA_INTERLEAVED_IMPL_LOAD3_16(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + 8); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + 16); \
+  _Tpvs v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0009000600030000, 0x00000000000F000C}), (_Tpvs)v1, (_Tpvs)v0); \
+  *a = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x0003000200010000, 0x000D000A00050004}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000A000700040001, 0x000000000000000D}), (_Tpvs)v1, (_Tpvs)v0); \
+  *b = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x0003000200010000, 0x000E000B00080004}), (_Tpvs)v2, v3); \
+  v3 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000B000800050002, 0x000000000000000E}), (_Tpvs)v1, (_Tpvs)v0); \
+  *c = (_Tpv)__builtin_msa_vshf_h((_Tpvs)((v2i64){0x0003000200010000, 0x000F000C00090004}), (_Tpvs)v2, v3); \
+}
+#endif
+
+MSA_INTERLEAVED_IMPL_LOAD3_16(uint16_t, v8u16, v8i16, u16)
+MSA_INTERLEAVED_IMPL_LOAD3_16(int16_t, v8i16, v8i16, s16)
+
+#define MSA_INTERLEAVED_IMPL_LOAD3_32(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld3q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c) \
+{ \
+  _Tpv v00 = msa_ld1q_##suffix(ptr); \
+  _Tpv v01 = msa_ld1q_##suffix(ptr + 4); \
+  _Tpv v02 = msa_ld1q_##suffix(ptr + 8); \
+  _Tpvs v10 = __builtin_msa_ilvr_w((_Tpvs)__builtin_msa_ilvl_d((v2i64)v01, (v2i64)v01), (_Tpvs)v00); \
+  _Tpvs v11 = __builtin_msa_ilvr_w((_Tpvs)v02, (_Tpvs)__builtin_msa_ilvl_d((v2i64)v00, (v2i64)v00)); \
+  _Tpvs v12 = __builtin_msa_ilvr_w((_Tpvs)__builtin_msa_ilvl_d((v2i64)v02, (v2i64)v02), (_Tpvs)v01); \
+  *a = (_Tpv)__builtin_msa_ilvr_w((_Tpvs)__builtin_msa_ilvl_d((v2i64)v11, (v2i64)v11), v10); \
+  *b = (_Tpv)__builtin_msa_ilvr_w(v12, (_Tpvs)__builtin_msa_ilvl_d((v2i64)v10, (v2i64)v10)); \
+  *c = (_Tpv)__builtin_msa_ilvr_w((_Tpvs)__builtin_msa_ilvl_d((v2i64)v12, (v2i64)v12), v11); \
 }
 
-MSA_INTERLEAVED_IMPL_LOAD3_32(uint32_t, v4u32, u32)
-MSA_INTERLEAVED_IMPL_LOAD3_32(int32_t, v4i32, s32)
-MSA_INTERLEAVED_IMPL_LOAD3_32(float, v4f32, f32)
+MSA_INTERLEAVED_IMPL_LOAD3_32(uint32_t, v4u32, v4i32, u32)
+MSA_INTERLEAVED_IMPL_LOAD3_32(int32_t, v4i32, v4i32, s32)
+MSA_INTERLEAVED_IMPL_LOAD3_32(float, v4f32, v4i32, f32)
 
 #define MSA_INTERLEAVED_IMPL_LOAD3_64(_Tp, _Tpv, suffix) \
 __extension__ extern __inline void \
@@ -1716,64 +1717,117 @@ MSA_INTERLEAVED_IMPL_LOAD3_64(uint64_t, v2u64, u64)
 MSA_INTERLEAVED_IMPL_LOAD3_64(int64_t, v2i64, s64)
 MSA_INTERLEAVED_IMPL_LOAD3_64(double, v2f64, f64)
 
-#define MSA_INTERLEAVED_IMPL_STORE3_8(_Tp, _Tpv, suffix) \
+#ifdef _MIPSEB
+#define MSA_INTERLEAVED_IMPL_STORE3_8(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
 { \
-  *ptr = a[0];         *(ptr + 1) = b[0];   *(ptr + 2) = c[0];   \
-  *(ptr + 3) = a[1];   *(ptr + 4) = b[1];   *(ptr + 5) = c[1];   \
-  *(ptr + 6) = a[2];   *(ptr + 7) = b[2];   *(ptr + 8) = c[2];   \
-  *(ptr + 9) = a[3];   *(ptr + 10) = b[3];  *(ptr + 11) = c[3];  \
-  *(ptr + 12) = a[4];  *(ptr + 13) = b[4];  *(ptr + 14) = c[4];  \
-  *(ptr + 15) = a[5];  *(ptr + 16) = b[5];  *(ptr + 17) = c[5];  \
-  *(ptr + 18) = a[6];  *(ptr + 19) = b[6];  *(ptr + 20) = c[6];  \
-  *(ptr + 21) = a[7];  *(ptr + 22) = b[7];  *(ptr + 23) = c[7];  \
-  *(ptr + 24) = a[8];  *(ptr + 25) = b[8];  *(ptr + 26) = c[8];  \
-  *(ptr + 27) = a[9];  *(ptr + 28) = b[9];  *(ptr + 29) = c[9];  \
-  *(ptr + 30) = a[10]; *(ptr + 31) = b[10]; *(ptr + 32) = c[10]; \
-  *(ptr + 33) = a[11]; *(ptr + 34) = b[11]; *(ptr + 35) = c[11]; \
-  *(ptr + 36) = a[12]; *(ptr + 37) = b[12]; *(ptr + 38) = c[12]; \
-  *(ptr + 39) = a[13]; *(ptr + 40) = b[13]; *(ptr + 41) = c[13]; \
-  *(ptr + 42) = a[14]; *(ptr + 43) = b[14]; *(ptr + 44) = c[14]; \
-  *(ptr + 45) = a[15]; *(ptr + 46) = b[15]; *(ptr + 47) = c[15]; \
+  _Tpvs v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0F0E0D0C0B1F1F1F, 0x1F1E1D1C1B1A1F1F}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0D1C140C1B130B1A, 0x1F170F1E160E1D15}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0A09080706051F1F, 0x19181716151F1F1F}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x1D14071C13061B12, 0x170A1F16091E1508}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 16, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x04030201001F1F1F, 0x14131211101F1F1F}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x15021C14011B1300, 0x051F17041E16031D}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 32, (_Tpv)v1); \
 }
-
-MSA_INTERLEAVED_IMPL_STORE3_8(uint8_t, v16u8, u8)
-MSA_INTERLEAVED_IMPL_STORE3_8(int8_t, v16i8, s8)
-
-#define MSA_INTERLEAVED_IMPL_STORE3_16(_Tp, _Tpv, suffix) \
+#else
+#define MSA_INTERLEAVED_IMPL_STORE3_8(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
 { \
-  *ptr = a[0];        *(ptr + 1) = b[0];  *(ptr + 2) = c[0];  \
-  *(ptr + 3) = a[1];  *(ptr + 4) = b[1];  *(ptr + 5) = c[1];  \
-  *(ptr + 6) = a[2];  *(ptr + 7) = b[2];  *(ptr + 8) = c[2];  \
-  *(ptr + 9) = a[3];  *(ptr + 10) = b[3]; *(ptr + 11) = c[3]; \
-  *(ptr + 12) = a[4]; *(ptr + 13) = b[4]; *(ptr + 14) = c[4]; \
-  *(ptr + 15) = a[5]; *(ptr + 16) = b[5]; *(ptr + 17) = c[5]; \
-  *(ptr + 18) = a[6]; *(ptr + 19) = b[6]; *(ptr + 20) = c[6]; \
-  *(ptr + 21) = a[7]; *(ptr + 22) = b[7]; *(ptr + 23) = c[7]; \
+  _Tpvs v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0000050403020100, 0x0000001413121110}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0A02110901100800, 0x05140C04130B0312}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0000000A09080706, 0x00001A1918171615}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x170A011609001508, 0x0D04190C03180B02}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 16, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x0000000F0E0D0C0B, 0x0000001F1E1D1C1B}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_b((_Tpvs)((v2i64){0x021C09011B08001A, 0x1F0C041E0B031D0A}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 32, (_Tpv)v1); \
 }
+#endif
 
-MSA_INTERLEAVED_IMPL_STORE3_16(uint16_t, v8u16, u16)
-MSA_INTERLEAVED_IMPL_STORE3_16(int16_t, v8i16, s16)
+MSA_INTERLEAVED_IMPL_STORE3_8(uint8_t, v16u8, v16i8, u8)
+MSA_INTERLEAVED_IMPL_STORE3_8(int8_t, v16i8, v16i8, s8)
 
-#define MSA_INTERLEAVED_IMPL_STORE3_32(_Tp, _Tpv, suffix) \
+#ifdef _MIPSEB
+#define MSA_INTERLEAVED_IMPL_STORE3_16(_Tp, _Tpv, _Tpvs, suffix) \
 __extension__ extern __inline void \
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
 msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
 { \
-  *ptr = a[0];       *(ptr + 1) = b[0];  *(ptr + 2) = c[0];  \
-  *(ptr + 3) = a[1]; *(ptr + 4) = b[1];  *(ptr + 5) = c[1];  \
-  *(ptr + 6) = a[2]; *(ptr + 7) = b[2];  *(ptr + 8) = c[2];  \
-  *(ptr + 9) = a[3]; *(ptr + 10) = b[3]; *(ptr + 11) = c[3]; \
+  _Tpvs v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000700060005000F, 0x000F000E000D000F}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000A0006000D0009, 0x000F000B0007000E}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x00040003000F000F, 0x000C000B000A000F}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000E000A0003000D, 0x0005000F000B0004}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 8, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000200010000000F, 0x00090008000F000F}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0001000E00090000, 0x000B0002000F000A}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 16, (_Tpv)v1); \
 }
+#else
+#define MSA_INTERLEAVED_IMPL_STORE3_16(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  _Tpvs v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0000000200010000, 0x0000000A00090008}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0001000800040000, 0x0006000200090005}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0000000500040003, 0x00000000000C000B}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x000B00040000000A, 0x0002000C00050001}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 8, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x0000000000070006, 0x0000000F000E000D}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_h((_Tpvs)((v2i64){0x00050000000D0004, 0x000F00060001000E}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 16, (_Tpv)v1); \
+}
+#endif
 
-MSA_INTERLEAVED_IMPL_STORE3_32(uint32_t, v4u32, u32)
-MSA_INTERLEAVED_IMPL_STORE3_32(int32_t, v4i32, s32)
-MSA_INTERLEAVED_IMPL_STORE3_32(float, v4f32, f32)
+MSA_INTERLEAVED_IMPL_STORE3_16(uint16_t, v8u16, v8i16, u16)
+MSA_INTERLEAVED_IMPL_STORE3_16(int16_t, v8i16, v8i16, s16)
+
+#ifdef _MIPSEB
+#define MSA_INTERLEAVED_IMPL_STORE3_32(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  _Tpvs v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000300000007, 0x0000000700000006}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000300000006, 0x0000000700000005}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000200000001, 0x0000000500000007}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000700000004, 0x0000000500000002}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 4, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000000000007, 0x0000000400000007}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000500000000, 0x0000000100000007}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 8, (_Tpv)v1); \
+}
+#else
+#define MSA_INTERLEAVED_IMPL_STORE3_32(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
+{ \
+  _Tpvs v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000100000000, 0x0000000000000004}), (_Tpvs)b, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000200000000, 0x0000000100000004}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000000000002, 0x0000000600000005}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000500000002, 0x0000000300000000}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 4, (_Tpv)v1); \
+  v0 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000000000003, 0x0000000000000007}), (_Tpvs)b, (_Tpvs)a); \
+  v1 = __builtin_msa_vshf_w((_Tpvs)((v2i64){0x0000000000000006, 0x0000000700000002}), (_Tpvs)c, (_Tpvs)v0); \
+  msa_st1q_##suffix(ptr + 8, (_Tpv)v1); \
+}
+#endif
+
+MSA_INTERLEAVED_IMPL_STORE3_32(uint32_t, v4u32, v4i32, u32)
+MSA_INTERLEAVED_IMPL_STORE3_32(int32_t, v4i32, v4i32, s32)
+MSA_INTERLEAVED_IMPL_STORE3_32(float, v4f32, v4i32, f32)
 
 #define MSA_INTERLEAVED_IMPL_STORE3_64(_Tp, _Tpv, suffix) \
 __extension__ extern __inline void \
@@ -1787,6 +1841,74 @@ msa_st3q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c) \
 MSA_INTERLEAVED_IMPL_STORE3_64(uint64_t, v2u64, u64)
 MSA_INTERLEAVED_IMPL_STORE3_64(int64_t, v2i64, s64)
 MSA_INTERLEAVED_IMPL_STORE3_64(double, v2f64, f64)
+
+#define MSA_INTERLEAVED_IMPL_LOAD4_STORE4(_Tp, _Tpv, _Tpvs, suffix, df, nlanes) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld4q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c, _Tpv* d) \
+{ \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + nlanes); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + nlanes * 2); \
+  _Tpv v3 = msa_ld1q_##suffix(ptr + nlanes * 3); \
+  _Tpvs t0 = __builtin_msa_pckev_##df((_Tpvs)v1, (_Tpvs)v0); \
+  _Tpvs t1 = __builtin_msa_pckev_##df((_Tpvs)v3, (_Tpvs)v2); \
+  _Tpvs t2 = __builtin_msa_pckod_##df((_Tpvs)v1, (_Tpvs)v0); \
+  _Tpvs t3 = __builtin_msa_pckod_##df((_Tpvs)v3, (_Tpvs)v2); \
+  *a = (_Tpv)__builtin_msa_pckev_##df(t1, t0); \
+  *b = (_Tpv)__builtin_msa_pckev_##df(t3, t2); \
+  *c = (_Tpv)__builtin_msa_pckod_##df(t1, t0); \
+  *d = (_Tpv)__builtin_msa_pckod_##df(t3, t2); \
+} \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st4q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c, const _Tpv d) \
+{ \
+  _Tpvs v0 = __builtin_msa_ilvr_##df((_Tpvs)c, (_Tpvs)a); \
+  _Tpvs v1 = __builtin_msa_ilvr_##df((_Tpvs)d, (_Tpvs)b); \
+  _Tpvs v2 = __builtin_msa_ilvl_##df((_Tpvs)c, (_Tpvs)a); \
+  _Tpvs v3 = __builtin_msa_ilvl_##df((_Tpvs)d, (_Tpvs)b); \
+  msa_st1q_##suffix(ptr, (_Tpv)__builtin_msa_ilvr_##df(v1, v0)); \
+  msa_st1q_##suffix(ptr + nlanes, (_Tpv)__builtin_msa_ilvl_##df(v1, v0)); \
+  msa_st1q_##suffix(ptr + 2 * nlanes, (_Tpv)__builtin_msa_ilvr_##df(v3, v2)); \
+  msa_st1q_##suffix(ptr + 3 * nlanes, (_Tpv)__builtin_msa_ilvl_##df(v3, v2)); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(uint8_t, v16u8, v16i8, u8, b, 16)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(int8_t, v16i8, v16i8, s8, b, 16)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(uint16_t, v8u16, v8i16, u16, h, 8)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(int16_t, v8i16, v8i16, s16, h, 8)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(uint32_t, v4u32, v4i32, u32, w, 4)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(int32_t, v4i32, v4i32, s32, w, 4)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4(float, v4f32, v4i32, f32, w, 4)
+
+#define MSA_INTERLEAVED_IMPL_LOAD4_STORE4_64(_Tp, _Tpv, _Tpvs, suffix) \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_ld4q_##suffix(const _Tp* ptr, _Tpv* a, _Tpv* b, _Tpv* c, _Tpv* d) \
+{ \
+  _Tpv v0 = msa_ld1q_##suffix(ptr); \
+  _Tpv v1 = msa_ld1q_##suffix(ptr + 2); \
+  _Tpv v2 = msa_ld1q_##suffix(ptr + 4); \
+  _Tpv v3 = msa_ld1q_##suffix(ptr + 6); \
+  *a = (_Tpv)__builtin_msa_ilvr_d((_Tpvs)v2, (_Tpvs)v0); \
+  *b = (_Tpv)__builtin_msa_ilvl_d((_Tpvs)v2, (_Tpvs)v0); \
+  *c = (_Tpv)__builtin_msa_ilvr_d((_Tpvs)v3, (_Tpvs)v1); \
+  *d = (_Tpv)__builtin_msa_ilvl_d((_Tpvs)v3, (_Tpvs)v1); \
+} \
+__extension__ extern __inline void \
+__attribute__ ((__always_inline__, __gnu_inline__, __artificial__)) \
+msa_st4q_##suffix(_Tp* ptr, const _Tpv a, const _Tpv b, const _Tpv c, const _Tpv d) \
+{ \
+  msa_st1q_##suffix(ptr, (_Tpv)__builtin_msa_ilvr_d((_Tpvs)b, (_Tpvs)a)); \
+  msa_st1q_##suffix(ptr + 2, (_Tpv)__builtin_msa_ilvr_d((_Tpvs)d, (_Tpvs)c)); \
+  msa_st1q_##suffix(ptr + 4, (_Tpv)__builtin_msa_ilvl_d((_Tpvs)b, (_Tpvs)a)); \
+  msa_st1q_##suffix(ptr + 6, (_Tpv)__builtin_msa_ilvl_d((_Tpvs)d, (_Tpvs)c)); \
+}
+
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4_64(uint64_t, v2u64, v2i64, u64)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4_64(int64_t, v2i64, v2i64, s64)
+MSA_INTERLEAVED_IMPL_LOAD4_STORE4_64(double, v2f64, v2i64, f64)
 
 __extension__ extern __inline v8i16
 __attribute__  ((__always_inline__, __gnu_inline__, __artificial__))
