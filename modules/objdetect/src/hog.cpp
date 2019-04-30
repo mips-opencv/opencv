@@ -599,7 +599,7 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
 
             _mm_storel_epi64((__m128i*)(qanglePtr + x2), it0);
         }
-#elif defined(CV_MSA)
+#elif CV_MSA
         v4f32 fhalf = msa_dupq_n_f32(0.5f), fone = msa_dupq_n_f32(1.0f);
         v4f32 _angleScale = msa_dupq_n_f32(angleScale);
         v4i32 _nbins = msa_dupq_n_s32(nbins), izero = msa_dupq_n_s32(0), ione = msa_dupq_n_s32(1);
