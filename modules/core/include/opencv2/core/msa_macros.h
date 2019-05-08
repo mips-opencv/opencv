@@ -763,7 +763,7 @@ msa_pmin_s32 (v2i32 a, v2i32 b)
 {
   return (v2i32){
     a[0]<a[1]? a[0]:a[1],
-    b[0]<a[1]? b[0]:b[1]
+    b[0]<b[1]? b[0]:b[1]
   };
 }
 
@@ -801,7 +801,7 @@ msa_pmin_u32 (v2u32 a, v2u32 b)
 {
   return (v2u32){
     a[0]<a[1]? a[0]:a[1],
-    b[0]<a[1]? b[0]:b[1]
+    b[0]<b[1]? b[0]:b[1]
   };
 }
 
@@ -811,7 +811,7 @@ msa_pmin_f32 (v2f32 a, v2f32 b)
 {
   return (v2f32){
     a[0]<a[1]? a[0]:a[1],
-    b[0]<a[1]? b[0]:b[1]
+    b[0]<b[1]? b[0]:b[1]
   };
 }
 
@@ -1524,19 +1524,6 @@ msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
 #define msa_ilvodq_s64        __builtin_msa_ilvod_d
 
 /* extq (r = (a || b); a concatenation b and get elements from index c) */
-#if 0
-#ifdef _MIPSEB
-#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b((v16i8){16-(c), 17-(c), 18-(c), 19-(c), 20-(c), 21-(c), 22-(c), 23-(c), 24-(c), 25-(c), 26-(c), 27-(c), 28-(c), 29-(c), 30-(c), 31-(c)}, a, b)
-#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h((v8i16){8-(c), 9-(c), 10-(c), 11-(c), 12-(c), 13-(c), 14-(c), 15-(c)}, a, b)
-#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w((v4i32){4-(c), 5-(c), 6-(c), 7-(c)}, a, b)
-#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d((v2i64){2-(c), 3-(c)}, a, b)
-#else
-#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b((v16i8){c, (c)+1, (c)+2, (c)+3, (c)+4, (c)+5, (c)+6, (c)+7, (c)+8, (c)+9, (c)+10, (c)+11, (c)+12, (c)+13, (c)+14, (c)+15}, b, a)
-#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h((v8i16){c, (c)+1, (c)+2, (c)+3, (c)+4, (c)+5, (c)+6, (c)+7}, b, a)
-#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w((v4i32){c, (c)+1, (c)+2, (c)+3}, b, a)
-#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d((v2i64){c, (c)+1}, b, a)
-#endif /* _MIPSEB */
-#else
 #ifdef _MIPSEB
 #define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b(__builtin_msa_subv_b((v16i8)((v2i64){0x1716151413121110, 0x1F1E1D1C1B1A1918}), __builtin_msa_fill_b(c)), a, b)
 #define msa_extq_s16(a, b, c) __builtin_msa_vshf_h(__builtin_msa_subv_h((v8i16)((v2i64){0x000B000A00090008, 0x000F000E000D000C}), __builtin_msa_fill_h(c)), a, b)
@@ -1548,7 +1535,6 @@ msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
 #define msa_extq_s32(a, b, c) __builtin_msa_vshf_w(__builtin_msa_addv_w((v4i32)((v2i64){0x0000000100000000, 0x0000000300000002}), __builtin_msa_fill_w(c)), b, a)
 #define msa_extq_s64(a, b, c) __builtin_msa_vshf_d(__builtin_msa_addv_d((v2i64){0x0000000000000000, 0x0000000000000001}, __builtin_msa_fill_d(c)), b, a)
 #endif /* _MIPSEB */
-#endif
 
 /* cvttruncq, cvttintq, cvtrintq */
 #define msa_cvttruncq_u32_f32 __builtin_msa_ftrunc_u_w
