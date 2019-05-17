@@ -928,32 +928,48 @@ OPENCV_HAL_IMPL_MSA_LOADSTORE_OP(v_float32x4, float, f32)
 OPENCV_HAL_IMPL_MSA_LOADSTORE_OP(v_float64x2, double, f64)
 #endif
 
-#define OPENCV_HAL_IMPL_MSA_REDUCE_OP_8(_Tpvec, _Tpnvec, scalartype, func, vectorfunc, suffix) \
-inline scalartype v_reduce_##func(const _Tpvec& a) \
+#define OPENCV_HAL_IMPL_MSA_REDUCE_OP_8U(func, cfunc) \
+inline unsigned short v_reduce_##func(const v_uint16x8& a) \
 { \
-    _Tpnvec a0 = msa_p##vectorfunc##_##suffix(msa_get_low_##suffix(a.val), msa_get_high_##suffix(a.val)); \
-    a0 = msa_p##vectorfunc##_##suffix(a0, a0); \
-    return (scalartype)msa_get_lane_##suffix(msa_p##vectorfunc##_##suffix(a0, a0),0); \
+    v8u16 a_lo, a_hi; \
+    ILVRL_H2_UH(a.val, msa_dupq_n_u16(0), a_lo, a_hi); \
+    v4u32 b = msa_##func##q_u32(msa_paddlq_u16(a_lo), msa_paddlq_u16(a_hi)); \
+    v4u32 b_lo, b_hi; \
+    ILVRL_W2_UW(b, msa_dupq_n_u32(0), b_lo, b_hi); \
+    v2u64 c = msa_##func##q_u64(msa_paddlq_u32(b_lo), msa_paddlq_u32(b_hi)); \
+    return (unsigned short)cfunc(c[0], c[1]); \
 }
 
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_8(v_uint16x8, v4u16, unsigned short, max, max, u16)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_8(v_uint16x8, v4u16, unsigned short, min, min, u16)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_8(v_int16x8, v4i16, short, max, max, s16)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_8(v_int16x8, v4i16, short, min, min, s16)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_8U(max, std::max)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_8U(min, std::min)
 
-#define OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(_Tpvec, _Tpnvec, scalartype, func, vectorfunc, suffix) \
-inline scalartype v_reduce_##func(const _Tpvec& a) \
+#define OPENCV_HAL_IMPL_MSA_REDUCE_OP_8S(func, cfunc) \
+inline short v_reduce_##func(const v_int16x8& a) \
 { \
-    _Tpnvec a0 = msa_p##vectorfunc##_##suffix(msa_get_low_##suffix(a.val), msa_get_high_##suffix(a.val)); \
-    return (scalartype)msa_get_lane_##suffix(msa_p##vectorfunc##_##suffix(a0, msa_get_high_##suffix(a.val)),0); \
+    v8i16 a_lo, a_hi; \
+    ILVRL_H2_SH(a.val, msa_dupq_n_s16(0), a_lo, a_hi); \
+    v4i32 b = msa_##func##q_s32(msa_paddlq_s16(a_lo), msa_paddlq_s16(a_hi)); \
+    v4i32 b_lo, b_hi; \
+    ILVRL_W2_SW(b, msa_dupq_n_s32(0), b_lo, b_hi); \
+    v2i64 c = msa_##func##q_s64(msa_paddlq_s32(b_lo), msa_paddlq_s32(b_hi)); \
+    return (short)cfunc(c[0], c[1]); \
 }
 
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_uint32x4, v2u32, unsigned, max, max, u32)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_uint32x4, v2u32, unsigned, min, min, u32)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_int32x4, v2i32, int, max, max, s32)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_int32x4, v2i32, int, min, min, s32)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, v2f32, float, max, max, f32)
-OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, v2f32, float, min, min, f32)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_8S(max, std::max)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_8S(min, std::min)
+
+#define OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(_Tpvec, scalartype, func, cfunc) \
+inline scalartype v_reduce_##func(const _Tpvec& a) \
+{ \
+    return (scalartype)cfunc(cfunc(a.val[0], a.val[1]), cfunc(a.val[2], a.val[3])); \
+}
+
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_uint32x4, unsigned, max, std::max)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_uint32x4, unsigned, min, std::min)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_int32x4, int, max, std::max)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_int32x4, int, min, std::min)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, float, max, std::max)
+OPENCV_HAL_IMPL_MSA_REDUCE_OP_4(v_float32x4, float, min, std::min)
 
 #define OPENCV_HAL_IMPL_MSA_REDUCE_SUM(_Tpvec, scalartype, suffix) \
 inline scalartype v_reduce_sum(const _Tpvec& a) \
