@@ -479,16 +479,19 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_getq_lane_s16(__a, imm0_7)   ((int16_t)__builtin_msa_copy_s_h(__a, imm0_7))
 #define msa_getq_lane_u32(__a, imm0_3)   __builtin_msa_copy_u_w((v4i32)(__a), imm0_3)
 #define msa_getq_lane_s32                __builtin_msa_copy_s_w
-#if (__mips == 64)
-#define msa_getq_lane_u64(__a, imm0_1)   __builtin_msa_copy_u_d((v2i64)(__a), imm0_1)
-#define msa_getq_lane_s64                __builtin_msa_copy_s_d
-#else
-#define msa_getq_lane_u64(__a, imm0_1)   ((uint64_t)(__a)[LANE_IMM0_1(imm0_1)])
-#define msa_getq_lane_s64(__a, imm0_1)   ((int64_t)(__a)[LANE_IMM0_1(imm0_1)])
-#endif
 
+#if (__mips == 64)
+#define msa_getq_lane_u64(__a, imm0_1)     __builtin_msa_copy_u_d((v2i64)(__a), imm0_1)
+#define msa_getq_lane_s64                __builtin_msa_copy_s_d
 /* combine */
 #define __COMBINE_64_64(__TYPE, a, b) ((__TYPE)((v2u64){((v1u64)(a))[0], ((v1u64)(b))[0]}))
+#else
+#define msa_getq_lane_u64(__a, imm0_1)     ((uint64_t)(__a)[LANE_IMM0_1(imm0_1)])
+#define msa_getq_lane_s64(__a, imm0_1)     ((int64_t)(__a)[LANE_IMM0_1(imm0_1)])
+/* combine */
+#define __COMBINE_64_64(__TYPE, a, b) ((__TYPE)((v4u32){((v2u32)(a))[0], ((v2u32)(a))[1],  \
+                                                  ((v2u32)(b))[0], ((v2u32)(b))[1]}))
+#endif
 
 /* v16i8 msa_combine_s8 (v8i8 __a, v8i8 __b) */
 #define msa_combine_s8(__a, __b)  __COMBINE_64_64(v16i8, __a, __b)
