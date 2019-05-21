@@ -441,6 +441,15 @@ FarnebackUpdateFlow_GaussianBlur( const Mat& _R0, const Mat& _R1,
         for( i = 0; i <= m; i++ )
             _mm_store_ps(simd_kernel + i*4, _mm_set1_ps(kernel[i]));
     }
+#elif CV_MSA
+    float* simd_kernel = alignPtr(kernel + m+1, 16);
+    volatile bool useSIMD = checkHardwareSupport(CV_CPU_MSA);
+    if( useSIMD )
+    {
+        for( i = 0; i <= m; i++ )
+            msa_st1q_f32(simd_kernel + i*4, msa_dupq_n_f32(kernel[i]));
+    }
+
 #endif
 
     // compute blur(G)*flow=blur(h)
@@ -507,6 +516,57 @@ FarnebackUpdateFlow_GaussianBlur( const Mat& _R0, const Mat& _R1,
                 _mm_store_ps(vsum + x, s0);
             }
         }
+#elif CV_MSA
+        if( useSIMD )
+        {
+            for( ; x <= width*5 - 16; x += 16 )
+            {
+                const float *sptr0 = srow[m], *sptr1;
+                v4f32 g4 = msa_ld1q_f32(simd_kernel);
+                v4f32 s0, s1, s2, s3;
+
+                s0 = msa_mulq_f32(msa_ld1q_f32(sptr0 + x), g4);
+                s1 = msa_mulq_f32(msa_ld1q_f32(sptr0 + x + 4), g4);
+                s2 = msa_mulq_f32(msa_ld1q_f32(sptr0 + x + 8), g4);
+                s3 = msa_mulq_f32(msa_ld1q_f32(sptr0 + x + 12), g4);
+
+                for( i = 1; i <= m; i++ )
+                {
+                    v4f32 x0, x1;
+                    sptr0 = srow[m+i], sptr1 = srow[m-i];
+                    g4 = msa_ld1q_f32(simd_kernel + i*4);
+                    x0 = msa_addq_f32(msa_ld1q_f32(sptr0 + x), msa_ld1q_f32(sptr1 + x));
+                    x1 = msa_addq_f32(msa_ld1q_f32(sptr0 + x + 4), msa_ld1q_f32(sptr1 + x + 4));
+                    s0 = msa_addq_f32(s0, msa_mulq_f32(x0, g4));
+                    s1 = msa_addq_f32(s1, msa_mulq_f32(x1, g4));
+                    x0 = msa_addq_f32(msa_ld1q_f32(sptr0 + x + 8), msa_ld1q_f32(sptr1 + x + 8));
+                    x1 = msa_addq_f32(msa_ld1q_f32(sptr0 + x + 12), msa_ld1q_f32(sptr1 + x + 12));
+                    s2 = msa_addq_f32(s2, msa_mulq_f32(x0, g4));
+                    s3 = msa_addq_f32(s3, msa_mulq_f32(x1, g4));
+                }
+
+                msa_st1q_f32(vsum + x, s0);
+                msa_st1q_f32(vsum + x + 4, s1);
+                msa_st1q_f32(vsum + x + 8, s2);
+                msa_st1q_f32(vsum + x + 12, s3);
+            }
+
+            for( ; x <= width*5 - 4; x += 4 )
+            {
+                const float *sptr0 = srow[m], *sptr1;
+                v4f32 g4 = msa_ld1q_f32(simd_kernel);
+                v4f32 s0 = msa_mulq_f32(msa_ld1q_f32(sptr0 + x), g4);
+
+                for( i = 1; i <= m; i++ )
+                {
+                    sptr0 = srow[m+i], sptr1 = srow[m-i];
+                    g4 = msa_ld1q_f32(simd_kernel + i*4);
+                    v4f32 x0 = msa_addq_f32(msa_ld1q_f32(sptr0 + x), msa_ld1q_f32(sptr1 + x));
+                    s0 = msa_addq_f32(s0, msa_mulq_f32(x0, g4));
+                }
+                msa_st1q_f32(vsum + x, s0);
+            }
+        }
 #endif
         for( ; x < width*5; x++ )
         {
@@ -547,6 +607,30 @@ FarnebackUpdateFlow_GaussianBlur( const Mat& _R0, const Mat& _R1,
 
                 _mm_store_ps(hsum + x, s0);
                 _mm_store_ps(hsum + x + 4, s1);
+            }
+        }
+#elif CV_MSA
+        if( useSIMD )
+        {
+            for( ; x <= width*5 - 8; x += 8 )
+            {
+                v4f32 g4 = msa_ld1q_f32(simd_kernel);
+                v4f32 s0 = msa_mulq_f32(msa_ld1q_f32(vsum + x), g4);
+                v4f32 s1 = msa_mulq_f32(msa_ld1q_f32(vsum + x + 4), g4);
+
+                for( i = 1; i <= m; i++ )
+                {
+                    g4 = msa_ld1q_f32(simd_kernel + i*4);
+                    v4f32 x0 = msa_addq_f32(msa_ld1q_f32(vsum + x - i*5),
+                                           msa_ld1q_f32(vsum + x + i*5));
+                    v4f32 x1 = msa_addq_f32(msa_ld1q_f32(vsum + x - i*5 + 4),
+                                           msa_ld1q_f32(vsum + x + i*5 + 4));
+                    s0 = msa_addq_f32(s0, msa_mulq_f32(x0, g4));
+                    s1 = msa_addq_f32(s1, msa_mulq_f32(x1, g4));
+                }
+
+                msa_st1q_f32(hsum + x, s0);
+                msa_st1q_f32(hsum + x + 4, s1);
             }
         }
 #endif
