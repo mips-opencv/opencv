@@ -4,6 +4,9 @@
 
 
 #include "precomp.hpp"
+#if defined(__mips_msa) && (__mips_isa_rev < 6)
+#include "opencv2/core/msa_macros.h"
+#endif
 
 namespace cv { namespace hal {
 
@@ -45,8 +48,38 @@ LUImpl(_Tp* A, size_t astep, int m, _Tp* b, size_t bstep, int n, _Tp eps)
         {
             _Tp alpha = A[j*astep + i]*d;
 
+
+#if defined(__mips_msa) && (__mips_isa_rev < 6)
+/*This is a workaround solution. If 'mmsa' option is uesed in compiling, gcc will
+  optimize the calculation 'A[j*astep + k] += alpha*A[i*astep + k]' with msa instruction
+  'fmadd'. This optimization will cause accuracy deviations comparing to the expected
+  results on mips32r5. This workround is added to avoid this compiler optimization by
+  explictly calling assembling msa intructions of fmul and fadd in this calculation.
+  This workaround can be recovered if the root cause is found in the future.
+*/
+            if(sizeof(_Tp) == 4)
+            {
+                v4f32 vAlpha = (v4f32){alpha,alpha,alpha,alpha};
+                for( k = i+1; k < m-4; k+=4 )
+                {
+                    v4f32 v1 = (v4f32)__msa_ld_w(&A[i*astep + k],0);
+                    v4f32 v2 = __msa_fmul_w(v1, vAlpha);
+                    v4f32 v3 = (v4f32)__msa_ld_w(&A[j*astep + k],0);
+                    v4f32 v4 = __msa_fadd_w(v2, v3);
+                    __msa_st_w((v4i32)v4, &A[j*astep + k], 0);
+                }
+                for( ; k < m; k++ )
+                    A[j*astep + k] += alpha*A[i*astep + k];
+            }
+            else
+            {
+                for( k = i+1; k < m; k++ )
+                    A[j*astep + k] += alpha*A[i*astep + k];
+            }
+#else
             for( k = i+1; k < m; k++ )
                 A[j*astep + k] += alpha*A[i*astep + k];
+#endif
 
             if( b )
                 for( k = 0; k < n; k++ )
