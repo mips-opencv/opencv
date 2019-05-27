@@ -5,7 +5,7 @@
 
 #include "precomp.hpp"
 #if defined(__mips_msa) && (__mips_isa_rev < 6)
-#include "opencv2/core/msa_macros.h"
+#include "msa.h"
 #endif
 
 namespace cv { namespace hal {
