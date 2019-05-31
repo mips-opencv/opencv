@@ -587,14 +587,871 @@ typedef MorphIVec<VMax16s> DilateVec16s;
 typedef MorphFVec<VMin32f> ErodeVec32f;
 typedef MorphFVec<VMax32f> DilateVec32f;
 
+#elif CV_MSA
+
+template<class VecUpdate> struct MorphRowVec8u
+{
+    MorphRowVec8u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar* src, uchar* dst, int width, int cn) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i, k, _ksize = ksize * cn;
+        width = (width & -4) * cn;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 16; i += 16 )
+        {
+            v16u8 s = msa_ld1q_u8(src + i);
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v16u8 x = msa_ld1q_u8(src + i + k);
+                s = updateOp(s, x);
+            }
+            msa_st1q_u8(dst + i, s);
+        }
+
+        for( ; i < width; i += 4 )
+        {
+            v16u8 s = msa_combine_u8((uint64)(*(const uint*)(src + i)), (uint64)0);
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v16u8 x = msa_combine_u8((uint64)(*(const uint*)(src + i + k)), (uint64)0);
+                s = updateOp(s, x);
+            }
+            *(uint*)(dst + i) = ((v4u32)s)[0];
+        }
+
+        return i;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphRowVec16u
+{
+    MorphRowVec16u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar* src, uchar* dst, int width, int cn) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        cn *= 2;
+        int i, k, _ksize = ksize * cn;
+        width = (width & -4) * cn;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 16; i += 16 )
+        {
+            v8u16 s = msa_ld1q_u16((const ushort*)(src + i));
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v8u16 x = msa_ld1q_u16((const ushort*)(src + i + k));
+                s = updateOp(s, x);
+            }
+            msa_st1q_u16((ushort*)(dst + i), s);
+        }
+
+        for( ; i < width; i += 4 )
+        {
+            v8u16 s = msa_combine_u16((uint64)(*(const uint*)(src + i)), (uint64)0);
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v8u16 x = msa_combine_u16((uint64)(*(const uint*)(src + i + k)), (uint64)0);
+                s = updateOp(s, x);
+            }
+            *(uint*)(dst + i) = ((v4u32)s)[0];
+        }
+
+        return i/2;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphRowVec16s
+{
+    MorphRowVec16s(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar* src, uchar* dst, int width, int cn) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        cn *= 2;
+        int i, k, _ksize = ksize * cn;
+        width = (width & -4) * cn;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 16; i += 16 )
+        {
+            v8i16 s = msa_ld1q_s16((const short*)(src + i));
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v8i16 x = msa_ld1q_s16((const short*)(src + i + k));
+                s = updateOp(s, x);
+            }
+            msa_st1q_s16((short*)(dst + i), s);
+        }
+
+        for( ; i < width; i += 4 )
+        {
+            v8i16 s = msa_combine_s16((uint64)(*(const int*)(src + i)), (uint64)0);
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v8i16 x = msa_combine_s16((uint64)(*(const int*)(src + i + k)), (uint64)0);
+                s = updateOp(s, x);
+            }
+            *(int*)(dst + i) = ((v4i32)s)[0];
+        }
+
+        return i/2;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphRowVec32f
+{
+    MorphRowVec32f(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar* src, uchar* dst, int width, int cn) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i, k, _ksize = ksize * cn;
+        width = (width & -4) * cn;
+        VecUpdate updateOp;
+
+        for( i = 0; i < width; i += 4 )
+        {
+            v4f32 s = msa_ld1q_f32((const float*)src + i);
+            for( k = cn; k < _ksize; k += cn )
+            {
+                v4f32 x = msa_ld1q_f32((const float*)src + i + k);
+                s = updateOp(s, x);
+            }
+            msa_st1q_f32((float*)dst + i, s);
+        }
+
+        return i;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphColumnVec8u
+{
+    MorphColumnVec8u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar** src, uchar* dst, int dststep, int count, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i = 0, k;
+        VecUpdate updateOp;
+
+        for( i = 0; i < count + ksize - 1; i++ )
+            CV_Assert( ((size_t)src[i] & 15) == 0 );
+
+        for( ; ksize > 1 && count > 1; count -= 2, dst += dststep*2, src += 2 )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[1] + i;
+                v16u8 s0 = msa_ld1q_u8(sptr);
+                v16u8 s1 = msa_ld1q_u8(sptr + 16);
+                v16u8 x0, x1;
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    x0 = msa_ld1q_u8(sptr);
+                    x1 = msa_ld1q_u8(sptr + 16);
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+
+                sptr = src[0] + i;
+                x0 = msa_ld1q_u8(sptr);
+                x1 = msa_ld1q_u8(sptr + 16);
+                msa_st1q_u8(dst + i, updateOp(s0, x0));
+                msa_st1q_u8(dst + i + 16, updateOp(s1, x1));
+
+                sptr = src[k] + i;
+                x0 = msa_ld1q_u8(sptr);
+                x1 = msa_ld1q_u8(sptr + 16);
+                msa_st1q_u8(dst + dststep + i, updateOp(s0, x0));
+                msa_st1q_u8(dst + dststep + i + 16, updateOp(s1, x1));
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v16u8 x0, s0 = msa_combine_u8(msa_ld1_u8(src[1] + i), (uint64)0);
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+
+                x0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+                msa_st1_u8(dst + i, msa_get_low_u8(updateOp(s0, x0)));
+
+                x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                msa_st1_u8(dst + dststep + i, msa_get_low_u8(updateOp(s0, x0)));
+            }
+        }
+
+        for( ; count > 0; count--, dst += dststep, src++ )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[0] + i;
+                v16u8 s0 = msa_ld1q_u8(sptr);
+                v16u8 s1 = msa_ld1q_u8(sptr + 16);
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    v16u8 x0 = msa_ld1q_u8(sptr);
+                    v16u8 x1 = msa_ld1q_u8(sptr + 16);
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+                msa_st1q_u8(dst + i, s0);
+                msa_st1q_u8(dst + i + 16, s1);
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v16u8 s0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+                msa_st1_u8(dst + i, msa_get_low_u8(s0));
+            }
+        }
+
+        return i;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphColumnVec16u
+{
+    MorphColumnVec16u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar** src, uchar* dst, int dststep, int count, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i = 0, k;
+        width *= 2;
+        VecUpdate updateOp;
+
+        for( i = 0; i < count + ksize - 1; i++ )
+            CV_Assert( ((size_t)src[i] & 15) == 0 );
+
+        for( ; ksize > 1 && count > 1; count -= 2, dst += dststep*2, src += 2 )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[1] + i;
+                v8u16 s0 = msa_ld1q_u16((const ushort*)sptr);
+                v8u16 s1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                v8u16 x0, x1;
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    x0 = msa_ld1q_u16((const ushort*)sptr);
+                    x1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+
+                sptr = src[0] + i;
+                x0 = msa_ld1q_u16((const ushort*)sptr);
+                x1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                msa_st1q_u16((ushort*)(dst + i), updateOp(s0, x0));
+                msa_st1q_u16((ushort*)(dst + i + 16), updateOp(s1, x1));
+
+                sptr = src[k] + i;
+                x0 = msa_ld1q_u16((const ushort*)sptr);
+                x1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                msa_st1q_u16((ushort*)(dst + dststep + i), updateOp(s0, x0));
+                msa_st1q_u16((ushort*)(dst + dststep + i + 16), updateOp(s1, x1));
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v8u16 x0, s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[1] + i)), (uint64)0);
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+
+                x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+                msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(updateOp(s0, x0)));
+
+                x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                msa_st1_u16((ushort*)(dst + dststep + i), msa_get_low_u16(updateOp(s0, x0)));
+            }
+        }
+
+        for( ; count > 0; count--, dst += dststep, src++ )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[0] + i;
+                v8u16 s0 = msa_ld1q_u16((const ushort*)sptr);
+                v8u16 s1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    v8u16 x0 = msa_ld1q_u16((const ushort*)sptr);
+                    v8u16 x1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+                msa_st1q_u16((ushort*)(dst + i), s0);
+                msa_st1q_u16((ushort*)(dst + i + 16), s1);
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v8u16 s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+                msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(s0));
+            }
+        }
+
+        return i/2;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphColumnVec16s
+{
+    MorphColumnVec16s(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar** src, uchar* dst, int dststep, int count, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i = 0, k;
+        width *= 2;
+        VecUpdate updateOp;
+
+        for( i = 0; i < count + ksize - 1; i++ )
+            CV_Assert( ((size_t)src[i] & 15) == 0 );
+
+        for( ; ksize > 1 && count > 1; count -= 2, dst += dststep*2, src += 2 )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[1] + i;
+                v8i16 s0 = msa_ld1q_s16((const short*)sptr);
+                v8i16 s1 = msa_ld1q_s16((const short*)(sptr + 16));
+                v8i16 x0, x1;
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    x0 = msa_ld1q_s16((const short*)sptr);
+                    x1 = msa_ld1q_s16((const short*)(sptr + 16));
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+
+                sptr = src[0] + i;
+                x0 = msa_ld1q_s16((const short*)sptr);
+                x1 = msa_ld1q_s16((const short*)(sptr + 16));
+                msa_st1q_s16((short*)(dst + i), updateOp(s0, x0));
+                msa_st1q_s16((short*)(dst + i + 16), updateOp(s1, x1));
+
+                sptr = src[k] + i;
+                x0 = msa_ld1q_s16((const short*)sptr);
+                x1 = msa_ld1q_s16((const short*)(sptr + 16));
+                msa_st1q_s16((short*)(dst + dststep + i), updateOp(s0, x0));
+                msa_st1q_s16((short*)(dst + dststep + i + 16), updateOp(s1, x1));
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v8i16 x0, s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[1] + i)), (uint64)0);
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+
+                x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+                msa_st1_s16((short*)(dst + i), msa_get_low_s16(updateOp(s0, x0)));
+
+                x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                msa_st1_s16((short*)(dst + dststep + i), msa_get_low_s16(updateOp(s0, x0)));
+            }
+        }
+
+        for( ; count > 0; count--, dst += dststep, src++ )
+        {
+            for( i = 0; i <= width - 32; i += 32 )
+            {
+                const uchar* sptr = src[0] + i;
+                v8i16 s0 = msa_ld1q_s16((const short*)sptr);
+                v8i16 s1 = msa_ld1q_s16((const short*)(sptr + 16));
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    v8i16 x0 = msa_ld1q_s16((const short*)sptr);
+                    v8i16 x1 = msa_ld1q_s16((const short*)(sptr + 16));
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                }
+                msa_st1q_s16((short*)(dst + i), s0);
+                msa_st1q_s16((short*)(dst + i + 16), s1);
+            }
+
+            for( ; i <= width - 8; i += 8 )
+            {
+                v8i16 s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                    s0 = updateOp(s0, x0);
+                }
+                msa_st1_s16((short*)(dst + i), msa_get_low_s16(s0));
+            }
+        }
+
+        return i/2;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphColumnVec32f
+{
+    MorphColumnVec32f(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
+    int operator()(const uchar** _src, uchar* _dst, int dststep, int count, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i = 0, k;
+        VecUpdate updateOp;
+
+        for( i = 0; i < count + ksize - 1; i++ )
+            CV_Assert( ((size_t)_src[i] & 15) == 0 );
+
+        const float** src = (const float**)_src;
+        float* dst = (float*)_dst;
+        dststep /= sizeof(dst[0]);
+
+        for( ; ksize > 1 && count > 1; count -= 2, dst += dststep*2, src += 2 )
+        {
+            for( i = 0; i <= width - 16; i += 16 )
+            {
+                const float* sptr = src[1] + i;
+                v4f32 s0 = msa_ld1q_f32(sptr);
+                v4f32 s1 = msa_ld1q_f32(sptr + 4);
+                v4f32 s2 = msa_ld1q_f32(sptr + 8);
+                v4f32 s3 = msa_ld1q_f32(sptr + 12);
+                v4f32 x0, x1, x2, x3;
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    x0 = msa_ld1q_f32(sptr);
+                    x1 = msa_ld1q_f32(sptr + 4);
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                    x2 = msa_ld1q_f32(sptr + 8);
+                    x3 = msa_ld1q_f32(sptr + 12);
+                    s2 = updateOp(s2, x2);
+                    s3 = updateOp(s3, x3);
+                }
+
+                sptr = src[0] + i;
+                x0 = msa_ld1q_f32(sptr);
+                x1 = msa_ld1q_f32(sptr + 4);
+                x2 = msa_ld1q_f32(sptr + 8);
+                x3 = msa_ld1q_f32(sptr + 12);
+                msa_st1q_f32(dst + i, updateOp(s0, x0));
+                msa_st1q_f32(dst + i + 4, updateOp(s1, x1));
+                msa_st1q_f32(dst + i + 8, updateOp(s2, x2));
+                msa_st1q_f32(dst + i + 12, updateOp(s3, x3));
+
+                sptr = src[k] + i;
+                x0 = msa_ld1q_f32(sptr);
+                x1 = msa_ld1q_f32(sptr + 4);
+                x2 = msa_ld1q_f32(sptr + 8);
+                x3 = msa_ld1q_f32(sptr + 12);
+                msa_st1q_f32(dst + dststep + i, updateOp(s0, x0));
+                msa_st1q_f32(dst + dststep + i + 4, updateOp(s1, x1));
+                msa_st1q_f32(dst + dststep + i + 8, updateOp(s2, x2));
+                msa_st1q_f32(dst + dststep + i + 12, updateOp(s3, x3));
+            }
+
+            for( ; i <= width - 4; i += 4 )
+            {
+                v4f32 x0, s0 = msa_ld1q_f32(src[1] + i);
+
+                for( k = 2; k < ksize; k++ )
+                {
+                    x0 = msa_ld1q_f32(src[k] + i);
+                    s0 = updateOp(s0, x0);
+                }
+
+                x0 = msa_ld1q_f32(src[0] + i);
+                msa_st1q_f32(dst + i, updateOp(s0, x0));
+                x0 = msa_ld1q_f32(src[k] + i);
+                msa_st1q_f32(dst + dststep + i, updateOp(s0, x0));
+            }
+        }
+
+        for( ; count > 0; count--, dst += dststep, src++ )
+        {
+            for( i = 0; i <= width - 16; i += 16 )
+            {
+                const float* sptr = src[0] + i;
+                v4f32 s0 = msa_ld1q_f32(sptr);
+                v4f32 s1 = msa_ld1q_f32(sptr + 4);
+                v4f32 s2 = msa_ld1q_f32(sptr + 8);
+                v4f32 s3 = msa_ld1q_f32(sptr + 12);
+
+                for( k = 1; k < ksize; k++ )
+                {
+                    sptr = src[k] + i;
+                    v4f32 x0 = msa_ld1q_f32(sptr);
+                    v4f32 x1 = msa_ld1q_f32(sptr + 4);
+                    s0 = updateOp(s0, x0);
+                    s1 = updateOp(s1, x1);
+                    v4f32 x2 = msa_ld1q_f32(sptr + 8);
+                    v4f32 x3 = msa_ld1q_f32(sptr + 12);
+                    s2 = updateOp(s2, x2);
+                    s3 = updateOp(s3, x3);
+                }
+                msa_st1q_f32(dst + i, s0);
+                msa_st1q_f32(dst + i + 4, s1);
+                msa_st1q_f32(dst + i + 8, s2);
+                msa_st1q_f32(dst + i + 12, s3);
+            }
+
+            for( i = 0; i <= width - 4; i += 4 )
+            {
+                v4f32 s0 = msa_ld1q_f32(src[0] + i);
+                for( k = 1; k < ksize; k++ )
+                {
+                    v4f32 x0 = msa_ld1q_f32(src[k] + i);
+                    s0 = updateOp(s0, x0);
+                }
+                msa_st1q_f32(dst + i, s0);
+            }
+        }
+
+        return i;
+    }
+
+    int ksize, anchor;
+};
+
+template<class VecUpdate> struct MorphVec8u
+{
+    int operator()(uchar** src, int nz, uchar* dst, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i, k;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 32; i += 32 )
+        {
+            const uchar* sptr = src[0] + i;
+            v16u8 s0 = msa_ld1q_u8(sptr);
+            v16u8 s1 = msa_ld1q_u8(sptr + 16);
+
+            for( k = 1; k < nz; k++ )
+            {
+                sptr = src[k] + i;
+                v16u8 x0 = msa_ld1q_u8(sptr);
+                v16u8 x1 = msa_ld1q_u8(sptr + 16);
+                s0 = updateOp(s0, x0);
+                s1 = updateOp(s1, x1);
+            }
+            msa_st1q_u8(dst + i, s0);
+            msa_st1q_u8(dst + i + 16, s1);
+        }
+
+        for( ; i <= width - 8; i += 8 )
+        {
+            v16u8 s0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+
+            for( k = 1; k < nz; k++ )
+            {
+                v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                s0 = updateOp(s0, x0);
+            }
+            msa_st1_u8(dst + i, msa_get_low_u8(s0));
+        }
+
+        return i;
+    }
+};
+
+template<class VecUpdate> struct MorphVec16u
+{
+    int operator()(uchar** src, int nz, uchar* dst, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i, k;
+        width *= 2;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 32; i += 32 )
+        {
+            const uchar* sptr = src[0] + i;
+            v8u16 s0 = msa_ld1q_u16((const ushort*)sptr);
+            v8u16 s1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+
+            for( k = 1; k < nz; k++ )
+            {
+                sptr = src[k] + i;
+                v8u16 x0 = msa_ld1q_u16((const ushort*)sptr);
+                v8u16 x1 = msa_ld1q_u16((const ushort*)(sptr + 16));
+                s0 = updateOp(s0, x0);
+                s1 = updateOp(s1, x1);
+            }
+            msa_st1q_u16((ushort*)(dst + i), s0);
+            msa_st1q_u16((ushort*)(dst + i + 16), s1);
+        }
+
+        for( ; i <= width - 8; i += 8 )
+        {
+            v8u16 s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+
+            for( k = 1; k < nz; k++ )
+            {
+                v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                s0 = updateOp(s0, x0);
+            }
+            msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(s0));
+        }
+
+        return i/2;
+    }
+};
+
+template<class VecUpdate> struct MorphVec16s
+{
+    int operator()(uchar** src, int nz, uchar* dst, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        int i, k;
+        width *= 2;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 32; i += 32 )
+        {
+            const uchar* sptr = src[0] + i;
+            v8i16 s0 = msa_ld1q_s16((const short*)sptr);
+            v8i16 s1 = msa_ld1q_s16((const short*)(sptr + 16));
+
+            for( k = 1; k < nz; k++ )
+            {
+                sptr = src[k] + i;
+                v8i16 x0 = msa_ld1q_s16((const short*)sptr);
+                v8i16 x1 = msa_ld1q_s16((const short*)(sptr + 16));
+                s0 = updateOp(s0, x0);
+                s1 = updateOp(s1, x1);
+            }
+            msa_st1q_s16((short*)(dst + i), s0);
+            msa_st1q_s16((short*)(dst + i + 16), s1);
+        }
+
+        for( ; i <= width - 8; i += 8 )
+        {
+            v8i16 s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+
+            for( k = 1; k < nz; k++ )
+            {
+                v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                s0 = updateOp(s0, x0);
+            }
+            msa_st1_s16((short*)(dst + i), msa_get_low_s16(s0));
+        }
+
+        return i/2;
+    }
+};
+
+template<class VecUpdate> struct MorphVec32f
+{
+    int operator()(uchar** _src, int nz, uchar* _dst, int width) const
+    {
+        if( !checkHardwareSupport(CV_CPU_MSA) )
+            return 0;
+
+        const float** src = (const float**)_src;
+        float* dst = (float*)_dst;
+        int i, k;
+        VecUpdate updateOp;
+
+        for( i = 0; i <= width - 16; i += 16 )
+        {
+            const float* sptr = src[0] + i;
+            v4f32 s0 = msa_ld1q_f32(sptr);
+            v4f32 s1 = msa_ld1q_f32(sptr + 4);
+            v4f32 s2 = msa_ld1q_f32(sptr + 8);
+            v4f32 s3 = msa_ld1q_f32(sptr + 12);
+
+            for( k = 1; k < nz; k++ )
+            {
+                sptr = src[k] + i;
+                v4f32 x0 = msa_ld1q_f32(sptr);
+                v4f32 x1 = msa_ld1q_f32(sptr + 4);
+                v4f32 x2 = msa_ld1q_f32(sptr + 8);
+                v4f32 x3 = msa_ld1q_f32(sptr + 12);
+                s0 = updateOp(s0, x0);
+                s1 = updateOp(s1, x1);
+                s2 = updateOp(s2, x2);
+                s3 = updateOp(s3, x3);
+            }
+            msa_st1q_f32(dst + i, s0);
+            msa_st1q_f32(dst + i + 4, s1);
+            msa_st1q_f32(dst + i + 8, s2);
+            msa_st1q_f32(dst + i + 12, s3);
+        }
+
+        for( ; i <= width - 4; i += 4 )
+        {
+            v4f32 s0 = msa_ld1q_f32(src[0] + i);
+
+            for( k = 1; k < nz; k++ )
+            {
+                v4f32 x0 = msa_ld1q_f32(src[k] + i);
+                s0 = updateOp(s0, x0);
+            }
+            msa_st1q_f32(dst + i, s0);
+        }
+
+        for( ; i < width; i++ )
+        {
+            v4f32 s0 = msa_dupq_n_f32(*(src[0] + i));
+            for( k = 1; k < nz; k++ )
+            {
+                v4f32 x0 = msa_dupq_n_f32(*(src[k] + i));
+                s0 = updateOp(s0, x0);
+            }
+            *(dst + i) = s0[0];
+        }
+
+        return i;
+    }
+};
+
+struct VMin8u
+{
+    v16u8 operator()(const v16u8& a, const v16u8& b) const
+    { return msa_minq_u8(a, b); }
+};
+
+struct VMax8u
+{
+    v16u8 operator()(const v16u8& a, const v16u8& b) const
+    { return msa_maxq_u8(a, b); }
+};
+
+struct VMin16u
+{
+    v8u16 operator()(const v8u16& a, const v8u16& b) const
+    { return msa_minq_u16(a, b); }
+};
+
+struct VMax16u
+{
+    v8u16 operator()(const v8u16& a, const v8u16& b) const
+    { return msa_maxq_u16(a, b); }
+};
+
+struct VMin16s
+{
+    v8i16 operator()(const v8i16& a, const v8i16& b) const
+    { return msa_minq_s16(a, b); }
+};
+
+struct VMax16s
+{
+    v8i16 operator()(const v8i16& a, const v8i16& b) const
+    { return msa_maxq_s16(a, b); }
+};
+
+struct VMin32f
+{
+    v4f32 operator()(const v4f32& a, const v4f32& b) const
+    { return msa_minq_f32(a, b); }
+};
+
+struct VMax32f
+{
+    v4f32 operator()(const v4f32& a, const v4f32& b) const
+    { return msa_maxq_f32(a, b); }
+};
+
+typedef MorphRowVec8u<VMin8u> ErodeRowVec8u;
+typedef MorphRowVec8u<VMax8u> DilateRowVec8u;
+typedef MorphRowVec16u<VMin16u> ErodeRowVec16u;
+typedef MorphRowVec16u<VMax16u> DilateRowVec16u;
+typedef MorphRowVec16s<VMin16s> ErodeRowVec16s;
+typedef MorphRowVec16s<VMax16s> DilateRowVec16s;
+typedef MorphRowVec32f<VMin32f> ErodeRowVec32f;
+typedef MorphRowVec32f<VMax32f> DilateRowVec32f;
+
+typedef MorphColumnVec8u<VMin8u> ErodeColumnVec8u;
+typedef MorphColumnVec8u<VMax8u> DilateColumnVec8u;
+typedef MorphColumnVec16u<VMin16u> ErodeColumnVec16u;
+typedef MorphColumnVec16u<VMax16u> DilateColumnVec16u;
+typedef MorphColumnVec16s<VMin16s> ErodeColumnVec16s;
+typedef MorphColumnVec16s<VMax16s> DilateColumnVec16s;
+typedef MorphColumnVec32f<VMin32f> ErodeColumnVec32f;
+typedef MorphColumnVec32f<VMax32f> DilateColumnVec32f;
+
+typedef MorphVec8u<VMin8u> ErodeVec8u;
+typedef MorphVec8u<VMax8u> DilateVec8u;
+typedef MorphVec16u<VMin16u> ErodeVec16u;
+typedef MorphVec16u<VMax16u> DilateVec16u;
+typedef MorphVec16s<VMin16s> ErodeVec16s;
+typedef MorphVec16s<VMax16s> DilateVec16s;
+typedef MorphVec32f<VMin32f> ErodeVec32f;
+typedef MorphVec32f<VMax32f> DilateVec32f;
+
 #else
 
 typedef MorphRowNoVec ErodeRowVec8u;
 typedef MorphRowNoVec DilateRowVec8u;
-
-typedef MorphColumnNoVec ErodeColumnVec8u;
-typedef MorphColumnNoVec DilateColumnVec8u;
-
 typedef MorphRowNoVec ErodeRowVec16u;
 typedef MorphRowNoVec DilateRowVec16u;
 typedef MorphRowNoVec ErodeRowVec16s;
@@ -602,6 +1459,8 @@ typedef MorphRowNoVec DilateRowVec16s;
 typedef MorphRowNoVec ErodeRowVec32f;
 typedef MorphRowNoVec DilateRowVec32f;
 
+typedef MorphColumnNoVec ErodeColumnVec8u;
+typedef MorphColumnNoVec DilateColumnVec8u;
 typedef MorphColumnNoVec ErodeColumnVec16u;
 typedef MorphColumnNoVec DilateColumnVec16u;
 typedef MorphColumnNoVec ErodeColumnVec16s;

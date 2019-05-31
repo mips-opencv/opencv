@@ -490,18 +490,18 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
                 T p32 = imgPtr + xmap[x+4], p30 = p12;
 
                 v4f32 _dx0 = msa_subq_f32(msa_setq_f32(lut[p02[0]], lut[p12[0]], lut[p22[0]], lut[p32[0]]),
-                                             msa_setq_f32(lut[p00[0]], lut[p10[0]], lut[p20[0]], lut[p30[0]]));
+                                          msa_setq_f32(lut[p00[0]], lut[p10[0]], lut[p20[0]], lut[p30[0]]));
                 v4f32 _dx1 = msa_subq_f32(msa_setq_f32(lut[p02[1]], lut[p12[1]], lut[p22[1]], lut[p32[1]]),
-                                             msa_setq_f32(lut[p00[1]], lut[p10[1]], lut[p20[1]], lut[p30[1]]));
+                                          msa_setq_f32(lut[p00[1]], lut[p10[1]], lut[p20[1]], lut[p30[1]]));
                 v4f32 _dx2 = msa_subq_f32(msa_setq_f32(lut[p02[2]], lut[p12[2]], lut[p22[2]], lut[p32[2]]),
-                                             msa_setq_f32(lut[p00[2]], lut[p10[2]], lut[p20[2]], lut[p30[2]]));
+                                          msa_setq_f32(lut[p00[2]], lut[p10[2]], lut[p20[2]], lut[p30[2]]));
 
                 v4f32 _dy0 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0]], lut[nextPtr[x1]], lut[nextPtr[x2]], lut[nextPtr[x3]]),
-                                             msa_setq_f32(lut[prevPtr[x0]], lut[prevPtr[x1]], lut[prevPtr[x2]], lut[prevPtr[x3]]));
+                                          msa_setq_f32(lut[prevPtr[x0]], lut[prevPtr[x1]], lut[prevPtr[x2]], lut[prevPtr[x3]]));
                 v4f32 _dy1 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0+1]], lut[nextPtr[x1+1]], lut[nextPtr[x2+1]], lut[nextPtr[x3+1]]),
-                                             msa_setq_f32(lut[prevPtr[x0+1]], lut[prevPtr[x1+1]], lut[prevPtr[x2+1]], lut[prevPtr[x3+1]]));
+                                          msa_setq_f32(lut[prevPtr[x0+1]], lut[prevPtr[x1+1]], lut[prevPtr[x2+1]], lut[prevPtr[x3+1]]));
                 v4f32 _dy2 = msa_subq_f32(msa_setq_f32(lut[nextPtr[x0+2]], lut[nextPtr[x1+2]], lut[nextPtr[x2+2]], lut[nextPtr[x3+2]]),
-                                             msa_setq_f32(lut[prevPtr[x0+2]], lut[prevPtr[x1+2]], lut[prevPtr[x2+2]], lut[prevPtr[x3+2]]));
+                                          msa_setq_f32(lut[prevPtr[x0+2]], lut[prevPtr[x1+2]], lut[prevPtr[x2+2]], lut[prevPtr[x3+2]]));
 
                 v4f32 _mag0 = msa_addq_f32(msa_mulq_f32(_dx0, _dx0), msa_mulq_f32(_dy0, _dy0));
                 v4f32 _mag1 = msa_addq_f32(msa_mulq_f32(_dx1, _dx1), msa_mulq_f32(_dy1, _dy1));
@@ -620,8 +620,8 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
             ft0 = msa_mulq_f32(_mag, msa_subq_f32(fone, _angle));
             ft1 = msa_mulq_f32(_mag, _angle);
 
-            msa_st1q_f32((gradPtr + x2), msa_ilvr_f32(ft1, ft0));
-            msa_st1q_f32((gradPtr + x2 + 4), msa_ilvl_f32(ft1, ft0));
+            msa_st1q_f32((gradPtr + x2), msa_ilvrq_s32((v4i32)ft1, (v4i32)ft0));
+            msa_st1q_f32((gradPtr + x2 + 4), msa_ilvlq_s32((v4i32)ft1, (v4i32)ft0));
 
             _hidx = msa_addq_s32(_hidx, msa_andq_s32(_nbins,(v4i32)msa_cltq_s32(_hidx, izero)));
             _hidx = msa_subq_s32(_hidx, msa_andq_s32(_nbins,(v4i32)msa_cgeq_s32(_hidx, _nbins)));
@@ -631,7 +631,7 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
             _hidx = msa_addq_s32(ione, _hidx);
             _hidx = msa_andq_s32(_hidx, (v4i32)msa_cltq_s32(_hidx, _nbins));
             ub1 = msa_combine_s16(msa_qmovn_s32(_hidx), msa_qmovn_s32(izero));
-            msa_st1_u8((qanglePtr + x2), msa_qmovun_s16(__msa_ilvr_h(ub1, ub0)));
+            msa_st1_u8((qanglePtr + x2), msa_qmovun_s16(msa_ilvrq_s16(ub1, ub0)));
         }
 #endif
         for( ; x < width; x++ )
@@ -1243,14 +1243,13 @@ const float* HOGCache::getBlock(Point pt, float* buf)
         v4f32 _w = msa_mulq_f32(msa_dupq_n_f32(pk.gradWeight), msa_ld1q_f32(pk.histWeights));
 
         v4f32 _h0 = msa_setq_f32((blockHist + pk.histOfs[0])[h0],
-                                    (blockHist + pk.histOfs[1])[h0],
-                                    (blockHist + pk.histOfs[2])[h0],
-                                    (blockHist + pk.histOfs[3])[h0]);
+                                 (blockHist + pk.histOfs[1])[h0],
+                                 (blockHist + pk.histOfs[2])[h0],
+                                 (blockHist + pk.histOfs[3])[h0]);
         v4f32 _h1 = msa_setq_f32((blockHist + pk.histOfs[0])[h1],
-                                    (blockHist + pk.histOfs[1])[h1],
-                                    (blockHist + pk.histOfs[2])[h1],
-                                    (blockHist + pk.histOfs[3])[h1]);
-
+                                 (blockHist + pk.histOfs[1])[h1],
+                                 (blockHist + pk.histOfs[2])[h1],
+                                 (blockHist + pk.histOfs[3])[h1]);
 
         v4f32 _t0 = msa_mlaq_f32(_h0, _a0, _w), _t1 = msa_mlaq_f32(_h1, _a1, _w);
         msa_st1q_f32(hist0, _t0);
@@ -3852,7 +3851,7 @@ void HOGDescriptor::detectROI(InputArray _img, const std::vector<cv::Point> &loc
 #else
             for( k = 0; k <= blockHistogramSize - 4; k += 4 )
                 s += vec[k]*svmVec[k] + vec[k+1]*svmVec[k+1] +
-                        vec[k+2]*svmVec[k+2] + vec[k+3]*svmVec[k+3];
+                     vec[k+2]*svmVec[k+2] + vec[k+3]*svmVec[k+3];
 #endif
             for( ; k < blockHistogramSize; k++ )
                 s += vec[k]*svmVec[k];
