@@ -84,12 +84,11 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
             if (no_msa)
                return;
          }
-#ifdef PNG_MIPS_MSA_API_SUPPORTED
-         break;
-#endif
 #endif /* PNG_MIPS_MSA_CHECK_SUPPORTED */
 
 #ifdef PNG_MIPS_MSA_API_SUPPORTED
+         break;
+
       default: /* OFF or INVALID */
          return;
 
@@ -97,8 +96,9 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
          /* Option turned on */
          break;
    }
-#endif
+#endif /* PNG_MIPS_MSA_API_SUPPORTED */
 
+#ifdef PNG_MIPS_MSA_API_SUPPORTED
    /* IMPORTANT: any new external functions used here must be declared using
     * PNG_INTERNAL_FUNCTION in ../pngpriv.h.  This is required so that the
     * 'prefix' option to configure works:
@@ -125,6 +125,7 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
       pp->read_filter[PNG_FILTER_VALUE_AVG-1] = png_read_filter_row_avg4_msa;
       pp->read_filter[PNG_FILTER_VALUE_PAETH-1] = png_read_filter_row_paeth4_msa;
    }
+#endif /* PNG_MIPS_MSA_API_SUPPORTED */
 }
 #endif /* PNG_MIPS_MSA_OPT > 0 */
 #endif /* READ */
