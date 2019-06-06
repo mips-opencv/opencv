@@ -419,21 +419,21 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
             for( ; x <= winSize.width*cn - 8; x += 8, dsrc += 8*2, dIptr += 8*2 )
             {
                 v16u8 d0 = msa_ld1q_u8(&src[x]);
-                v16u8 d2 = msa_ld1q_u8(&src[x+cn]);
+                v16u8 d2 = msa_ld1q_u8(&src[x + cn]);
                 v16u8 d4 = msa_ld1q_u8(&src[x + stepI]);
                 v16u8 d6 = msa_ld1q_u8(&src[x + stepI + cn]);
 
-                /*Extract the low half and expand from v16u8 to v8u16*/
+                /* Extract the low half and expand from v16u8 to v8u16 */
                 v8u16 q0 = msa_paddlq_u8((v16u8)msa_ilvrq_s8((v16i8)d0, (v16i8)vzero));
                 v8u16 q1 = msa_paddlq_u8((v16u8)msa_ilvrq_s8((v16i8)d2, (v16i8)vzero));
                 v8u16 q2 = msa_paddlq_u8((v16u8)msa_ilvrq_s8((v16i8)d4, (v16i8)vzero));
                 v8u16 q3 = msa_paddlq_u8((v16u8)msa_ilvrq_s8((v16i8)d6, (v16i8)vzero));
 
-                /*Processing first low quarter for d0 d2*/
+                /* Processing first low quarter for d0 d2 */
                 v4i32 q5 = msa_mulq_s32(msa_paddlq_s16(msa_ilvrq_s16((v8i16)q0, (v8i16)vzero)), d26);
                 v4i32 q6 = msa_mulq_s32(msa_paddlq_s16(msa_ilvrq_s16((v8i16)q1, (v8i16)vzero)), d27);
 
-                /* Processing first low quarter for d4 d6*/
+                /* Processing first low quarter for d4 d6 */
                 v4i32 q7 = msa_mulq_s32(msa_paddlq_s16(msa_ilvrq_s16((v8i16)q2, (v8i16)vzero)), d28);
                 v4i32 q8 = msa_mulq_s32(msa_paddlq_s16(msa_ilvrq_s16((v8i16)q3, (v8i16)vzero)), d29);
 
@@ -441,14 +441,13 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
                 q7 = msa_addq_s32(q7, q8);
                 q5 = msa_addq_s32(q5, q7);
 
-                q5 = msa_qrshrq_s32(q5, q11);
-                v4i16 nd0_0 = msa_movn_s32(q5);
+                v4i32 q5_0 = msa_qrshrq_s32(q5, q11);
 
-                /*Processing second low quarter for d0 d2*/
+                /* Processing second low quarter for d0 d2 */
                 q5 = msa_mulq_s32(msa_paddlq_s16(msa_ilvlq_s16((v8i16)q0, (v8i16)vzero)), d26);
                 q6 = msa_mulq_s32(msa_paddlq_s16(msa_ilvlq_s16((v8i16)q1, (v8i16)vzero)), d27);
 
-                /* Processing second low quarter for d4 d6*/
+                /* Processing second low quarter for d4 d6 */
                 q7 = msa_mulq_s32(msa_paddlq_s16(msa_ilvlq_s16((v8i16)q2, (v8i16)vzero)), d28);
                 q8 = msa_mulq_s32(msa_paddlq_s16(msa_ilvlq_s16((v8i16)q3, (v8i16)vzero)), d29);
 
@@ -457,19 +456,15 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
                 q5 = msa_addq_s32(q5, q7);
 
                 q5 = msa_qrshrq_s32(q5, q11);
-                v4i16 nd0_1 = msa_movn_s32(q5);
 
-                /* store (v4i16)ival[0:7] to Iptr */
-                msa_st1q_s16(&Iptr[x], msa_combine_s16(nd0_0, nd0_1));
+                /* Store (v4i16)ival[0:7] to Iptr */
+                msa_st1q_s16(&Iptr[x], msa_pack_s32(q5_0, q5));
 
-                v8i16 d0d1[2];
-                v8i16 d2d3[2];
-                v8i16 d4d5[2];
-                v8i16 d6d7[2];
+                v8i16 d0d1[2], d2d3[2], d4d5[2], d6d7[2];
                 msa_ld2q_s16(dsrc, &d0d1[0], &d0d1[1]);
                 msa_ld2q_s16(&dsrc[cn2], &d2d3[0], &d2d3[1]);
                 msa_ld2q_s16(&dsrc[dstep], &d4d5[0], &d4d5[1]);
-                msa_ld2q_s16(&dsrc[dstep+cn2], &d6d7[0], &d6d7[1]);
+                msa_ld2q_s16(&dsrc[dstep + cn2], &d6d7[0], &d6d7[1]);
 
                 /* Processing low half for d0d1 d2d3 */
                 v4i32 q4 = msa_mulq_s32(msa_paddlq_s16(msa_ilvrq_s16((v8i16)d0d1[0], (v8i16)vzero)), d26);
@@ -489,10 +484,8 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
 
                 q4 = msa_addq_s32(q4, q7);
                 q6 = msa_addq_s32(q6, q14);
-                q4 = msa_qrshrq_s32(q4, q12);
-                q6 = msa_qrshrq_s32(q6, q12);
-                v4i16 d8_0 = msa_movn_s32(q4);
-                v4i16 d12_0 = msa_movn_s32(q6);
+                v4i32 q4_0 = q4 = msa_qrshrq_s32(q4, q12);
+                v4i32 q6_0 = q6 = msa_qrshrq_s32(q6, q12);
 
                 /*
                   iA11 += (itemtype)(ixval*ixval);
@@ -529,11 +522,9 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
                 q6 = msa_addq_s32(q6, q14);
                 q4 = msa_qrshrq_s32(q4, q12);
                 q6 = msa_qrshrq_s32(q6, q12);
-                v4i16 d8_1 = msa_movn_s32(q4);
-                v4i16 d12_1 = msa_movn_s32(q6);
 
-                /*store (v8i16)(ixval[0] iyval[0] ixval[1] iyval[1] ...) to dIptr*/
-                msa_st2q_s16(dIptr, msa_combine_s16(d8_0, d8_1), msa_combine_s16(d12_0, d12_1));
+                /* Store (v8i16)(ixval[0] iyval[0] ixval[1] iyval[1] ...) to dIptr */
+                msa_st2q_s16(dIptr, msa_pack_s32(q4_0, q4), msa_pack_s32(q6_0, q6));
 
                 /*
                   iA11 += (itemtype)(ixval*ixval);
@@ -592,7 +583,6 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
         iA12 += nA12[0] + nA12[1] + nA12[2] + nA12[3];
         iA22 += nA22[0] + nA22[1] + nA22[2] + nA22[3];
 #endif
-
 
         A11 = iA11*FLT_SCALE;
         A12 = iA12*FLT_SCALE;
@@ -662,7 +652,6 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
             const v4i32 d28_2 = msa_dupq_n_s32((int32_t)iw10);
             const v4i32 d29_2 = msa_dupq_n_s32((int32_t)iw11);
 #endif
-
 
             for( y = 0; y < winSize.height; y++ )
             {
@@ -847,7 +836,6 @@ void cv::detail::LKTrackerInvoker::operator()(const Range& range) const
                     msa_st1q_f32(nB2, nB2v);
                 }
 #endif
-
 
                 for( ; x < winSize.width*cn; x++, dIptr += 2 )
                 {

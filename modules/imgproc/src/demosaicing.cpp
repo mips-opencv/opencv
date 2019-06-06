@@ -596,7 +596,7 @@ public:
             g1 = msa_addq_u16(msa_addq_u16(g1, b1), r1);
 
             ILVRL_H2_UH(g1, g0, r0, r1);
-            msa_st1q_u8(dst, msa_combine_u8(msa_rshrn_n_u16(r0, 2), msa_rshrn_n_u16(r1, 2)));
+            msa_st1q_u8(dst, msa_rpackr_u16(r0, r1, 2));
         }
 
         return (int)(bayer - (bayer_end - width));
@@ -626,7 +626,7 @@ public:
             v8u16 zip0 = msa_rshrq_n_u16(nextb1, 1);
             v8u16 zip1 = msa_rshrq_n_u16(b0, 2);
             ILVRL_H2_UH(zip0, zip1, b0, b1);
-            pix[1 - blue] = msa_combine_u8(msa_movn_u16(b0), msa_movn_u16(b1));
+            pix[1 - blue] = msa_pack_u16(b0, b1);
 
             v8u16 g0 = msa_addq_u16(msa_shrq_n_u16(r0, 8), msa_shrq_n_u16(r2, 8));
             v8u16 g1 = msa_andq_u16(r1, masklo);
@@ -636,7 +636,7 @@ public:
             zip0 = g1;
             zip1 = msa_rshrq_n_u16(g0, 2);
             ILVRL_H2_UH(zip0, zip1, g0, g1);
-            pix[1] = msa_combine_u8(msa_movn_u16(g0), msa_movn_u16(g1));
+            pix[1] = msa_pack_u16(g0, g1);
 
             r0 = msa_shrq_n_u16(r1, 8);
             r1 = msa_addq_u16(r0, (v8u16)msa_extq_s16((v8i16)r0, (v8i16)r0, 1));
@@ -644,7 +644,7 @@ public:
             zip0 = msa_rshrq_n_u16(r1, 1);
             zip1 = r0;
             ILVRL_H2_UH(zip0, zip1, r0, r1);
-            pix[1 + blue] = msa_combine_u8(msa_movn_u16(r0), msa_movn_u16(r1));
+            pix[1 + blue] = msa_pack_u16(r0, r1);
 
             msa_st3q_u8(dst - 1, pix[0], pix[1], pix[2]);
         }
@@ -677,7 +677,7 @@ public:
             v8u16 zip0 = msa_rshrq_n_u16(nextb1, 1);
             v8u16 zip1 = msa_rshrq_n_u16(b0, 2);
             ILVRL_H2_UH(zip0, zip1, b0, b1);
-            pix[1 - blue] = msa_combine_u8(msa_movn_u16(b0), msa_movn_u16(b1));
+            pix[1 - blue] = msa_pack_u16(b0, b1);
 
             v8u16 g0 = msa_addq_u16(msa_shrq_n_u16(r0, 8), msa_shrq_n_u16(r2, 8));
             v8u16 g1 = msa_andq_u16(r1, masklo);
@@ -687,7 +687,7 @@ public:
             zip0 = g1;
             zip1 = msa_rshrq_n_u16(g0, 2);
             ILVRL_H2_UH(zip0, zip1, g0, g1);
-            pix[1] = msa_combine_u8(msa_movn_u16(g0), msa_movn_u16(g1));
+            pix[1] = msa_pack_u16(g0, g1);
 
             r0 = msa_shrq_n_u16(r1, 8);
             r1 = msa_addq_u16(r0, (v8u16)msa_extq_s16((v8i16)r0, (v8i16)r0, 1));
@@ -695,7 +695,7 @@ public:
             zip0 = msa_rshrq_n_u16(r1, 1);
             zip1 = r0;
             ILVRL_H2_UH(zip0, zip1, r0, r1);
-            pix[1 + blue] = msa_combine_u8(msa_movn_u16(r0), msa_movn_u16(r1));
+            pix[1 + blue] = msa_pack_u16(r0, r1);
 
             msa_st4q_u8(dst - 1, pix[0], pix[1], pix[2], pix[3]);
         }

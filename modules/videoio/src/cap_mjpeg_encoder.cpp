@@ -705,22 +705,22 @@ static const char jpegHeader[] =
 (msa_shrq_n_s32(msa_addq_s32((v4i32)x, msa_dupq_n_s32(1<<(n-1))), n))
 
 #define MSA_COMBINE_DCT_DESCALE(low, high, n) \
-(msa_combine_s16(msa_qmovn_s32(MSA_DCT_DESCALE_SW(low, n)), msa_qmovn_s32(MSA_DCT_DESCALE_SW(high, n))))
+(msa_qpack_s32(MSA_DCT_DESCALE_SW(low, n), MSA_DCT_DESCALE_SW(high, n)))
 
-#define MUL_HI_LO_SH_SW(a, b, pLow, pHi)                                   \
-{                                                                          \
-  v8i16 aLow, aHi, bLow, bHi;                                              \
-  v8i16 vZero = msa_dupq_n_s16(0);                                         \
-  ILVRL_H2_SH(a, vZero, aLow, aHi);                                        \
-  ILVRL_H2_SH(b, vZero, bLow, bHi);                                        \
-  pLow = msa_mulq_s32(msa_hadd_s32(aLow,vZero), msa_hadd_s32(bLow,vZero)); \
-  pHi = msa_mulq_s32(msa_hadd_s32(aHi,vZero), msa_hadd_s32(bHi,vZero));    \
+#define MUL_HI_LO_SH_SW(a, b, pLow, pHi)                                       \
+{                                                                              \
+    v8i16 aLow, aHi, bLow, bHi;                                                \
+    v8i16 vZero = msa_dupq_n_s16(0);                                           \
+    ILVRL_H2_SH(a, vZero, aLow, aHi);                                          \
+    ILVRL_H2_SH(b, vZero, bLow, bHi);                                          \
+    pLow = msa_mulq_s32(msa_hadd_s32(aLow, vZero), msa_hadd_s32(bLow, vZero)); \
+    pHi = msa_mulq_s32(msa_hadd_s32(aHi, vZero), msa_hadd_s32(bHi, vZero));    \
 }
 
-#define TR8(TPV,in0,in1,in2,in3,in4,in5,in6,in7,            \
+#define TR8(TPV, in0, in1, in2, in3, in4, in5, in6, in7,    \
             out0, out1, out2, out3, out4, out5, out6, out7) \
 {                                                           \
-    TPV t0,t1,t2,t3;                                        \
+    TPV t0, t1, t2, t3;                                     \
     t0 = msa_pckev_s16(in1, in0);                           \
     t1 = msa_pckev_s16(in3, in2);                           \
     t2 = msa_pckod_s16(in1, in0);                           \
@@ -752,13 +752,13 @@ static const char jpegHeader[] =
 {                                                           \
     TPV v0,v1,v2,v3,v4,v5,v6,v7;                            \
     v0 = msa_ld1q_s16(ptr);                                 \
-    v1 = msa_ld1q_s16(((short*)ptr+step));                  \
-    v2 = msa_ld1q_s16(((short*)ptr+step*2));                \
-    v3 = msa_ld1q_s16(((short*)ptr+step*3));                \
-    v4 = msa_ld1q_s16(((short*)ptr+step*4));                \
-    v5 = msa_ld1q_s16(((short*)ptr+step*5));                \
-    v6 = msa_ld1q_s16(((short*)ptr+step*6));                \
-    v7 = msa_ld1q_s16(((short*)ptr+step*7));                \
+    v1 = msa_ld1q_s16(((short*)ptr + step));                \
+    v2 = msa_ld1q_s16(((short*)ptr + step*2));              \
+    v3 = msa_ld1q_s16(((short*)ptr + step*3));              \
+    v4 = msa_ld1q_s16(((short*)ptr + step*4));              \
+    v5 = msa_ld1q_s16(((short*)ptr + step*5));              \
+    v6 = msa_ld1q_s16(((short*)ptr + step*6));              \
+    v7 = msa_ld1q_s16(((short*)ptr + step*7));              \
     TR8(TPV, v0, v1, v2, v3, v4, v5, v6, v7,                \
         out0, out1, out2, out3, out4, out5, out6, out7);    \
 }
@@ -988,50 +988,60 @@ static void aan_fdct8x8( const short *src, short *dst,
                         int step, const short *postscale )
 {
     // Pass 1: process rows
-    v8i16 tmp0,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7;
-    v8i16 res0,res1,res2,res3,res4,res5,res6,res7;
+    v8i16 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+    v8i16 res0, res1, res2, res3, res4, res5, res6, res7;
     v8i16 op1, op2;
     v4i32 pLow, pHi;
 
-    LD8(v8i16, src, step, res0,res1,res2,res3,res4,res5,res6,res7);
+    LD8(v8i16, src, step, res0, res1, res2, res3, res4, res5, res6, res7);
 
-    v8i16 x0 = res0;    v8i16 x1 = res7;
-    v8i16 x2 = res3;    v8i16 x3 = res4;
+    v8i16 x0 = res0;
+    v8i16 x1 = res7;
+    v8i16 x2 = res3;
+    v8i16 x3 = res4;
+    v8i16 x4 = msa_addq_s16(x0, x1);
 
-    v8i16 x4 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
-    x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
+    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);
+    x2 = msa_subq_s16(x2, x3);
+    tmp7 = x0;
+    tmp1 = x2;
 
-    tmp7 = x0; tmp1 = x2;
-
-    x2 = msa_addq_s16(x4, x1);    x4 = msa_subq_s16(x4, x1);
-
-    x0 = res1;    x3 = res6;
-
-    x1 = msa_addq_s16(x0, x3);    x0 = msa_subq_s16(x0, x3);
+    x2 = msa_addq_s16(x4, x1);
+    x4 = msa_subq_s16(x4, x1);
+    x0 = res1;
+    x3 = res6;
+    x1 = msa_addq_s16(x0, x3);
+    x0 = msa_subq_s16(x0, x3);
     tmp5 = x0;
 
-    x0 = res2;    x3 = res5;
-
+    x0 = res2;
+    x3 = res5;
     tmp3 = msa_subq_s16(x0, x3);
+
     x0 = msa_addq_s16(x0, x3);
-
-    x3 = msa_addq_s16(x0, x1);    x0 = msa_subq_s16(x0, x1);
-    x1 = msa_addq_s16(x2, x3);    x2 = msa_subq_s16(x2, x3);
-
+    x3 = msa_addq_s16(x0, x1);
+    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);
+    x2 = msa_subq_s16(x2, x3);
     tmp0 = x1;
     tmp4 = x2;
 
     op1 = msa_subq_s16(x0, x4);
     op2 = msa_dupq_n_s16(C0_707);
     x0 = msa_dct_descale_mul(op1, op2, fixb);
-    x1 = msa_addq_s16(x4, x0);    x4 = msa_subq_s16(x4, x0);
-
+    x1 = msa_addq_s16(x4, x0);
+    x4 = msa_subq_s16(x4, x0);
     tmp2 = x4;
     tmp6 = x1;
 
-    x0 = tmp1;    x1 = tmp3;
-    x2 = tmp5;    x3 = tmp7;
-    x0 = msa_addq_s16(x0, x1);    x1 = msa_addq_s16(x1, x2);    x2 = msa_addq_s16(x2, x3);
+    x0 = tmp1;
+    x1 = tmp3;
+    x2 = tmp5;
+    x3 = tmp7;
+    x0 = msa_addq_s16(x0, x1);
+    x1 = msa_addq_s16(x1, x2);
+    x2 = msa_addq_s16(x2, x3);
 
     op1 = x1;
     op2 = msa_dupq_n_s16(C0_707);
@@ -1041,7 +1051,6 @@ static void aan_fdct8x8( const short *src, short *dst,
 
     op1 = msa_subq_s16(x0, x2);
     op2 = msa_dupq_n_s16(C0_382);
-
     MUL_HI_LO_SH_SW(op1, op2, pLow, pHi);
 
     op1 = x0;
@@ -1062,35 +1071,43 @@ static void aan_fdct8x8( const short *src, short *dst,
     tmp5 = x1;
     tmp7 = x4;
 
-    //transpose a matrix
+    // Transpose a matrix
     TR8(v8i16, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7,
                res0, res1, res2, res3, res4, res5, res6, res7);
 
-    // pass 2: process columns
+    // Pass 2: process columns
     /* Load postscale data to vector */
     LD8(v8i16, postscale, 8, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7);
 
-    x0 = res0; x1 = res7;
-    x2 = res3; x3 = res4;
+    x0 = res0;
+    x1 = res7;
+    x2 = res3;
+    x3 = res4;
 
-    x4 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
-    x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
+    x4 = msa_addq_s16(x0, x1);
+    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);
+    x2 = msa_subq_s16(x2, x3);
+    res7 = x0;
+    res0 = x2;
 
-    res7 = x0; res0 = x2;
-
-    x2 = msa_addq_s16(x4, x1); x4 = msa_subq_s16(x4, x1);
-
-    x0 = res1; x3 = res6;
-
-    x1 = msa_addq_s16(x0, x3); x0 = msa_subq_s16(x0, x3);
+    x2 = msa_addq_s16(x4, x1);
+    x4 = msa_subq_s16(x4, x1);
+    x0 = res1;
+    x3 = res6;
+    x1 = msa_addq_s16(x0, x3);
+    x0 = msa_subq_s16(x0, x3);
     res4 = x0;
 
-    x0 = res2; x3 = res5;
+    x0 = res2;
+    x3 = res5;
+    res3 = msa_subq_s16(x0, x3);
 
-    res3 = msa_subq_s16(x0, x3); x0 = msa_addq_s16(x0, x3);
-
-    x3 = msa_addq_s16(x0, x1); x0 = msa_subq_s16(x0, x1);
-    x1 = msa_addq_s16(x2, x3); x2 = msa_subq_s16(x2, x3);
+    x0 = msa_addq_s16(x0, x3);
+    x3 = msa_addq_s16(x0, x1);
+    x0 = msa_subq_s16(x0, x1);
+    x1 = msa_addq_s16(x2, x3);
+    x2 = msa_subq_s16(x2, x3);
 
     op1 = x1;
     op2 = tmp0;
@@ -1104,7 +1121,8 @@ static void aan_fdct8x8( const short *src, short *dst,
     op2 = msa_dupq_n_s16(C0_707);
     x0 = msa_dct_descale_mul(op1, op2, fixb);
 
-    x1 = msa_addq_s16(x4, x0); x4 = msa_subq_s16(x4, x0);
+    x1 = msa_addq_s16(x4, x0);
+    x4 = msa_subq_s16(x4, x0);
 
     op1 = x4;
     op2 = tmp2;
@@ -1114,16 +1132,21 @@ static void aan_fdct8x8( const short *src, short *dst,
     op2 = tmp6;
     tmp6 = msa_dct_descale_mul(op1, op2, postshift);
 
-    x0 = res0; x1 = res3;
-    x2 = res4; x3 = res7;
+    x0 = res0;
+    x1 = res3;
+    x2 = res4;
+    x3 = res7;
 
-    x0 = msa_addq_s16(x0, x1); x1 = msa_addq_s16(x1, x2); x2 = msa_addq_s16(x2, x3);
+    x0 = msa_addq_s16(x0, x1);
+    x1 = msa_addq_s16(x1, x2);
+    x2 = msa_addq_s16(x2, x3);
 
     op1 = x1;
     op2 = msa_dupq_n_s16(C0_707);
     x1 = msa_dct_descale_mul(op1, op2, fixb);
 
-    x4 = msa_addq_s16(x1, x3); x3 = msa_subq_s16(x3, x1);
+    x4 = msa_addq_s16(x1, x3);
+    x3 = msa_subq_s16(x3, x1);
 
     op1 = msa_subq_s16(x0, x2);
     op2 = msa_dupq_n_s16(C0_382);
@@ -1137,8 +1160,10 @@ static void aan_fdct8x8( const short *src, short *dst,
     op2 = msa_dupq_n_s16(C1_306);
     x2 = msa_dct_descale_madd(op1, op2, pLow, pHi, fixb);
 
-    x1 = msa_addq_s16(x0, x3); x3 = msa_subq_s16(x3, x0);
-    x0 = msa_addq_s16(x4, x2); x4 = msa_subq_s16(x4, x2);
+    x1 = msa_addq_s16(x0, x3);
+    x3 = msa_subq_s16(x3, x0);
+    x0 = msa_addq_s16(x4, x2);
+    x4 = msa_subq_s16(x4, x2);
 
     op1 = x1;
     op2 = tmp5;
@@ -1151,6 +1176,7 @@ static void aan_fdct8x8( const short *src, short *dst,
     op1 = x4;
     op2 = tmp7;
     tmp7 = msa_dct_descale_mul(op1, op2, postshift);
+
     op1 = x3;
     op2 = tmp3;
     tmp3 = msa_dct_descale_mul(op1, op2, postshift);
@@ -1158,10 +1184,14 @@ static void aan_fdct8x8( const short *src, short *dst,
     TR8(v8i16, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7,
                res0, res1, res2, res3, res4, res5, res6, res7);
 
-    msa_st1q_s16((dst),res0);     msa_st1q_s16((dst+8),res1);
-    msa_st1q_s16((dst+8*2),res2); msa_st1q_s16((dst+8*3),res3);
-    msa_st1q_s16((dst+8*4),res4); msa_st1q_s16((dst+8*5),res5);
-    msa_st1q_s16((dst+8*6),res6); msa_st1q_s16((dst+8*7),res7);
+    msa_st1q_s16((dst), res0);
+    msa_st1q_s16((dst + 8), res1);
+    msa_st1q_s16((dst + 8*2), res2);
+    msa_st1q_s16((dst + 8*3), res3);
+    msa_st1q_s16((dst + 8*4), res4);
+    msa_st1q_s16((dst + 8*5), res5);
+    msa_st1q_s16((dst + 8*6), res6);
+    msa_st1q_s16((dst + 8*7), res7);
 }
 #else
 // FDCT with postscaling

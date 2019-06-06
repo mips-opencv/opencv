@@ -816,12 +816,12 @@ struct RGB2XYZ_i<uchar>
             v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c3), src1_hi, v_c4), src2_hi, v_c5);
             v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c6), src1_hi, v_c7), src2_hi, v_c8);
 
-            v8i16 dst0_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
-            v8i16 dst1_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
-            v8i16 dst2_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+            v8i16 dst0_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift));
+            v8i16 dst1_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift));
+            v8i16 dst2_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift));
 
             v_zip = msa_paddlq_u8(data0_hi);
             ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), zip0_lo, zip0_hi);
@@ -844,16 +844,16 @@ struct RGB2XYZ_i<uchar>
             v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c3), src1_hi, v_c4), src2_hi, v_c5);
             v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c6), src1_hi, v_c7), src2_hi, v_c8);
 
-            v8i16 dst0_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
-            v8i16 dst1_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
-            v8i16 dst2_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+            v8i16 dst0_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift));
+            v8i16 dst1_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift));
+            v8i16 dst2_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift));
 
-            v_data[0] = msa_combine_u8(msa_qmovun_s16(dst0_lo), msa_qmovun_s16(dst0_hi));
-            v_data[1] = msa_combine_u8(msa_qmovun_s16(dst1_lo), msa_qmovun_s16(dst1_hi));
-            v_data[2] = msa_combine_u8(msa_qmovun_s16(dst2_lo), msa_qmovun_s16(dst2_hi));
+            v_data[0] = msa_qpacku_s16(dst0_lo, dst0_hi);
+            v_data[1] = msa_qpacku_s16(dst1_lo, dst1_hi);
+            v_data[2] = msa_qpacku_s16(dst2_lo, dst2_hi);
 
             msa_st3q_u8(dst + i, v_data[0], v_data[1], v_data[2]);
         }
@@ -944,9 +944,9 @@ struct RGB2XYZ_i<ushort>
             v_Y1 = msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift);
             v_Z1 = msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift);
 
-            v_data[0] = msa_combine_u16(msa_qmovun_s32(v_X0), msa_qmovun_s32(v_X1));
-            v_data[1] = msa_combine_u16(msa_qmovun_s32(v_Y0), msa_qmovun_s32(v_Y1));
-            v_data[2] = msa_combine_u16(msa_qmovun_s32(v_Z0), msa_qmovun_s32(v_Z1));
+            v_data[0] = msa_qpacku_s32(v_X0, v_X1);
+            v_data[1] = msa_qpacku_s32(v_Y0, v_Y1);
+            v_data[2] = msa_qpacku_s32(v_Z0, v_Z1);
 
             msa_st3q_u16(dst + i, v_data[0], v_data[1], v_data[2]);
         }
@@ -1578,12 +1578,12 @@ struct XYZ2RGB_i<uchar>
             v4i32 v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c3), src1_hi, v_c4), src2_hi, v_c5);
             v4i32 v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c6), src1_hi, v_c7), src2_hi, v_c8);
 
-            v8i16 dst0_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
-            v8i16 dst1_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
-            v8i16 dst2_lo = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+            v8i16 dst0_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift));
+            v8i16 dst1_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift));
+            v8i16 dst2_lo = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift));
 
             v_zip = msa_paddlq_u8(data0_hi);
             ILVRL_H2_UH(v_zip, msa_dupq_n_u16(0), zip0_lo, zip0_hi);
@@ -1606,16 +1606,16 @@ struct XYZ2RGB_i<uchar>
             v_Y1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c3), src1_hi, v_c4), src2_hi, v_c5);
             v_Z1 = msa_mlaq_s32(msa_mlaq_s32(msa_mulq_s32(src0_hi, v_c6), src1_hi, v_c7), src2_hi, v_c8);
 
-            v8i16 dst0_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift)));
-            v8i16 dst1_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift)));
-            v8i16 dst2_hi = msa_combine_s16(msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift)),
-                                            msa_movn_s32(msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift)));
+            v8i16 dst0_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_X0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_X1, v_delta), xyz_shift));
+            v8i16 dst1_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Y0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift));
+            v8i16 dst2_hi = msa_pack_s32(msa_shrq_n_s32(msa_addq_s32(v_Z0, v_delta), xyz_shift),
+                                         msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift));
 
-            v_data[0] = msa_combine_u8(msa_qmovun_s16(dst0_lo), msa_qmovun_s16(dst0_hi));
-            v_data[1] = msa_combine_u8(msa_qmovun_s16(dst1_lo), msa_qmovun_s16(dst1_hi));
-            v_data[2] = msa_combine_u8(msa_qmovun_s16(dst2_lo), msa_qmovun_s16(dst2_hi));
+            v_data[0] = msa_qpacku_s16(dst0_lo, dst0_hi);
+            v_data[1] = msa_qpacku_s16(dst1_lo, dst1_hi);
+            v_data[2] = msa_qpacku_s16(dst2_lo, dst2_hi);
 
             if( dcn == 3 )
                 msa_st3q_u8(dst, v_data[0], v_data[1], v_data[2]);
@@ -1711,9 +1711,9 @@ struct XYZ2RGB_i<ushort>
             v_Y1 = msa_shrq_n_s32(msa_addq_s32(v_Y1, v_delta), xyz_shift);
             v_Z1 = msa_shrq_n_s32(msa_addq_s32(v_Z1, v_delta), xyz_shift);
 
-            v_data[0] = msa_combine_u16(msa_qmovun_s32(v_X0), msa_qmovun_s32(v_X1));
-            v_data[1] = msa_combine_u16(msa_qmovun_s32(v_Y0), msa_qmovun_s32(v_Y1));
-            v_data[2] = msa_combine_u16(msa_qmovun_s32(v_Z0), msa_qmovun_s32(v_Z1));
+            v_data[0] = msa_qpacku_s32(v_X0, v_X1);
+            v_data[1] = msa_qpacku_s32(v_Y0, v_Y1);
+            v_data[2] = msa_qpacku_s32(v_Z0, v_Z1);
 
             if( dcn == 3 )
                 msa_st3q_u16(dst, v_data[0], v_data[1], v_data[2]);
@@ -3493,11 +3493,11 @@ struct Lab2RGB_b
                     v_src2 = msa_ld1q_f32(buf + j + 8);
                     v_src3 = msa_ld1q_f32(buf + j + 12);
 
-                    v8u16 dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0, v_scale))),
-                                                   msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1, v_scale))));
-                    v8u16 dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2, v_scale))),
-                                                   msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3, v_scale))));
-                    v16u8 v_dst = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                    v8u16 dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0, v_scale)),
+                                                 msa_cvttintq_u32_f32(msa_mulq_f32(v_src1, v_scale)));
+                    v8u16 dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2, v_scale)),
+                                                 msa_cvttintq_u32_f32(msa_mulq_f32(v_src3, v_scale)));
+                    v16u8 v_dst = msa_qpack_u16(dst_lo, dst_hi);
 
                     msa_st1q_u8(dst, v_dst);
                 }
@@ -3520,23 +3520,23 @@ struct Lab2RGB_b
                     msa_ld3q_f32(buf + j + 24, &v_src2[0], &v_src2[1], &v_src2[2]);
                     msa_ld3q_f32(buf + j + 36, &v_src3[0], &v_src3[1], &v_src3[2]);
 
-                    v8u16 dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale))),
-                                                   msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale))));
-                    v8u16 dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale))),
-                                                   msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale))));
-                    v16u8 v_dst0 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                    v8u16 dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale)),
+                                                 msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale)));
+                    v8u16 dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale)),
+                                                 msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale)));
+                    v16u8 v_dst0 = msa_qpack_u16(dst_lo, dst_hi);
 
-                    dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[1], v_scale))),
-                                             msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[1], v_scale))));
-                    dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[1], v_scale))),
-                                             msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[1], v_scale))));
-                    v16u8 v_dst1 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                    dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[1], v_scale)),
+                                           msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[1], v_scale)));
+                    dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[1], v_scale)),
+                                           msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[1], v_scale)));
+                    v16u8 v_dst1 = msa_qpack_u16(dst_lo, dst_hi);
 
-                    dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[2], v_scale))),
-                                             msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[2], v_scale))));
-                    dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[2], v_scale))),
-                                             msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[2], v_scale))));
-                    v16u8 v_dst2 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                    dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[2], v_scale)),
+                                           msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[2], v_scale)));
+                    dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[2], v_scale)),
+                                           msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[2], v_scale)));
+                    v16u8 v_dst2 = msa_qpack_u16(dst_lo, dst_hi);
 
                     msa_st4q_u8(dst, v_dst0, v_dst1, v_dst2, v_alpha);
                 }
@@ -4686,23 +4686,23 @@ struct RGB2Luv_b
                 msa_ld3q_f32(buf + j + 24, &v_src2[0], &v_src2[1], &v_src2[2]);
                 msa_ld3q_f32(buf + j + 36, &v_src3[0], &v_src3[1], &v_src3[2]);
 
-                v8u16 dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale))),
-                                               msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale))));
-                v8u16 dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale))),
-                                               msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale))));
-                v16u8 v_dst0 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                v8u16 dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src0[0], v_scale)),
+                                             msa_cvttintq_u32_f32(msa_mulq_f32(v_src1[0], v_scale)));
+                v8u16 dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mulq_f32(v_src2[0], v_scale)),
+                                             msa_cvttintq_u32_f32(msa_mulq_f32(v_src3[0], v_scale)));
+                v16u8 v_dst0 = msa_qpack_u16(dst_lo, dst_hi);
 
-                dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src0[1], v_coeff1))),
-                                         msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src1[1], v_coeff1))));
-                dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src2[1], v_coeff1))),
-                                         msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src3[1], v_coeff1))));
-                v16u8 v_dst1 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src0[1], v_coeff1)),
+                                       msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src1[1], v_coeff1)));
+                dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src2[1], v_coeff1)),
+                                       msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff2, v_src3[1], v_coeff1)));
+                v16u8 v_dst1 = msa_qpack_u16(dst_lo, dst_hi);
 
-                dst_lo = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src0[2], v_coeff3))),
-                                         msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src1[2], v_coeff3))));
-                dst_hi = msa_combine_u16(msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src2[2], v_coeff3))),
-                                         msa_qmovn_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src3[2], v_coeff3))));
-                v16u8 v_dst2 = msa_combine_u8(msa_qmovn_u16(dst_lo), msa_qmovn_u16(dst_hi));
+                dst_lo = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src0[2], v_coeff3)),
+                                       msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src1[2], v_coeff3)));
+                dst_hi = msa_qpack_u32(msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src2[2], v_coeff3)),
+                                       msa_cvttintq_u32_f32(msa_mlaq_f32(v_coeff4, v_src3[2], v_coeff3)));
+                v16u8 v_dst2 = msa_qpack_u16(dst_lo, dst_hi);
 
                 msa_st3q_u8(dst + j, v_dst0, v_dst1, v_dst2);
             }

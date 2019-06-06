@@ -625,12 +625,12 @@ void HOGDescriptor::computeGradient(InputArray _img, InputOutputArray _grad, Inp
 
             _hidx = msa_addq_s32(_hidx, msa_andq_s32(_nbins,(v4i32)msa_cltq_s32(_hidx, izero)));
             _hidx = msa_subq_s32(_hidx, msa_andq_s32(_nbins,(v4i32)msa_cgeq_s32(_hidx, _nbins)));
+            ub0 = msa_qpack_s32(_hidx, izero);
 
-
-            ub0 = msa_combine_s16(msa_qmovn_s32(_hidx), msa_qmovn_s32(izero));
             _hidx = msa_addq_s32(ione, _hidx);
             _hidx = msa_andq_s32(_hidx, (v4i32)msa_cltq_s32(_hidx, _nbins));
-            ub1 = msa_combine_s16(msa_qmovn_s32(_hidx), msa_qmovn_s32(izero));
+            ub1 = msa_qpack_s32(_hidx, izero);
+
             msa_st1_u8((qanglePtr + x2), msa_qmovun_s16(msa_ilvrq_s16(ub1, ub0)));
         }
 #endif

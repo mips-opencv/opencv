@@ -397,6 +397,109 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
   (v2u32)__builtin_msa_copy_u_d((v2i64)__e, 0); \
 })
 
+/* pack */
+#define msa_pack_s16(__a, __b) (__builtin_msa_pckev_b((v16i8)(__b), (v16i8)(__a)))
+#define msa_pack_s32(__a, __b) (__builtin_msa_pckev_h((v8i16)(__b), (v8i16)(__a)))
+#define msa_pack_s64(__a, __b) (__builtin_msa_pckev_w((v4i32)(__b), (v4i32)(__a)))
+#define msa_pack_u16(__a, __b) ((v16u8)__builtin_msa_pckev_b((v16i8)(__b), (v16i8)(__a)))
+#define msa_pack_u32(__a, __b) ((v8u16)__builtin_msa_pckev_h((v8i16)(__b), (v8i16)(__a)))
+#define msa_pack_u64(__a, __b) ((v4u32)__builtin_msa_pckev_w((v4i32)(__b), (v4i32)(__a)))
+
+/* qpack */
+#define msa_qpack_s16(__a, __b) \
+(__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_s_h((v8i16)(__b), 7), (v16i8)__builtin_msa_sat_s_h((v8i16)(__a), 7)))
+#define msa_qpack_s32(__a, __b) \
+(__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_s_w((v4i32)(__b), 15), (v8i16)__builtin_msa_sat_s_w((v4i32)(__a), 15)))
+#define msa_qpack_s64(__a, __b) \
+(__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_s_d((v2i64)(__b), 31), (v4i32)__builtin_msa_sat_s_d((v2i64)(__a), 31)))
+#define msa_qpack_u16(__a, __b) \
+((v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_u_h((v8u16)(__b), 7), (v16i8)__builtin_msa_sat_u_h((v8u16)(__a), 7)))
+#define msa_qpack_u32(__a, __b) \
+((v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_u_w((v4u32)(__b), 15), (v8i16)__builtin_msa_sat_u_w((v4u32)(__a), 15)))
+#define msa_qpack_u64(__a, __b) \
+((v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_u_d((v2u64)(__b), 31), (v4i32)__builtin_msa_sat_u_d((v2u64)(__a), 31)))
+
+/* qpacku */
+#define msa_qpacku_s16(__a, __b) \
+((v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_u_h((v8u16)(__builtin_msa_max_s_h(__builtin_msa_fill_h(0), (v8i16)(__b))), 7), \
+                              (v16i8)__builtin_msa_sat_u_h((v8u16)(__builtin_msa_max_s_h(__builtin_msa_fill_h(0), (v8i16)(__a))), 7)))
+#define msa_qpacku_s32(__a, __b) \
+((v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_u_w((v4u32)(__builtin_msa_max_s_w(__builtin_msa_fill_w(0), (v4i32)(__b))), 15), \
+                              (v8i16)__builtin_msa_sat_u_w((v4u32)(__builtin_msa_max_s_w(__builtin_msa_fill_w(0), (v4i32)(__a))), 15)))
+#define msa_qpacku_s64(__a, __b) \
+((v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_u_d((v2u64)(__builtin_msa_max_s_d(__builtin_msa_fill_d(0), (v2i64)(__b))), 31), \
+                              (v4i32)__builtin_msa_sat_u_d((v2u64)(__builtin_msa_max_s_d(__builtin_msa_fill_d(0), (v2i64)(__a))), 31)))
+
+/* packr */
+#define msa_packr_s16(__a, __b, __c) \
+(__builtin_msa_pckev_b((v16i8)__builtin_msa_srai_h((v8i16)(__b), (int)(__c)), (v16i8)__builtin_msa_srai_h((v8i16)(__a), (int)(__c))))
+#define msa_packr_s32(__a, __b, __c) \
+(__builtin_msa_pckev_h((v8i16)__builtin_msa_srai_w((v4i32)(__b), (int)(__c)), (v8i16)__builtin_msa_srai_w((v4i32)(__a), (int)(__c))))
+#define msa_packr_s64(__a, __b, __c) \
+(__builtin_msa_pckev_w((v4i32)__builtin_msa_srai_d((v2i64)(__b), (int)(__c)), (v4i32)__builtin_msa_srai_d((v2i64)(__a), (int)(__c))))
+#define msa_packr_u16(__a, __b, __c) \
+((v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_srli_h((v8i16)(__b), (int)(__c)), (v16i8)__builtin_msa_srli_h((v8i16)(__a), (int)(__c))))
+#define msa_packr_u32(__a, __b, __c) \
+((v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_srli_w((v4i32)(__b), (int)(__c)), (v8i16)__builtin_msa_srli_w((v4i32)(__a), (int)(__c))))
+#define msa_packr_u64(__a, __b, __c) \
+((v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_srli_d((v2i64)(__b), (int)(__c)), (v4i32)__builtin_msa_srli_d((v2i64)(__a), (int)(__c))))
+
+/* rpackr */
+#define msa_rpackr_s16(__a, __b, __c) \
+(__builtin_msa_pckev_b((v16i8)__builtin_msa_srari_h((v8i16)(__b), (int)(__c)), (v16i8)__builtin_msa_srari_h((v8i16)(__a), (int)(__c))))
+#define msa_rpackr_s32(__a, __b, __c) \
+(__builtin_msa_pckev_h((v8i16)__builtin_msa_srari_w((v4i32)(__b), (int)(__c)), (v8i16)__builtin_msa_srari_w((v4i32)(__a), (int)(__c))))
+#define msa_rpackr_s64(__a, __b, __c) \
+(__builtin_msa_pckev_w((v4i32)__builtin_msa_srari_d((v2i64)(__b), (int)(__c)), (v4i32)__builtin_msa_srari_d((v2i64)(__a), (int)(__c))))
+#define msa_rpackr_u16(__a, __b, __c) \
+((v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_srlri_h((v8i16)(__b), (int)(__c)), (v16i8)__builtin_msa_srlri_h((v8i16)(__a), (int)(__c))))
+#define msa_rpackr_u32(__a, __b, __c) \
+((v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_srlri_w((v4i32)(__b), (int)(__c)), (v8i16)__builtin_msa_srlri_w((v4i32)(__a), (int)(__c))))
+#define msa_rpackr_u64(__a, __b, __c) \
+((v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_srlri_d((v2i64)(__b), (int)(__c)), (v4i32)__builtin_msa_srlri_d((v2i64)(__a), (int)(__c))))
+
+/* qrpackr */
+#define msa_qrpackr_s16(__a, __b, __c) \
+(__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_s_h(__builtin_msa_srari_h((v8i16)(__b), (int)(__c)), 7), \
+                       (v16i8)__builtin_msa_sat_s_h(__builtin_msa_srari_h((v8i16)(__a), (int)(__c)), 7)))
+#define msa_qrpackr_s32(__a, __b, __c) \
+(__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_s_w(__builtin_msa_srari_w((v4i32)(__b), (int)(__c)), 15), \
+                       (v8i16)__builtin_msa_sat_s_w(__builtin_msa_srari_w((v4i32)(__a), (int)(__c)), 15)))
+#define msa_qrpackr_s64(__a, __b, __c) \
+(__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_s_d(__builtin_msa_srari_d((v2i64)(__b), (int)(__c)), 31), \
+                       (v4i32)__builtin_msa_sat_s_d(__builtin_msa_srari_d((v2i64)(__a), (int)(__c)), 31)))
+#define msa_qrpackr_u16(__a, __b, __c) \
+((v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_u_h((v8u16)__builtin_msa_srlri_h((v8i16)(__b), (int)(__c)), 7), \
+                              (v16i8)__builtin_msa_sat_u_h((v8u16)__builtin_msa_srlri_h((v8i16)(__a), (int)(__c)), 7)))
+#define msa_qrpackr_u32(__a, __b, __c) \
+((v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_u_w((v4u32)__builtin_msa_srlri_w((v4i32)(__b), (int)(__c)), 15), \
+                              (v8i16)__builtin_msa_sat_u_w((v4u32)__builtin_msa_srlri_w((v4i32)(__a), (int)(__c)), 15)))
+#define msa_qrpackr_u64(__a, __b, __c) \
+((v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_u_d((v2u64)__builtin_msa_srlri_d((v2i64)(__b), (int)(__c)), 31), \
+                              (v4i32)__builtin_msa_sat_u_d((v2u64)__builtin_msa_srlri_d((v2i64)(__a), (int)(__c)), 31)))
+
+/* qrpackru */
+#define msa_qrpackru_s16(__a, __b, __c) \
+({ \
+  v8i16 __d = __builtin_msa_srlri_h(__builtin_msa_max_s_h(__builtin_msa_fill_h(0), (v8i16)(__a)), (int)(__c)); \
+  v8i16 __e = __builtin_msa_srlri_h(__builtin_msa_max_s_h(__builtin_msa_fill_h(0), (v8i16)(__b)), (int)(__c)); \
+  (v16u8)__builtin_msa_pckev_b((v16i8)__builtin_msa_sat_u_h((v8u16)__e, 7), (v16i8)__builtin_msa_sat_u_h((v8u16)__d, 7)); \
+})
+
+#define msa_qrpackru_s32(__a, __b, __c) \
+({ \
+  v4i32 __d = __builtin_msa_srlri_w(__builtin_msa_max_s_w(__builtin_msa_fill_w(0), (v4i32)(__a)), (int)(__c)); \
+  v4i32 __e = __builtin_msa_srlri_w(__builtin_msa_max_s_w(__builtin_msa_fill_w(0), (v4i32)(__b)), (int)(__c)); \
+  (v8u16)__builtin_msa_pckev_h((v8i16)__builtin_msa_sat_u_w((v4u32)__e, 15), (v8i16)__builtin_msa_sat_u_w((v4u32)__d, 15)); \
+})
+
+#define msa_qrpackru_s64(__a, __b, __c) \
+({ \
+  v2i64 __d = __builtin_msa_srlri_d(__builtin_msa_max_s_d(__builtin_msa_fill_d(0), (v2i64)(__a)), (int)(__c)); \
+  v2i64 __e = __builtin_msa_srlri_d(__builtin_msa_max_s_d(__builtin_msa_fill_d(0), (v2i64)(__b)), (int)(__c)); \
+  (v4u32)__builtin_msa_pckev_w((v4i32)__builtin_msa_sat_u_d((v2u64)__e, 31), (v4i32)__builtin_msa_sat_u_d((v2u64)__d, 31)); \
+})
+
 /* Minimum values between corresponding elements in the two vectors are written to teh returned vector. */
 #define msa_minq_s8(__a, __b)  (__builtin_msa_min_s_b(__a, __b))
 #define msa_minq_s16(__a, __b) (__builtin_msa_min_s_h(__a, __b))
@@ -673,156 +776,159 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_mull_u32(__a, __b)  ((v2u64)__builtin_msa_mulv_d((v2i64)V2U32_2_V2U64(__a), (v2i64)V2U32_2_V2U64(__b)))
 
 /* bitwise and: __builtin_msa_and_v */
-#define msa_andq_u8(__a, __b)  ((v16u8)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_s8(__a, __b)  ((v16i8)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_u16(__a, __b) ((v8u16)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_s16(__a, __b) ((v8i16)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_u32(__a, __b) ((v4u32)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_s32(__a, __b) ((v4i32)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_u64(__a, __b) ((v2u64)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
-#define msa_andq_s64(__a, __b) ((v2i64)__builtin_msa_and_v((v16u8)__a, (v16u8)__b))
+#define msa_andq_u8(__a, __b)  ((v16u8)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_s8(__a, __b)  ((v16i8)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_u16(__a, __b) ((v8u16)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_s16(__a, __b) ((v8i16)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_u32(__a, __b) ((v4u32)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_s32(__a, __b) ((v4i32)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_u64(__a, __b) ((v2u64)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_andq_s64(__a, __b) ((v2i64)__builtin_msa_and_v((v16u8)(__a), (v16u8)(__b)))
 
 /* bitwise or: __builtin_msa_or_v */
-#define msa_orrq_u8(__a, __b)  ((v16u8)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_s8(__a, __b)  ((v16i8)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_u16(__a, __b) ((v8u16)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_s16(__a, __b) ((v8i16)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_u32(__a, __b) ((v4u32)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_s32(__a, __b) ((v4i32)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_u64(__a, __b) ((v2u64)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
-#define msa_orrq_s64(__a, __b) ((v2i64)__builtin_msa_or_v((v16u8)__a, (v16u8)__b))
+#define msa_orrq_u8(__a, __b)  ((v16u8)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_s8(__a, __b)  ((v16i8)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_u16(__a, __b) ((v8u16)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_s16(__a, __b) ((v8i16)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_u32(__a, __b) ((v4u32)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_s32(__a, __b) ((v4i32)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_u64(__a, __b) ((v2u64)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_orrq_s64(__a, __b) ((v2i64)__builtin_msa_or_v((v16u8)(__a), (v16u8)(__b)))
 
 /* bitwise xor: __builtin_msa_xor_v */
-#define msa_eorq_u8(__a, __b)  ((v16u8)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_s8(__a, __b)  ((v16i8)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_u16(__a, __b) ((v8u16)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_s16(__a, __b) ((v8i16)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_u32(__a, __b) ((v4u32)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_s32(__a, __b) ((v4i32)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_u64(__a, __b) ((v2u64)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
-#define msa_eorq_s64(__a, __b) ((v2i64)__builtin_msa_xor_v((v16u8)__a, (v16u8)__b))
+#define msa_eorq_u8(__a, __b)  ((v16u8)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_s8(__a, __b)  ((v16i8)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_u16(__a, __b) ((v8u16)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_s16(__a, __b) ((v8i16)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_u32(__a, __b) ((v4u32)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_s32(__a, __b) ((v4i32)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_u64(__a, __b) ((v2u64)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
+#define msa_eorq_s64(__a, __b) ((v2i64)__builtin_msa_xor_v((v16u8)(__a), (v16u8)(__b)))
 
 /* bitwise not: v16u8 __builtin_msa_xori_b (v16u8, 0xff) */
-#define msa_mvnq_u8(__a)  ((v16u8)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_s8(__a)  ((v16i8)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_u16(__a) ((v8u16)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_s16(__a) ((v8i16)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_u32(__a) ((v4u32)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_s32(__a) ((v4i32)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_u64(__a) ((v2u64)__builtin_msa_xori_b((v16u8)__a, 0xFF))
-#define msa_mvnq_s64(__a) ((v2i64)__builtin_msa_xori_b((v16u8)__a, 0xFF))
+#define msa_mvnq_u8(__a)  ((v16u8)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_s8(__a)  ((v16i8)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_u16(__a) ((v8u16)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_s16(__a) ((v8i16)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_u32(__a) ((v4u32)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_s32(__a) ((v4i32)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_u64(__a) ((v2u64)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
+#define msa_mvnq_s64(__a) ((v2i64)__builtin_msa_xori_b((v16u8)(__a), 0xFF))
 
 /* compare equal: ceq -> ri = ai == bi ? 1...1:0...0 */
-#define msa_ceqq_u8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)__a, (v16i8)__b))
-#define msa_ceqq_s8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)__a, (v16i8)__b))
-#define msa_ceqq_u16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)__a, (v8i16)__b))
-#define msa_ceqq_s16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)__a, (v8i16)__b))
-#define msa_ceqq_u32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)__a, (v4i32)__b))
-#define msa_ceqq_s32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)__a, (v4i32)__b))
-#define msa_ceqq_f32(__a, __b) ((v4u32)__builtin_msa_fceq_w((v4f32)__a, (v4f32)__b))
-#define msa_ceqq_u64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)__a, (v2i64)__b))
-#define msa_ceqq_s64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)__a, (v2i64)__b))
-#define msa_ceqq_f64(__a, __b) ((v2u64)__builtin_msa_fceq_d((v2f64)__a, (v2f64)__b))
+#define msa_ceqq_u8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_ceqq_s8(__a, __b)  ((v16u8)__builtin_msa_ceq_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_ceqq_u16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_ceqq_s16(__a, __b) ((v8u16)__builtin_msa_ceq_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_ceqq_u32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_ceqq_s32(__a, __b) ((v4u32)__builtin_msa_ceq_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_ceqq_f32(__a, __b) ((v4u32)__builtin_msa_fceq_w((v4f32)(__a), (v4f32)(__b)))
+#define msa_ceqq_u64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_ceqq_s64(__a, __b) ((v2u64)__builtin_msa_ceq_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_ceqq_f64(__a, __b) ((v2u64)__builtin_msa_fceq_d((v2f64)(__a), (v2f64)(__b)))
 
 /* Compare less-than: clt -> ri = ai < bi ? 1...1:0...0 */
-#define msa_cltq_u8(__a, __b)  ((v16u8)__builtin_msa_clt_u_b((v16u8)__a, (v16u8)__b))
-#define msa_cltq_s8(__a, __b)  ((v16u8)__builtin_msa_clt_s_b((v16i8)__a, (v16i8)__b))
-#define msa_cltq_u16(__a, __b) ((v8u16)__builtin_msa_clt_u_h((v8u16)__a, (v8u16)__b))
-#define msa_cltq_s16(__a, __b) ((v8u16)__builtin_msa_clt_s_h((v8i16)__a, (v8i16)__b))
-#define msa_cltq_u32(__a, __b) ((v4u32)__builtin_msa_clt_u_w((v4u32)__a, (v4u32)__b))
-#define msa_cltq_s32(__a, __b) ((v4u32)__builtin_msa_clt_s_w((v4i32)__a, (v4i32)__b))
-#define msa_cltq_f32(__a, __b) ((v4u32)__builtin_msa_fclt_w((v4f32)__a, (v4f32)__b))
-#define msa_cltq_u64(__a, __b) ((v2u64)__builtin_msa_clt_u_d((v2u64)__a, (v2u64)__b))
-#define msa_cltq_s64(__a, __b) ((v2u64)__builtin_msa_clt_s_d((v2i64)__a, (v2i64)__b))
-#define msa_cltq_f64(__a, __b) ((v2u64)__builtin_msa_fclt_d((v2f64)__a, (v2f64)__b))
+#define msa_cltq_u8(__a, __b)  ((v16u8)__builtin_msa_clt_u_b((v16u8)(__a), (v16u8)(__b)))
+#define msa_cltq_s8(__a, __b)  ((v16u8)__builtin_msa_clt_s_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_cltq_u16(__a, __b) ((v8u16)__builtin_msa_clt_u_h((v8u16)(__a), (v8u16)(__b)))
+#define msa_cltq_s16(__a, __b) ((v8u16)__builtin_msa_clt_s_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_cltq_u32(__a, __b) ((v4u32)__builtin_msa_clt_u_w((v4u32)(__a), (v4u32)(__b)))
+#define msa_cltq_s32(__a, __b) ((v4u32)__builtin_msa_clt_s_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_cltq_f32(__a, __b) ((v4u32)__builtin_msa_fclt_w((v4f32)(__a), (v4f32)(__b)))
+#define msa_cltq_u64(__a, __b) ((v2u64)__builtin_msa_clt_u_d((v2u64)(__a), (v2u64)(__b)))
+#define msa_cltq_s64(__a, __b) ((v2u64)__builtin_msa_clt_s_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_cltq_f64(__a, __b) ((v2u64)__builtin_msa_fclt_d((v2f64)(__a), (v2f64)(__b)))
 
 /* compare greater-than: cgt -> ri = ai > bi ? 1...1:0...0 */
-#define msa_cgtq_u8(__a, __b)  ((v16u8)__builtin_msa_clt_u_b((v16u8)__b, (v16u8)__a))
-#define msa_cgtq_s8(__a, __b)  ((v16u8)__builtin_msa_clt_s_b((v16i8)__b, (v16i8)__a))
-#define msa_cgtq_u16(__a, __b) ((v8u16)__builtin_msa_clt_u_h((v8u16)__b, (v8u16)__a))
-#define msa_cgtq_s16(__a, __b) ((v8u16)__builtin_msa_clt_s_h((v8i16)__b, (v8i16)__a))
-#define msa_cgtq_u32(__a, __b) ((v4u32)__builtin_msa_clt_u_w((v4u32)__b, (v4u32)__a))
-#define msa_cgtq_s32(__a, __b) ((v4u32)__builtin_msa_clt_s_w((v4i32)__b, (v4i32)__a))
-#define msa_cgtq_f32(__a, __b) ((v4u32)__builtin_msa_fclt_w((v4f32)__b, (v4f32)__a))
-#define msa_cgtq_u64(__a, __b) ((v2u64)__builtin_msa_clt_u_d((v2u64)__b, (v2u64)__a))
-#define msa_cgtq_s64(__a, __b) ((v2u64)__builtin_msa_clt_s_d((v2i64)__b, (v2i64)__a))
-#define msa_cgtq_f64(__a, __b) ((v2u64)__builtin_msa_fclt_d((v2f64)__b, (v2f64)__a))
+#define msa_cgtq_u8(__a, __b)  ((v16u8)__builtin_msa_clt_u_b((v16u8)(__b), (v16u8)(__a)))
+#define msa_cgtq_s8(__a, __b)  ((v16u8)__builtin_msa_clt_s_b((v16i8)(__b), (v16i8)(__a)))
+#define msa_cgtq_u16(__a, __b) ((v8u16)__builtin_msa_clt_u_h((v8u16)(__b), (v8u16)(__a)))
+#define msa_cgtq_s16(__a, __b) ((v8u16)__builtin_msa_clt_s_h((v8i16)(__b), (v8i16)(__a)))
+#define msa_cgtq_u32(__a, __b) ((v4u32)__builtin_msa_clt_u_w((v4u32)(__b), (v4u32)(__a)))
+#define msa_cgtq_s32(__a, __b) ((v4u32)__builtin_msa_clt_s_w((v4i32)(__b), (v4i32)(__a)))
+#define msa_cgtq_f32(__a, __b) ((v4u32)__builtin_msa_fclt_w((v4f32)(__b), (v4f32)(__a)))
+#define msa_cgtq_u64(__a, __b) ((v2u64)__builtin_msa_clt_u_d((v2u64)(__b), (v2u64)(__a)))
+#define msa_cgtq_s64(__a, __b) ((v2u64)__builtin_msa_clt_s_d((v2i64)(__b), (v2i64)(__a)))
+#define msa_cgtq_f64(__a, __b) ((v2u64)__builtin_msa_fclt_d((v2f64)(__b), (v2f64)(__a)))
 
 /* compare less-equal: cle -> ri = ai <= bi ? 1...1:0...0 */
-#define msa_cleq_u8(__a, __b)  ((v16u8)__builtin_msa_cle_u_b((v16u8)__a, (v16u8)__b))
-#define msa_cleq_s8(__a, __b)  ((v16u8)__builtin_msa_cle_s_b((v16i8)__a, (v16i8)__b))
-#define msa_cleq_u16(__a, __b) ((v8u16)__builtin_msa_cle_u_h((v8u16)__a, (v8u16)__b))
-#define msa_cleq_s16(__a, __b) ((v8u16)__builtin_msa_cle_s_h((v8i16)__a, (v8i16)__b))
-#define msa_cleq_u32(__a, __b) ((v4u32)__builtin_msa_cle_u_w((v4u32)__a, (v4u32)__b))
-#define msa_cleq_s32(__a, __b) ((v4u32)__builtin_msa_cle_s_w((v4i32)__a, (v4i32)__b))
-#define msa_cleq_f32(__a, __b) ((v4u32)__builtin_msa_fcle_w((v4f32)__a, (v4f32)__b))
-#define msa_cleq_u64(__a, __b) ((v2u64)__builtin_msa_cle_u_d((v2u64)__a, (v2u64)__b))
-#define msa_cleq_s64(__a, __b) ((v2u64)__builtin_msa_cle_s_d((v2i64)__a, (v2i64)__b))
-#define msa_cleq_f64(__a, __b) ((v2u64)__builtin_msa_fcle_d((v2f64)__a, (v2f64)__b))
+#define msa_cleq_u8(__a, __b)  ((v16u8)__builtin_msa_cle_u_b((v16u8)(__a), (v16u8)(__b)))
+#define msa_cleq_s8(__a, __b)  ((v16u8)__builtin_msa_cle_s_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_cleq_u16(__a, __b) ((v8u16)__builtin_msa_cle_u_h((v8u16)(__a), (v8u16)(__b)))
+#define msa_cleq_s16(__a, __b) ((v8u16)__builtin_msa_cle_s_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_cleq_u32(__a, __b) ((v4u32)__builtin_msa_cle_u_w((v4u32)(__a), (v4u32)(__b)))
+#define msa_cleq_s32(__a, __b) ((v4u32)__builtin_msa_cle_s_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_cleq_f32(__a, __b) ((v4u32)__builtin_msa_fcle_w((v4f32)(__a), (v4f32)(__b)))
+#define msa_cleq_u64(__a, __b) ((v2u64)__builtin_msa_cle_u_d((v2u64)(__a), (v2u64)(__b)))
+#define msa_cleq_s64(__a, __b) ((v2u64)__builtin_msa_cle_s_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_cleq_f64(__a, __b) ((v2u64)__builtin_msa_fcle_d((v2f64)(__a), (v2f64)(__b)))
 
 /* compare greater-equal: cge -> ri = ai >= bi ? 1...1:0...0 */
-#define msa_cgeq_u8(__a, __b)  ((v16u8)__builtin_msa_cle_u_b((v16u8)__b, (v16u8)__a))
-#define msa_cgeq_s8(__a, __b)  ((v16u8)__builtin_msa_cle_s_b((v16i8)__b, (v16i8)__a))
-#define msa_cgeq_u16(__a, __b) ((v8u16)__builtin_msa_cle_u_h((v8u16)__b, (v8u16)__a))
-#define msa_cgeq_s16(__a, __b) ((v8u16)__builtin_msa_cle_s_h((v8i16)__b, (v8i16)__a))
-#define msa_cgeq_u32(__a, __b) ((v4u32)__builtin_msa_cle_u_w((v4u32)__b, (v4u32)__a))
-#define msa_cgeq_s32(__a, __b) ((v4u32)__builtin_msa_cle_s_w((v4i32)__b, (v4i32)__a))
-#define msa_cgeq_f32(__a, __b) ((v4u32)__builtin_msa_fcle_w((v4f32)__b, (v4f32)__a))
-#define msa_cgeq_u64(__a, __b) ((v2u64)__builtin_msa_cle_u_d((v2u64)__b, (v2u64)__a))
-#define msa_cgeq_s64(__a, __b) ((v2u64)__builtin_msa_cle_s_d((v2i64)__b, (v2i64)__a))
-#define msa_cgeq_f64(__a, __b) ((v2u64)__builtin_msa_fcle_d((v2f64)__b, (v2f64)__a))
+#define msa_cgeq_u8(__a, __b)  ((v16u8)__builtin_msa_cle_u_b((v16u8)(__b), (v16u8)(__a)))
+#define msa_cgeq_s8(__a, __b)  ((v16u8)__builtin_msa_cle_s_b((v16i8)(__b), (v16i8)(__a)))
+#define msa_cgeq_u16(__a, __b) ((v8u16)__builtin_msa_cle_u_h((v8u16)(__b), (v8u16)(__a)))
+#define msa_cgeq_s16(__a, __b) ((v8u16)__builtin_msa_cle_s_h((v8i16)(__b), (v8i16)(__a)))
+#define msa_cgeq_u32(__a, __b) ((v4u32)__builtin_msa_cle_u_w((v4u32)(__b), (v4u32)(__a)))
+#define msa_cgeq_s32(__a, __b) ((v4u32)__builtin_msa_cle_s_w((v4i32)(__b), (v4i32)(__a)))
+#define msa_cgeq_f32(__a, __b) ((v4u32)__builtin_msa_fcle_w((v4f32)(__b), (v4f32)(__a)))
+#define msa_cgeq_u64(__a, __b) ((v2u64)__builtin_msa_cle_u_d((v2u64)(__b), (v2u64)(__a)))
+#define msa_cgeq_s64(__a, __b) ((v2u64)__builtin_msa_cle_s_d((v2i64)(__b), (v2i64)(__a)))
+#define msa_cgeq_f64(__a, __b) ((v2u64)__builtin_msa_fcle_d((v2f64)(__b), (v2f64)(__a)))
 
-/* Shift Left Logical: shl -> ri = ai << bi;  */
-#define msa_shlq_u8(__a, __b)  ((v16u8)__builtin_msa_sll_b((v16i8)__a, (v16i8)__b))
-#define msa_shlq_s8(__a, __b)  ((v16i8)__builtin_msa_sll_b((v16i8)__a, (v16i8)__b))
-#define msa_shlq_u16(__a, __b) ((v8u16)__builtin_msa_sll_h((v8i16)__a, (v8i16)__b))
-#define msa_shlq_s16(__a, __b) ((v8i16)__builtin_msa_sll_h((v8i16)__a, (v8i16)__b))
-#define msa_shlq_u32(__a, __b) ((v4u32)__builtin_msa_sll_w((v4i32)__a, (v4i32)__b))
-#define msa_shlq_s32(__a, __b) ((v4i32)__builtin_msa_sll_w((v4i32)__a, (v4i32)__b))
-#define msa_shlq_u64(__a, __b) ((v2u64)__builtin_msa_sll_d((v2i64)__a, (v2i64)__b))
-#define msa_shlq_s64(__a, __b) ((v2i64)__builtin_msa_sll_d((v2i64)__a, (v2i64)__b))
+/* Shift Left Logical: shl -> ri = ai << bi; */
+#define msa_shlq_u8(__a, __b)  ((v16u8)__builtin_msa_sll_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_shlq_s8(__a, __b)  ((v16i8)__builtin_msa_sll_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_shlq_u16(__a, __b) ((v8u16)__builtin_msa_sll_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_shlq_s16(__a, __b) ((v8i16)__builtin_msa_sll_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_shlq_u32(__a, __b) ((v4u32)__builtin_msa_sll_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_shlq_s32(__a, __b) ((v4i32)__builtin_msa_sll_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_shlq_u64(__a, __b) ((v2u64)__builtin_msa_sll_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_shlq_s64(__a, __b) ((v2i64)__builtin_msa_sll_d((v2i64)(__a), (v2i64)(__b)))
 
-/* Immediate Shift Left Logical: shl -> ri = ai << imm;  */
-#define msa_shlq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_slli_b((v16i8)__a, __imm))
-#define msa_shlq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_slli_b((v16i8)__a, __imm))
-#define msa_shlq_n_u16(__a, __imm) ((v8u16)__builtin_msa_slli_h((v8i16)__a, __imm))
-#define msa_shlq_n_s16(__a, __imm) ((v8i16)__builtin_msa_slli_h((v8i16)__a, __imm))
-#define msa_shlq_n_u32(__a, __imm) ((v4u32)__builtin_msa_slli_w((v4i32)__a, __imm))
-#define msa_shlq_n_s32(__a, __imm) ((v4i32)__builtin_msa_slli_w((v4i32)__a, __imm))
-#define msa_shlq_n_u64(__a, __imm) ((v2u64)__builtin_msa_slli_d((v2i64)__a, __imm))
-#define msa_shlq_n_s64(__a, __imm) ((v2i64)__builtin_msa_slli_d((v2i64)__a, __imm))
+/* Immediate Shift Left Logical: shl -> ri = ai << imm; */
+#define msa_shlq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_slli_b((v16i8)(__a), __imm))
+#define msa_shlq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_slli_b((v16i8)(__a), __imm))
+#define msa_shlq_n_u16(__a, __imm) ((v8u16)__builtin_msa_slli_h((v8i16)(__a), __imm))
+#define msa_shlq_n_s16(__a, __imm) ((v8i16)__builtin_msa_slli_h((v8i16)(__a), __imm))
+#define msa_shlq_n_u32(__a, __imm) ((v4u32)__builtin_msa_slli_w((v4i32)(__a), __imm))
+#define msa_shlq_n_s32(__a, __imm) ((v4i32)__builtin_msa_slli_w((v4i32)(__a), __imm))
+#define msa_shlq_n_u64(__a, __imm) ((v2u64)__builtin_msa_slli_d((v2i64)(__a), __imm))
+#define msa_shlq_n_s64(__a, __imm) ((v2i64)__builtin_msa_slli_d((v2i64)(__a), __imm))
 
-/* shift right: shrq -> ri = ai >> bi;  */
-#define msa_shrq_u8(__a, __b)  ((v16u8)__builtin_msa_srl_b((v16i8)__a, (v16i8)__b))
-#define msa_shrq_s8(__a, __b)  ((v16i8)__builtin_msa_sra_b((v16i8)__a, (v16i8)__b))
-#define msa_shrq_u16(__a, __b) ((v8u16)__builtin_msa_srl_h((v8i16)__a, (v8i16)__b))
-#define msa_shrq_s16(__a, __b) ((v8i16)__builtin_msa_sra_h((v8i16)__a, (v8i16)__b))
-#define msa_shrq_u32(__a, __b) ((v4u32)__builtin_msa_srl_w((v4i32)__a, (v4i32)__b))
-#define msa_shrq_s32(__a, __b) ((v4i32)__builtin_msa_sra_w((v4i32)__a, (v4i32)__b))
-#define msa_shrq_u64(__a, __b) ((v2u64)__builtin_msa_srl_d((v2i64)__a, (v2i64)__b))
-#define msa_shrq_s64(__a, __b) ((v2i64)__builtin_msa_sra_d((v2i64)__a, (v2i64)__b))
+/* shift right: shrq -> ri = ai >> bi; */
+#define msa_shrq_u8(__a, __b)  ((v16u8)__builtin_msa_srl_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_shrq_s8(__a, __b)  ((v16i8)__builtin_msa_sra_b((v16i8)(__a), (v16i8)(__b)))
+#define msa_shrq_u16(__a, __b) ((v8u16)__builtin_msa_srl_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_shrq_s16(__a, __b) ((v8i16)__builtin_msa_sra_h((v8i16)(__a), (v8i16)(__b)))
+#define msa_shrq_u32(__a, __b) ((v4u32)__builtin_msa_srl_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_shrq_s32(__a, __b) ((v4i32)__builtin_msa_sra_w((v4i32)(__a), (v4i32)(__b)))
+#define msa_shrq_u64(__a, __b) ((v2u64)__builtin_msa_srl_d((v2i64)(__a), (v2i64)(__b)))
+#define msa_shrq_s64(__a, __b) ((v2i64)__builtin_msa_sra_d((v2i64)(__a), (v2i64)(__b)))
 
-/* Immediate Shift Right: shr -> ri = ai >> imm;  */
-#define msa_shrq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_srli_b((v16i8)__a, __imm))
-#define msa_shrq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_srai_b((v16i8)__a, __imm))
-#define msa_shrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srli_h((v8i16)__a, __imm))
-#define msa_shrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srai_h((v8i16)__a, __imm))
-#define msa_shrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srli_w((v4i32)__a, __imm))
-#define msa_shrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srai_w((v4i32)__a, __imm))
-#define msa_shrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srli_d((v2i64)__a, __imm))
-#define msa_shrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srai_d((v2i64)__a, __imm))
+/* Immediate Shift Right: shr -> ri = ai >> imm; */
+#define msa_shrq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_srli_b((v16i8)(__a), __imm))
+#define msa_shrq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_srai_b((v16i8)(__a), __imm))
+#define msa_shrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srli_h((v8i16)(__a), __imm))
+#define msa_shrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srai_h((v8i16)(__a), __imm))
+#define msa_shrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srli_w((v4i32)(__a), __imm))
+#define msa_shrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srai_w((v4i32)(__a), __imm))
+#define msa_shrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srli_d((v2i64)(__a), __imm))
+#define msa_shrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srai_d((v2i64)(__a), __imm))
 
-/* Immediate Shift Right Rounded: shr -> ri = ai >> (rounded)imm;  */
-#define msa_rshrq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_srlri_b((v16i8)__a, __imm))
-#define msa_rshrq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_srari_b((v16i8)__a, __imm))
-#define msa_rshrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srlri_h((v8i16)__a, __imm))
-#define msa_rshrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srari_h((v8i16)__a, __imm))
-#define msa_rshrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srlri_w((v4i32)__a, __imm))
-#define msa_rshrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srari_w((v4i32)__a, __imm))
-#define msa_rshrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srlri_d((v2i64)__a, __imm))
-#define msa_rshrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srari_d((v2i64)__a, __imm))
+/* Immediate Shift Right Rounded: shr -> ri = ai >> (rounded)imm; */
+#define msa_rshrq_n_u8(__a, __imm)  ((v16u8)__builtin_msa_srlri_b((v16i8)(__a), __imm))
+#define msa_rshrq_n_s8(__a, __imm)  ((v16i8)__builtin_msa_srari_b((v16i8)(__a), __imm))
+#define msa_rshrq_n_u16(__a, __imm) ((v8u16)__builtin_msa_srlri_h((v8i16)(__a), __imm))
+#define msa_rshrq_n_s16(__a, __imm) ((v8i16)__builtin_msa_srari_h((v8i16)(__a), __imm))
+#define msa_rshrq_n_u32(__a, __imm) ((v4u32)__builtin_msa_srlri_w((v4i32)(__a), __imm))
+#define msa_rshrq_n_s32(__a, __imm) ((v4i32)__builtin_msa_srari_w((v4i32)(__a), __imm))
+#define msa_rshrq_n_u64(__a, __imm) ((v2u64)__builtin_msa_srlri_d((v2i64)(__a), __imm))
+#define msa_rshrq_n_s64(__a, __imm) ((v2i64)__builtin_msa_srari_d((v2i64)(__a), __imm))
 
-/* rename the msa builtin func to unify the name style for intrin_msa.hpp */
+/* Vector saturating rounding shift left, qrshl -> ri = ai << bi; */
+#define msa_qrshrq_s32(a, b)  ((v4i32)__msa_srar_w((v4i32)(a), (v4i32)(b)))
+
+/* Rename the msa builtin func to unify the name style for intrin_msa.hpp */
 #define msa_qaddq_u8          __builtin_msa_adds_u_b
 #define msa_qaddq_s8          __builtin_msa_adds_s_b
 #define msa_qaddq_u16         __builtin_msa_adds_u_h
@@ -831,38 +937,38 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_qaddq_s32         __builtin_msa_adds_s_w
 #define msa_qaddq_u64         __builtin_msa_adds_u_d
 #define msa_qaddq_s64         __builtin_msa_adds_s_d
-#define msa_addq_u8(a, b)     ((v16u8)__builtin_msa_addv_b((v16i8)a, (v16i8)b))
+#define msa_addq_u8(a, b)     ((v16u8)__builtin_msa_addv_b((v16i8)(a), (v16i8)(b)))
 #define msa_addq_s8           __builtin_msa_addv_b
-#define msa_addq_u16(a, b)    ((v8u16)__builtin_msa_addv_h((v8i16)a, (v8i16)b))
+#define msa_addq_u16(a, b)    ((v8u16)__builtin_msa_addv_h((v8i16)(a), (v8i16)(b)))
 #define msa_addq_s16          __builtin_msa_addv_h
-#define msa_addq_u32(a, b)    ((v4u32)__builtin_msa_addv_w((v4i32)a, (v4i32)b))
+#define msa_addq_u32(a, b)    ((v4u32)__builtin_msa_addv_w((v4i32)(a), (v4i32)(b)))
 #define msa_addq_s32          __builtin_msa_addv_w
 #define msa_addq_f32          __builtin_msa_fadd_w
-#define msa_addq_u64(a, b)    ((v2u64)__builtin_msa_addv_d((v2i64)a, (v2i64)b))
+#define msa_addq_u64(a, b)    ((v2u64)__builtin_msa_addv_d((v2i64)(a), (v2i64)(b)))
 #define msa_addq_s64          __builtin_msa_addv_d
 #define msa_addq_f64          __builtin_msa_fadd_d
 #define msa_qsubq_u8          __builtin_msa_subs_u_b
 #define msa_qsubq_s8          __builtin_msa_subs_s_b
 #define msa_qsubq_u16         __builtin_msa_subs_u_h
 #define msa_qsubq_s16         __builtin_msa_subs_s_h
-#define msa_subq_u8(a, b)     ((v16u8)__builtin_msa_subv_b((v16i8)a, (v16i8)b))
+#define msa_subq_u8(a, b)     ((v16u8)__builtin_msa_subv_b((v16i8)(a), (v16i8)(b)))
 #define msa_subq_s8           __builtin_msa_subv_b
-#define msa_subq_u16(a, b)    ((v8u16)__builtin_msa_subv_h((v8i16)a, (v8i16)b))
+#define msa_subq_u16(a, b)    ((v8u16)__builtin_msa_subv_h((v8i16)(a), (v8i16)(b)))
 #define msa_subq_s16          __builtin_msa_subv_h
-#define msa_subq_u32(a, b)    ((v4u32)__builtin_msa_subv_w((v4i32)a, (v4i32)b))
+#define msa_subq_u32(a, b)    ((v4u32)__builtin_msa_subv_w((v4i32)(a), (v4i32)(b)))
 #define msa_subq_s32          __builtin_msa_subv_w
 #define msa_subq_f32          __builtin_msa_fsub_w
-#define msa_subq_u64(a, b)    ((v2u64)__builtin_msa_subv_d((v2i64)a, (v2i64)b))
+#define msa_subq_u64(a, b)    ((v2u64)__builtin_msa_subv_d((v2i64)(a), (v2i64)(b)))
 #define msa_subq_s64          __builtin_msa_subv_d
 #define msa_subq_f64          __builtin_msa_fsub_d
-#define msa_mulq_u8(a, b)     ((v16u8)__builtin_msa_mulv_b((v16i8)a, (v16i8)b))
-#define msa_mulq_s8(a, b)     ((v16i8)__builtin_msa_mulv_b((v16i8)a, (v16i8)b))
-#define msa_mulq_u16(a, b)    ((v8u16)__builtin_msa_mulv_h((v8i16)a, (v8i16)b))
-#define msa_mulq_s16(a, b)    ((v8i16)__builtin_msa_mulv_h((v8i16)a, (v8i16)b))
-#define msa_mulq_u32(a, b)    ((v4u32)__builtin_msa_mulv_w((v4i32)a, (v4i32)b))
-#define msa_mulq_s32(a, b)    ((v4i32)__builtin_msa_mulv_w((v4i32)a, (v4i32)b))
-#define msa_mulq_u64(a, b)    ((v2u64)__builtin_msa_mulv_d((v2i64)a, (v2i64)b))
-#define msa_mulq_s64(a, b)    ((v2i64)__builtin_msa_mulv_d((v2i64)a, (v2i64)b))
+#define msa_mulq_u8(a, b)     ((v16u8)__builtin_msa_mulv_b((v16i8)(a), (v16i8)(b)))
+#define msa_mulq_s8(a, b)     ((v16i8)__builtin_msa_mulv_b((v16i8)(a), (v16i8)(b)))
+#define msa_mulq_u16(a, b)    ((v8u16)__builtin_msa_mulv_h((v8i16)(a), (v8i16)(b)))
+#define msa_mulq_s16(a, b)    ((v8i16)__builtin_msa_mulv_h((v8i16)(a), (v8i16)(b)))
+#define msa_mulq_u32(a, b)    ((v4u32)__builtin_msa_mulv_w((v4i32)(a), (v4i32)(b)))
+#define msa_mulq_s32(a, b)    ((v4i32)__builtin_msa_mulv_w((v4i32)(a), (v4i32)(b)))
+#define msa_mulq_u64(a, b)    ((v2u64)__builtin_msa_mulv_d((v2i64)(a), (v2i64)(b)))
+#define msa_mulq_s64(a, b)    ((v2i64)__builtin_msa_mulv_d((v2i64)(a), (v2i64)(b)))
 #define msa_mulq_f32          __builtin_msa_fmul_w
 #define msa_mulq_f64          __builtin_msa_fmul_d
 #define msa_divq_f32          __builtin_msa_fdiv_w
@@ -880,12 +986,9 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_dpadd_u_w         __builtin_msa_dpadd_u_w
 #define msa_dpadd_u_d         __builtin_msa_dpadd_u_d
 
-/*Vector saturating rounding shift left, qrshl -> ri = ai << bi;*/
-#define msa_qrshrq_s32(a, b)    ((v4i32)__msa_srar_w((v4i32)a, (v4i32)b))
-
 #define ILVRL_B2(RTYPE, in0, in1, low, hi) do {       \
-      low = (RTYPE)__msa_ilvr_b((v16i8)in0, (v16i8)in1);  \
-      hi  = (RTYPE)__msa_ilvl_b((v16i8)in0, (v16i8)in1);  \
+      low = (RTYPE)__builtin_msa_ilvr_b((v16i8)(in0), (v16i8)(in1));  \
+      hi  = (RTYPE)__builtin_msa_ilvl_b((v16i8)(in0), (v16i8)(in1));  \
     } while (0)
 #define ILVRL_B2_UB(...) ILVRL_B2(v16u8, __VA_ARGS__)
 #define ILVRL_B2_SB(...) ILVRL_B2(v16i8, __VA_ARGS__)
@@ -894,8 +997,8 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define ILVRL_B2_SW(...) ILVRL_B2(v4i32, __VA_ARGS__)
 
 #define ILVRL_H2(RTYPE, in0, in1, low, hi) do {       \
-      low = (RTYPE)__msa_ilvr_h((v8i16)in0, (v8i16)in1);  \
-      hi  = (RTYPE)__msa_ilvl_h((v8i16)in0, (v8i16)in1);  \
+      low = (RTYPE)__builtin_msa_ilvr_h((v8i16)(in0), (v8i16)(in1));  \
+      hi  = (RTYPE)__builtin_msa_ilvl_h((v8i16)(in0), (v8i16)(in1));  \
     } while (0)
 #define ILVRL_H2_UB(...) ILVRL_H2(v16u8, __VA_ARGS__)
 #define ILVRL_H2_SB(...) ILVRL_H2(v16i8, __VA_ARGS__)
@@ -905,8 +1008,8 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define ILVRL_H2_UW(...) ILVRL_H2(v4u32, __VA_ARGS__)
 
 #define ILVRL_W2(RTYPE, in0, in1, low, hi) do {       \
-      low = (RTYPE)__msa_ilvr_w((v4i32)in0, (v4i32)in1);  \
-      hi  = (RTYPE)__msa_ilvl_w((v4i32)in0, (v4i32)in1);  \
+      low = (RTYPE)__builtin_msa_ilvr_w((v4i32)(in0), (v4i32)(in1));  \
+      hi  = (RTYPE)__builtin_msa_ilvl_w((v4i32)(in0), (v4i32)(in1));  \
     } while (0)
 #define ILVRL_W2_UB(...) ILVRL_W2(v16u8, __VA_ARGS__)
 #define ILVRL_W2_SH(...) ILVRL_W2(v8i16, __VA_ARGS__)
@@ -1044,15 +1147,23 @@ msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
 
 /* extq (r = (a || b); a concatenation b and get elements from index c) */
 #ifdef _MIPSEB
-#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b(__builtin_msa_subv_b((v16i8)((v2i64){0x1716151413121110, 0x1F1E1D1C1B1A1918}), __builtin_msa_fill_b(c)), a, b)
-#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h(__builtin_msa_subv_h((v8i16)((v2i64){0x000B000A00090008, 0x000F000E000D000C}), __builtin_msa_fill_h(c)), a, b)
-#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w(__builtin_msa_subv_w((v4i32)((v2i64){0x0000000500000004, 0x0000000700000006}), __builtin_msa_fill_w(c)), a, b)
-#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d(__builtin_msa_subv_d((v2i64){0x0000000000000002, 0x0000000000000003}, __builtin_msa_fill_d(c)), a, b)
+#define msa_extq_s8(a, b, c)  \
+(__builtin_msa_vshf_b(__builtin_msa_subv_b((v16i8)((v2i64){0x1716151413121110, 0x1F1E1D1C1B1A1918}), __builtin_msa_fill_b(c)), a, b))
+#define msa_extq_s16(a, b, c) \
+(__builtin_msa_vshf_h(__builtin_msa_subv_h((v8i16)((v2i64){0x000B000A00090008, 0x000F000E000D000C}), __builtin_msa_fill_h(c)), a, b))
+#define msa_extq_s32(a, b, c) \
+(__builtin_msa_vshf_w(__builtin_msa_subv_w((v4i32)((v2i64){0x0000000500000004, 0x0000000700000006}), __builtin_msa_fill_w(c)), a, b))
+#define msa_extq_s64(a, b, c) \
+(__builtin_msa_vshf_d(__builtin_msa_subv_d((v2i64){0x0000000000000002, 0x0000000000000003}, __builtin_msa_fill_d(c)), a, b))
 #else
-#define msa_extq_s8(a, b, c)  __builtin_msa_vshf_b(__builtin_msa_addv_b((v16i8)((v2i64){0x0706050403020100, 0x0F0E0D0C0B0A0908}), __builtin_msa_fill_b(c)), b, a)
-#define msa_extq_s16(a, b, c) __builtin_msa_vshf_h(__builtin_msa_addv_h((v8i16)((v2i64){0x0003000200010000, 0x0007000600050004}), __builtin_msa_fill_h(c)), b, a)
-#define msa_extq_s32(a, b, c) __builtin_msa_vshf_w(__builtin_msa_addv_w((v4i32)((v2i64){0x0000000100000000, 0x0000000300000002}), __builtin_msa_fill_w(c)), b, a)
-#define msa_extq_s64(a, b, c) __builtin_msa_vshf_d(__builtin_msa_addv_d((v2i64){0x0000000000000000, 0x0000000000000001}, __builtin_msa_fill_d(c)), b, a)
+#define msa_extq_s8(a, b, c)  \
+(__builtin_msa_vshf_b(__builtin_msa_addv_b((v16i8)((v2i64){0x0706050403020100, 0x0F0E0D0C0B0A0908}), __builtin_msa_fill_b(c)), b, a))
+#define msa_extq_s16(a, b, c) \
+(__builtin_msa_vshf_h(__builtin_msa_addv_h((v8i16)((v2i64){0x0003000200010000, 0x0007000600050004}), __builtin_msa_fill_h(c)), b, a))
+#define msa_extq_s32(a, b, c) \
+(__builtin_msa_vshf_w(__builtin_msa_addv_w((v4i32)((v2i64){0x0000000100000000, 0x0000000300000002}), __builtin_msa_fill_w(c)), b, a))
+#define msa_extq_s64(a, b, c) \
+(__builtin_msa_vshf_d(__builtin_msa_addv_d((v2i64){0x0000000000000000, 0x0000000000000001}, __builtin_msa_fill_d(c)), b, a))
 #endif /* _MIPSEB */
 
 /* cvttruncq, cvttintq, cvtrintq */
@@ -1421,8 +1532,8 @@ msa_qdmulhq_n_s16(v8i16 a, int16_t b)
 {
   v8i16 a_lo, a_hi;
   ILVRL_H2_SH(a, msa_dupq_n_s16(0), a_lo, a_hi);
-  return msa_combine_s16(msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_lo), msa_dupq_n_s32(b)), 1), 16),
-                         msa_shrn_n_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_hi), msa_dupq_n_s32(b)), 1), 16));
+  return msa_packr_s32(msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_lo), msa_dupq_n_s32(b)), 1),
+                       msa_shlq_n_s32(msa_mulq_s32(msa_paddlq_s16(a_hi), msa_dupq_n_s32(b)), 1), 16);
 }
 
 #ifdef __cplusplus
