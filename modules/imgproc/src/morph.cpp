@@ -589,6 +589,15 @@ typedef MorphFVec<VMax32f> DilateVec32f;
 
 #elif CV_MSA
 
+#define CV_SIMD_WIDTH_BYTES (16)
+template<typename _Tp, typename _Tpv>
+inline void msa_store_low(_Tp* ptr, const _Tpv a)
+{
+    int n  = CV_SIMD_WIDTH_BYTES/sizeof(_Tp);
+    for( int i = 0; i < (n/2); i++ )
+        ptr[i] = a[i];
+}
+
 template<class VecUpdate> struct MorphRowVec8u
 {
     MorphRowVec8u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
@@ -796,10 +805,11 @@ template<class VecUpdate> struct MorphColumnVec8u
                 }
 
                 x0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
-                msa_st1_u8(dst + i, msa_get_low_u8(updateOp(s0, x0)));
+                msa_store_low((dst+i), updateOp(s0, x0));
+
 
                 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
-                msa_st1_u8(dst + dststep + i, msa_get_low_u8(updateOp(s0, x0)));
+                msa_store_low((dst + dststep + i), updateOp(s0, x0));
             }
         }
 
@@ -832,7 +842,7 @@ template<class VecUpdate> struct MorphColumnVec8u
                     v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
                     s0 = updateOp(s0, x0);
                 }
-                msa_st1_u8(dst + i, msa_get_low_u8(s0));
+                msa_store_low((dst+i), s0);
             }
         }
 
@@ -899,10 +909,10 @@ template<class VecUpdate> struct MorphColumnVec16u
                 }
 
                 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
-                msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(updateOp(s0, x0)));
+                msa_store_low((ushort*)(dst + i), updateOp(s0, x0));
 
                 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
-                msa_st1_u16((ushort*)(dst + dststep + i), msa_get_low_u16(updateOp(s0, x0)));
+                msa_store_low((ushort*)(dst + dststep + i), updateOp(s0, x0));
             }
         }
 
@@ -935,7 +945,7 @@ template<class VecUpdate> struct MorphColumnVec16u
                     v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
                     s0 = updateOp(s0, x0);
                 }
-                msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(s0));
+                msa_store_low((ushort*)(dst + i), s0);
             }
         }
 
@@ -1002,10 +1012,10 @@ template<class VecUpdate> struct MorphColumnVec16s
                 }
 
                 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
-                msa_st1_s16((short*)(dst + i), msa_get_low_s16(updateOp(s0, x0)));
+                msa_store_low((short*)(dst + i), updateOp(s0, x0));
 
                 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
-                msa_st1_s16((short*)(dst + dststep + i), msa_get_low_s16(updateOp(s0, x0)));
+                msa_store_low((short*)(dst + i), updateOp(s0, x0));
             }
         }
 
@@ -1038,7 +1048,7 @@ template<class VecUpdate> struct MorphColumnVec16s
                     v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
                     s0 = updateOp(s0, x0);
                 }
-                msa_st1_s16((short*)(dst + i), msa_get_low_s16(s0));
+                msa_store_low((short*)(dst + i), s0);
             }
         }
 
@@ -1211,7 +1221,7 @@ template<class VecUpdate> struct MorphVec8u
                 v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
                 s0 = updateOp(s0, x0);
             }
-            msa_st1_u8(dst + i, msa_get_low_u8(s0));
+            msa_store_low((dst + i), s0);
         }
 
         return i;
@@ -1256,7 +1266,7 @@ template<class VecUpdate> struct MorphVec16u
                 v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
                 s0 = updateOp(s0, x0);
             }
-            msa_st1_u16((ushort*)(dst + i), msa_get_low_u16(s0));
+            msa_store_low((ushort*)(dst + i), s0);
         }
 
         return i/2;
@@ -1301,7 +1311,7 @@ template<class VecUpdate> struct MorphVec16s
                 v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
                 s0 = updateOp(s0, x0);
             }
-            msa_st1_s16((short*)(dst + i), msa_get_low_s16(s0));
+            msa_store_low((short*)(dst + i), s0);
         }
 
         return i/2;

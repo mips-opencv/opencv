@@ -73,7 +73,6 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
           * this case will fall through to the 'default' below, which just
           * returns.
           */
-#endif /* PNG_MIPS_MSA_API_SUPPORTED */
 #ifdef PNG_MIPS_MSA_CHECK_SUPPORTED
          {
             static volatile sig_atomic_t no_msa = -1; /* not checked */
@@ -85,8 +84,6 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
                return;
          }
 #endif /* PNG_MIPS_MSA_CHECK_SUPPORTED */
-
-#ifdef PNG_MIPS_MSA_API_SUPPORTED
          break;
 
       default: /* OFF or INVALID */
@@ -96,9 +93,6 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
          /* Option turned on */
          break;
    }
-#endif /* PNG_MIPS_MSA_API_SUPPORTED */
-
-#ifdef PNG_MIPS_MSA_API_SUPPORTED
    /* IMPORTANT: any new external functions used here must be declared using
     * PNG_INTERNAL_FUNCTION in ../pngpriv.h.  This is required so that the
     * 'prefix' option to configure works:
@@ -118,13 +112,15 @@ png_init_filter_functions_msa(png_structp pp, unsigned int bpp)
       pp->read_filter[PNG_FILTER_VALUE_AVG-1] = png_read_filter_row_avg3_msa;
       pp->read_filter[PNG_FILTER_VALUE_PAETH-1] = png_read_filter_row_paeth3_msa;
    }
-
    else if (bpp == 4)
    {
       pp->read_filter[PNG_FILTER_VALUE_SUB-1] = png_read_filter_row_sub4_msa;
       pp->read_filter[PNG_FILTER_VALUE_AVG-1] = png_read_filter_row_avg4_msa;
       pp->read_filter[PNG_FILTER_VALUE_PAETH-1] = png_read_filter_row_paeth4_msa;
    }
+#else
+   (void)pp;
+   (void)bpp;
 #endif /* PNG_MIPS_MSA_API_SUPPORTED */
 }
 #endif /* PNG_MIPS_MSA_OPT > 0 */

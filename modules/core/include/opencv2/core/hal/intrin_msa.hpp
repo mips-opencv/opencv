@@ -899,9 +899,17 @@ inline void v_store_aligned_nocache(_Tp* ptr, const _Tpvec& a) \
 inline void v_store(_Tp* ptr, const _Tpvec& a, hal::StoreMode /*mode*/) \
 { msa_st1q_##suffix(ptr, a.val); } \
 inline void v_store_low(_Tp* ptr, const _Tpvec& a) \
-{ msa_st1_##suffix(ptr, msa_get_low_##suffix(a.val)); } \
+{ \
+    int n  = _Tpvec::nlanes; \
+    for( int i = 0; i < (n/2); i++ ) \
+        ptr[i] = a.val[i]; \
+} \
 inline void v_store_high(_Tp* ptr, const _Tpvec& a) \
-{ msa_st1_##suffix(ptr, msa_get_high_##suffix(a.val)); }
+{ \
+    int n  = _Tpvec::nlanes; \
+    for( int i = 0; i < (n/2); i++ ) \
+        ptr[i] = a.val[i+(n/2)]; \
+}
 
 OPENCV_HAL_IMPL_MSA_LOADSTORE_OP(v_uint8x16, uchar, u8)
 OPENCV_HAL_IMPL_MSA_LOADSTORE_OP(v_int8x16, schar, s8)
