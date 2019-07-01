@@ -1015,7 +1015,7 @@ template<class VecUpdate> struct MorphColumnVec16s
                 msa_store_low((short*)(dst + i), updateOp(s0, x0));
 
                 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
-                msa_store_low((short*)(dst + i), updateOp(s0, x0));
+                msa_store_low((short*)(dst + dststep + i), updateOp(s0, x0));
             }
         }
 
