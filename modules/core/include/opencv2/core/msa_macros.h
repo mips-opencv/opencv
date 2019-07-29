@@ -140,26 +140,27 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_create_f64(__a) ((v1f64)((uint64_t)(__a)))
 
 /* Sign extends or zero extends each element in a 64 bits vector to twice its original length, and places the results in a 128 bits vector. */
+/*Transform v8i8 to v8i16*/
 #define msa_movl_s8(__a) \
-({ \
-  v16i8 __d = (v16i8)((v2i64){(int64_t)((v8i8)(__a)), (int64_t)0}); \
-  v16i8 __e =__builtin_msa_ilvr_b(__d, __builtin_msa_fill_b(0)); \
-  __builtin_msa_hadd_s_h(__e, __e); \
-})
+((v8i16){((v8i8)(__a))[0], ((v8i8)(__a))[1], ((v8i8)(__a))[2], ((v8i8)(__a))[3], \
+         ((v8i8)(__a))[4], ((v8i8)(__a))[5], ((v8i8)(__a))[6], ((v8i8)(__a))[7]})
 
+/*Transform v8u8 to v8u16*/
 #define msa_movl_u8(__a) \
-({ \
-  v16u8 __d = (v16u8)((v2u64){(uint64_t)((v8u8)(__a)), (uint64_t)0}); \
-  v16u8 __e = (v16u8)__builtin_msa_ilvr_b((v16i8)__d, __builtin_msa_fill_b(0)); \
-  __builtin_msa_hadd_u_h(__e, __e); \
-})
+((v8u16){((v8u8)(__a))[0], ((v8u8)(__a))[1], ((v8u8)(__a))[2], ((v8u8)(__a))[3], \
+         ((v8u8)(__a))[4], ((v8u8)(__a))[5], ((v8u8)(__a))[6], ((v8u8)(__a))[7]})
 
-#define msa_movl_s16(__a) ((v4i32){(int32_t)((v4i16)(__a))[0], (int32_t)((v4i16)(__a))[1], \
-                           (int32_t)((v4i16)(__a))[2], (int32_t)((v4i16)(__a))[3]})
-#define msa_movl_s32(__a) ((v2i64){(int64_t)((v2i32)(__a))[0], (int64_t)((v2i32)(__a))[1]})
-#define msa_movl_u16(__a) ((v4u32){(uint32_t)((v4u16)(__a))[0], (uint32_t)((v4u16)(__a))[1], \
-                           (uint32_t)((v4u16)(__a))[2], (uint32_t)((v4u16)(__a))[3]})
-#define msa_movl_u32(__a) ((v2u64){(uint64_t)((v2u32)(__a))[0], (uint64_t)((v2u32)(__a))[1]})
+/*Transform v4i16 to v8i16*/
+#define msa_movl_s16(__a) ((v4i32){((v4i16)(__a))[0], ((v4i16)(__a))[1], ((v4i16)(__a))[2], ((v4i16)(__a))[3]})
+
+/*Transform v2i32 to v4i32*/
+#define msa_movl_s32(__a) ((v2i64){((v2i32)(__a))[0], ((v2i32)(__a))[1]})
+
+/*Transform v4u16 to v8u16*/
+#define msa_movl_u16(__a) ((v4u32){((v4u16)(__a))[0], ((v4u16)(__a))[1], ((v4u16)(__a))[2], ((v4u16)(__a))[3]})
+
+/*Transform v2u32 to v4u32*/
+#define msa_movl_u32(__a) ((v2u64){((v2u32)(__a))[0], ((v2u32)(__a))[1]})
 
 /* Copies the least significant half of each element of a 128 bits vector into the corresponding elements of a 64 bits vector. */
 #define msa_movn_s16(__a) \

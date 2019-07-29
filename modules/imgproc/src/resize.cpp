@@ -506,7 +506,28 @@ void hlineResizeCn<uint8_t, ufixedpoint16, 2, true, 1>(uint8_t* src, int, int *o
     {
         *(dst++) = src_0;
     }
-#if CV_SIMD
+#if CV_MSA
+    for (; i <= dst_max - VECSZ; i += VECSZ, m += 2*VECSZ, dst += VECSZ)
+    {
+         v_int16 v_px0 = (v_int16)((v8i16){
+                             (int16_t)(*(src + ofst[i])),  (int16_t)(*(src + ofst[i]+1)),
+                             (int16_t)(*(src + ofst[i+1])),(int16_t)(*(src + ofst[i+1]+1)),
+                             (int16_t)(*(src + ofst[i+2])),(int16_t)(*(src + ofst[i+2]+1)),
+                             (int16_t)(*(src + ofst[i+3])),(int16_t)(*(src + ofst[i+3]+1))});
+
+         v_int16 v_px1 = (v_int16)((v8i16){
+                             (int16_t)(*(src + ofst[i+4])),(int16_t)(*(src + ofst[i+4]+1)),
+                             (int16_t)(*(src + ofst[i+5])),(int16_t)(*(src + ofst[i+5]+1)),
+                             (int16_t)(*(src + ofst[i+6])),(int16_t)(*(src + ofst[i+6]+1)),
+                             (int16_t)(*(src + ofst[i+7])),(int16_t)(*(src + ofst[i+7]+1))});
+
+         v_int16 v_m0 = vx_load((int16_t*)m);
+         v_int16 v_m1 = vx_load((int16_t*)m + VECSZ);
+         v_uint32 v_res0 = v_reinterpret_as_u32(v_dotprod(v_px0, v_m0));
+         v_uint32 v_res1 = v_reinterpret_as_u32(v_dotprod(v_px1, v_m1));
+         v_store((uint16_t*)dst, v_pack(v_res0, v_res1));
+    }
+#elif CV_SIMD
     for (; i <= dst_max - VECSZ; i += VECSZ, m += 2*VECSZ, dst += VECSZ)
     {
         v_uint16 v_src0, v_src1;
