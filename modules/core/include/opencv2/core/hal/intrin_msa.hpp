@@ -1218,6 +1218,7 @@ OPENCV_HAL_IMPL_MSA_EXPAND(v_int16x8, v_int32x4, short, s16, s16, v8i16, v8i16)
 OPENCV_HAL_IMPL_MSA_EXPAND(v_uint32x4, v_uint64x2, uint, u32, s32, v4u32, v4i32)
 OPENCV_HAL_IMPL_MSA_EXPAND(v_int32x4, v_int64x2, int, s32, s32, v4i32, v4i32)
 
+#if 0
 #define OPENCV_HAL_IMPL_MSA_EXPAND_Q(_Tpwvec, _Tp, suffix, suffixw, ssuffixw, _Tpv, _Tpvs) \
 inline _Tpwvec v_load_expand_q(const _Tp* ptr) \
 { \
@@ -1228,6 +1229,17 @@ inline _Tpwvec v_load_expand_q(const _Tp* ptr) \
 
 OPENCV_HAL_IMPL_MSA_EXPAND_Q(v_uint32x4, uchar, u8, u16, s16, v8u16, v8i16)
 OPENCV_HAL_IMPL_MSA_EXPAND_Q(v_int32x4, schar, s8, s16, s16, v8i16, v8i16)
+#else
+inline v_uint32x4 v_load_expand_q(const uchar* ptr)
+{
+    return v_uint32x4((v4u32){ptr[0], ptr[1], ptr[2], ptr[3]});
+}
+
+inline v_int32x4 v_load_expand_q(const schar* ptr)
+{
+    return v_int32x4((v4i32){ptr[0], ptr[1], ptr[2], ptr[3]});
+}
+#endif
 
 /* v_zip, v_combine_low, v_combine_high, v_recombine */
 #define OPENCV_HAL_IMPL_MSA_UNPACKS(_Tpvec, _Tpv, _Tpvs, ssuffix) \

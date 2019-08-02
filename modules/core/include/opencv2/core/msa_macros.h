@@ -142,25 +142,25 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 /* Sign extends or zero extends each element in a 64 bits vector to twice its original length, and places the results in a 128 bits vector. */
 /*Transform v8i8 to v8i16*/
 #define msa_movl_s8(__a) \
-((v8i16){((v8i8)(__a))[0], ((v8i8)(__a))[1], ((v8i8)(__a))[2], ((v8i8)(__a))[3], \
-         ((v8i8)(__a))[4], ((v8i8)(__a))[5], ((v8i8)(__a))[6], ((v8i8)(__a))[7]})
+((v8i16){(__a)[0], (__a)[1], (__a)[2], (__a)[3], \
+         (__a)[4], (__a)[5], (__a)[6], (__a)[7]})
 
 /*Transform v8u8 to v8u16*/
 #define msa_movl_u8(__a) \
-((v8u16){((v8u8)(__a))[0], ((v8u8)(__a))[1], ((v8u8)(__a))[2], ((v8u8)(__a))[3], \
-         ((v8u8)(__a))[4], ((v8u8)(__a))[5], ((v8u8)(__a))[6], ((v8u8)(__a))[7]})
+((v8u16){(__a)[0], (__a)[1], (__a)[2], (__a)[3], \
+         (__a)[4], (__a)[5], (__a)[6], (__a)[7]})
 
 /*Transform v4i16 to v8i16*/
-#define msa_movl_s16(__a) ((v4i32){((v4i16)(__a))[0], ((v4i16)(__a))[1], ((v4i16)(__a))[2], ((v4i16)(__a))[3]})
+#define msa_movl_s16(__a) ((v4i32){(__a)[0], (__a)[1], (__a)[2], (__a)[3]})
 
 /*Transform v2i32 to v4i32*/
-#define msa_movl_s32(__a) ((v2i64){((v2i32)(__a))[0], ((v2i32)(__a))[1]})
+#define msa_movl_s32(__a) ((v2i64){(__a)[0], (__a)[1]})
 
 /*Transform v4u16 to v8u16*/
-#define msa_movl_u16(__a) ((v4u32){((v4u16)(__a))[0], ((v4u16)(__a))[1], ((v4u16)(__a))[2], ((v4u16)(__a))[3]})
+#define msa_movl_u16(__a) ((v4u32){(__a)[0], (__a)[1], (__a)[2], (__a)[3]})
 
 /*Transform v2u32 to v4u32*/
-#define msa_movl_u32(__a) ((v2u64){((v2u32)(__a))[0], ((v2u32)(__a))[1]})
+#define msa_movl_u32(__a) ((v2u64){(__a)[0], (__a)[1]})
 
 /* Copies the least significant half of each element of a 128 bits vector into the corresponding elements of a 64 bits vector. */
 #define msa_movn_s16(__a) \

@@ -598,6 +598,10 @@ inline void msa_store_low(_Tp* ptr, const _Tpv a)
         ptr[i] = a[i];
 }
 
+#define msa_load_low_u(Tpv, ptr) ((Tpv)(v2u64){*(uint64*)(ptr), 0})
+#define msa_load_low_s(Tpv, ptr) ((Tpv)(v2i64){*(int64*)(ptr), 0})
+#define msa_load_expand_low_u(Tpv, ptr) ((Tpv)(v2u64){(uint64)(*(ptr)), 0})
+#define msa_load_expand_low_s(Tpv, ptr) ((Tpv)(v2i64){(int64)(*(ptr)), 0})
 template<class VecUpdate> struct MorphRowVec8u
 {
     MorphRowVec8u(int _ksize, int _anchor) : ksize(_ksize), anchor(_anchor) {}
@@ -623,10 +627,10 @@ template<class VecUpdate> struct MorphRowVec8u
 
         for( ; i < width; i += 4 )
         {
-            v16u8 s = msa_combine_u8((uint64)(*(const uint*)(src + i)), (uint64)0);
+            v16u8 s = msa_load_expand_low_u(v16u8, (const uint*)(src + i));
             for( k = cn; k < _ksize; k += cn )
             {
-                v16u8 x = msa_combine_u8((uint64)(*(const uint*)(src + i + k)), (uint64)0);
+                v16u8 x = msa_load_expand_low_u(v16u8, (const uint*)(src + i + k));
                 s = updateOp(s, x);
             }
             *(uint*)(dst + i) = ((v4u32)s)[0];
@@ -664,10 +668,10 @@ template<class VecUpdate> struct MorphRowVec16u
 
         for( ; i < width; i += 4 )
         {
-            v8u16 s = msa_combine_u16((uint64)(*(const uint*)(src + i)), (uint64)0);
+            v8u16 s = msa_load_expand_low_u(v8u16, (const uint*)(src + i));
             for( k = cn; k < _ksize; k += cn )
             {
-                v8u16 x = msa_combine_u16((uint64)(*(const uint*)(src + i + k)), (uint64)0);
+                v8u16 x = msa_load_expand_low_u(v8u16, (const uint*)(src + i + k));
                 s = updateOp(s, x);
             }
             *(uint*)(dst + i) = ((v4u32)s)[0];
@@ -705,10 +709,10 @@ template<class VecUpdate> struct MorphRowVec16s
 
         for( ; i < width; i += 4 )
         {
-            v8i16 s = msa_combine_s16((uint64)(*(const int*)(src + i)), (uint64)0);
+            v8i16 s = msa_load_expand_low_s(v8i16,(const int*)(src + i));
             for( k = cn; k < _ksize; k += cn )
             {
-                v8i16 x = msa_combine_s16((uint64)(*(const int*)(src + i + k)), (uint64)0);
+                v8i16 x = msa_load_expand_low_s(v8i16, (const int*)(src + i + k));
                 s = updateOp(s, x);
             }
             *(int*)(dst + i) = ((v4i32)s)[0];
@@ -796,19 +800,19 @@ template<class VecUpdate> struct MorphColumnVec8u
 
             for( ; i <= width - 8; i += 8 )
             {
-                v16u8 x0, s0 = msa_combine_u8(msa_ld1_u8(src[1] + i), (uint64)0);
+                v16u8 x0, s0 = msa_load_low_u(v16u8, src[1] + i);
 
                 for( k = 2; k < ksize; k++ )
                 {
-                    x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                    x0 = msa_load_low_u(v16u8, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
 
-                x0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+                x0 = msa_load_low_u(v16u8, src[0] + i);
                 msa_store_low((dst+i), updateOp(s0, x0));
 
 
-                x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                x0 = msa_load_low_u(v16u8, src[k] + i);
                 msa_store_low((dst + dststep + i), updateOp(s0, x0));
             }
         }
@@ -835,11 +839,11 @@ template<class VecUpdate> struct MorphColumnVec8u
 
             for( ; i <= width - 8; i += 8 )
             {
-                v16u8 s0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+                v16u8 s0 = msa_load_low_u(v16u8, src[0] + i);
 
                 for( k = 1; k < ksize; k++ )
                 {
-                    v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                    v16u8 x0 = msa_load_low_u(v16u8, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
                 msa_store_low((dst+i), s0);
@@ -900,18 +904,18 @@ template<class VecUpdate> struct MorphColumnVec16u
 
             for( ; i <= width - 8; i += 8 )
             {
-                v8u16 x0, s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[1] + i)), (uint64)0);
+                v8u16 x0, s0 = msa_load_low_u(v8u16, src[1] + i);
 
                 for( k = 2; k < ksize; k++ )
                 {
-                    x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                    x0 = msa_load_low_u(v8u16, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
 
-                x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+                x0 = msa_load_low_u(v8u16, src[0] + i);
                 msa_store_low((ushort*)(dst + i), updateOp(s0, x0));
 
-                x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                x0 = msa_load_low_u(v8u16, src[k] + i);
                 msa_store_low((ushort*)(dst + dststep + i), updateOp(s0, x0));
             }
         }
@@ -938,11 +942,11 @@ template<class VecUpdate> struct MorphColumnVec16u
 
             for( ; i <= width - 8; i += 8 )
             {
-                v8u16 s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+                v8u16 s0 = msa_load_low_u(v8u16, src[0] + i);
 
                 for( k = 1; k < ksize; k++ )
                 {
-                    v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                    v8u16 x0 = msa_load_low_u(v8u16, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
                 msa_store_low((ushort*)(dst + i), s0);
@@ -1003,18 +1007,18 @@ template<class VecUpdate> struct MorphColumnVec16s
 
             for( ; i <= width - 8; i += 8 )
             {
-                v8i16 x0, s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[1] + i)), (uint64)0);
+                v8i16 x0, s0 = msa_load_low_s(v8i16, src[1] + i);
 
                 for( k = 2; k < ksize; k++ )
                 {
-                    x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                    x0 = msa_load_low_s(v8i16, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
 
-                x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+                x0 = msa_load_low_s(v8i16, src[0] + i);
                 msa_store_low((short*)(dst + i), updateOp(s0, x0));
 
-                x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                x0 = msa_load_low_s(v8i16, src[k] + i);
                 msa_store_low((short*)(dst + dststep + i), updateOp(s0, x0));
             }
         }
@@ -1041,11 +1045,11 @@ template<class VecUpdate> struct MorphColumnVec16s
 
             for( ; i <= width - 8; i += 8 )
             {
-                v8i16 s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+                v8i16 s0 = msa_load_low_s(v8i16, src[0] + i);
 
                 for( k = 1; k < ksize; k++ )
                 {
-                    v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                    v8i16 x0 = msa_load_low_s(v8i16, src[k] + i);
                     s0 = updateOp(s0, x0);
                 }
                 msa_store_low((short*)(dst + i), s0);
@@ -1214,11 +1218,11 @@ template<class VecUpdate> struct MorphVec8u
 
         for( ; i <= width - 8; i += 8 )
         {
-            v16u8 s0 = msa_combine_u8(msa_ld1_u8(src[0] + i), (uint64)0);
+            v16u8 s0 = msa_load_low_u(v16u8, src[0] + i);
 
             for( k = 1; k < nz; k++ )
             {
-                v16u8 x0 = msa_combine_u8(msa_ld1_u8(src[k] + i), (uint64)0);
+                v16u8 x0 = msa_load_low_u(v16u8, src[k] + i);
                 s0 = updateOp(s0, x0);
             }
             msa_store_low((dst + i), s0);
@@ -1259,11 +1263,11 @@ template<class VecUpdate> struct MorphVec16u
 
         for( ; i <= width - 8; i += 8 )
         {
-            v8u16 s0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[0] + i)), (uint64)0);
+            v8u16 s0 = msa_load_low_u(v8u16, src[0] + i);
 
             for( k = 1; k < nz; k++ )
             {
-                v8u16 x0 = msa_combine_u16(msa_ld1_u16((const ushort*)(src[k] + i)), (uint64)0);
+                v8u16 x0 = msa_load_low_u(v8u16, src[k] + i);
                 s0 = updateOp(s0, x0);
             }
             msa_store_low((ushort*)(dst + i), s0);
@@ -1304,11 +1308,11 @@ template<class VecUpdate> struct MorphVec16s
 
         for( ; i <= width - 8; i += 8 )
         {
-            v8i16 s0 = msa_combine_s16(msa_ld1_s16((const short*)(src[0] + i)), (uint64)0);
+            v8i16 s0 = msa_load_low_s(v8i16, src[0] + i);
 
             for( k = 1; k < nz; k++ )
             {
-                v8i16 x0 = msa_combine_s16(msa_ld1_s16((const short*)(src[k] + i)), (uint64)0);
+                v8i16 x0 = msa_load_low_s(v8i16, src[k] + i);
                 s0 = updateOp(s0, x0);
             }
             msa_store_low((short*)(dst + i), s0);
