@@ -73,7 +73,12 @@ if(WITH_ARITH_DEC)
 endif()
 
 # No SIMD
-set(JPEG_SOURCES ${JPEG_SOURCES} jsimd_none.c)
+#set(JPEG_SOURCES ${JPEG_SOURCES} jsimd_none.c)
+
+# SIMD for MIPS
+set(JPEG_SOURCES ${JPEG_SOURCES} simd/jsimd_msa.c simd/jccolext_msa.c simd/jcgray_msa.c
+  simd/jcsample_msa.c simd/jdcol565_msa.c simd/jdcolext_msa.c simd/jdmrgext_msa.c
+  simd/jdsample_msa.c simd/jfdct_msa.c simd/jidct_msa.c simd/jquanti_msa.c)
 
 ocv_list_add_prefix(JPEG_SOURCES src/)
 
