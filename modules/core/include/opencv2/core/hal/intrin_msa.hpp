@@ -723,28 +723,6 @@ OPENCV_HAL_IMPL_MSA_BIN_FUNC2(v_int16x8, v_uint16x8, v8u16, v_absdiff, msa_abdq_
 OPENCV_HAL_IMPL_MSA_BIN_FUNC2(v_int32x4, v_uint32x4, v4u32, v_absdiff, msa_abdq_s32)
 
 /* v_magnitude, v_sqr_magnitude, v_fma, v_muladd */
-#if 0 /* For GCC */
-inline v_float32x4 v_magnitude(const v_float32x4& a, const v_float32x4& b)
-{
-    v_float32x4 x(msa_mlaq_f32(b.val, b.val, msa_mulq_f32(a.val, a.val)));
-    return v_sqrt(x);
-}
-
-inline v_float32x4 v_sqr_magnitude(const v_float32x4& a, const v_float32x4& b)
-{
-    return v_float32x4(msa_mlaq_f32(b.val, b.val, msa_mulq_f32(a.val, a.val)));
-}
-
-inline v_float32x4 v_fma(const v_float32x4& a, const v_float32x4& b, const v_float32x4& c)
-{
-    return v_float32x4(msa_mlaq_f32(a.val, b.val, c.val));
-}
-
-inline v_int32x4 v_fma(const v_int32x4& a, const v_int32x4& b, const v_int32x4& c)
-{
-    return v_int32x4(msa_mlaq_s32(a.val, b.val, c.val));
-}
-#else /* For ASM */
 inline v_float32x4 v_magnitude(const v_float32x4& a, const v_float32x4& b)
 {
     v_float32x4 x(msa_mlaq_f32(msa_mulq_f32(a.val, a.val), b.val, b.val));
@@ -765,7 +743,6 @@ inline v_int32x4 v_fma(const v_int32x4& a, const v_int32x4& b, const v_int32x4& 
 {
     return v_int32x4(msa_mlaq_s32(c.val, a.val, b.val));
 }
-#endif /* 0 */
 
 inline v_float32x4 v_muladd(const v_float32x4& a, const v_float32x4& b, const v_float32x4& c)
 {
@@ -778,23 +755,6 @@ inline v_int32x4 v_muladd(const v_int32x4& a, const v_int32x4& b, const v_int32x
 }
 
 #if CV_SIMD128_64F
-#if 0 /* For GCC */
-inline v_float64x2 v_magnitude(const v_float64x2& a, const v_float64x2& b)
-{
-    v_float64x2 x(msa_mlaq_f64(b.val, b.val, msa_mulq_f64(a.val, a.val)));
-    return v_sqrt(x);
-}
-
-inline v_float64x2 v_sqr_magnitude(const v_float64x2& a, const v_float64x2& b)
-{
-    return v_float64x2(msa_mlaq_f64(b.val, b.val, msa_mulq_f64(a.val, a.val)));
-}
-
-inline v_float64x2 v_fma(const v_float64x2& a, const v_float64x2& b, const v_float64x2& c)
-{
-    return v_float64x2(msa_mlaq_f64(a.val, b.val, c.val));
-}
-#else /* For ASM */
 inline v_float64x2 v_magnitude(const v_float64x2& a, const v_float64x2& b)
 {
     v_float64x2 x(msa_mlaq_f64(msa_mulq_f64(a.val, a.val), b.val, b.val));
@@ -810,7 +770,6 @@ inline v_float64x2 v_fma(const v_float64x2& a, const v_float64x2& b, const v_flo
 {
     return v_float64x2(msa_mlaq_f64(c.val, a.val, b.val));
 }
-#endif /* 0 */
 
 inline v_float64x2 v_muladd(const v_float64x2& a, const v_float64x2& b, const v_float64x2& c)
 {

@@ -1054,18 +1054,8 @@ typedef double v1f64 __attribute__ ((vector_size(8), aligned(8)));
 #define msa_rsqrtq_f32        __builtin_msa_frsqrt_w
 #define msa_rsqrtq_f64        __builtin_msa_frsqrt_d
 
-/* mlaq */
-#if 0 /* GCC -- r = a * b + c; */
-#define msa_mlaq_s32          __builtin_msa_maddv_w
-#define msa_mlaq_s64          __builtin_msa_maddv_d
-#if (__mips_isa_rev >= 6)
-#define msa_mlaq_f32          __builtin_msa_fmadd_w
-#define msa_mlaq_f64          __builtin_msa_fmadd_d
-#else
-#define msa_mlaq_f32(a, b, c) __builtin_msa_fadd_w(__builtin_msa_fmul_w(b, a), c)
-#define msa_mlaq_f64(a, b, c) __builtin_msa_fadd_d(__builtin_msa_fmul_d(b, a), c)
-#endif /* __mips_isa_rev */
-#else /* ASM -- r = a + b * c; */
+
+/* mlaq: r = a + b * c; */
 __extension__ extern __inline v4i32
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_s32(v4i32 __a, v4i32 __b, v4i32 __c)
@@ -1090,7 +1080,6 @@ msa_mlaq_s64(v2i64 __a, v2i64 __b, v2i64 __c)
   return __a;
 }
 
-#if (__mips_isa_rev >= 6)
 __extension__ extern __inline v4f32
 __attribute__ ((__always_inline__, __gnu_inline__, __artificial__))
 msa_mlaq_f32(v4f32 __a, v4f32 __b, v4f32 __c)
@@ -1114,11 +1103,6 @@ msa_mlaq_f64(v2f64 __a, v2f64 __b, v2f64 __c)
                : [__b] "f"(__b), [__c] "f"(__c));
   return __a;
 }
-#else
-#define msa_mlaq_f32(a, b, c) __builtin_msa_fadd_w(__builtin_msa_fmul_w(b, c), a)
-#define msa_mlaq_f64(a, b, c) __builtin_msa_fadd_d(__builtin_msa_fmul_d(b, c), a)
-#endif /* __mips_isa_rev */
-#endif
 
 /* cntq */
 #define msa_cntq_s8           __builtin_msa_pcnt_b
